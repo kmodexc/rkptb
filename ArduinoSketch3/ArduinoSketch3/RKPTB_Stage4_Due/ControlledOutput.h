@@ -8,7 +8,8 @@
 #include "Measurement.h"
 
 enum ControlledPinMode {
-  Current, Voltage
+  Voltage,
+  Current
 };
 
 enum DisplayMode{

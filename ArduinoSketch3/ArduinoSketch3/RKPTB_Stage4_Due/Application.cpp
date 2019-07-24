@@ -38,21 +38,17 @@ void Application::loop(unsigned long loopCount) {
 	p_set.update();
 	parSet.update();
 
-	if (loopCount % 10 == 0)
-	{
-
-		//bool error = !digitalRead(PIN_ERROR);
-		//bool mrel = !digitalRead(PIN_RELEASE);
-		
-		disp_man.set_q_set(q_set.getSetVal(),Unit::Volt);
-		
-		disp_man.set_q_is(q_set.getIsVal(),Unit::MilliAmps);
-		
-		disp_man.set_p_set(p_set.getSetVal(),Unit::Volt);
-		
-		disp_man.set_p_is(p_set.getIsVal(),Unit::MilliAmps);
-		
-		disp_man.loop(loopCount);
-	}
+	//bool error = !digitalRead(PIN_ERROR);
+	//bool mrel = !digitalRead(PIN_RELEASE);
+	
+	disp_man.set_q_set(q_set.getSetVal(),(Unit)q_set.getSetMode());
+	
+	disp_man.set_q_is(q_set.getIsVal(),(Unit)q_set.getIsMode());
+	
+	disp_man.set_p_set(p_set.getSetVal(),(Unit)p_set.getSetMode());
+	
+	disp_man.set_p_is(p_set.getIsVal(),(Unit)p_set.getIsMode());
+	
+	disp_man.loop(loopCount);
 }
 #endif

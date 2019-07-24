@@ -67,11 +67,11 @@ void DisplayManager::loop(uint64_t loopCount)
 {
 	bool drawn_this_iter = false;
 	
-	if(!drawn_this_iter && ((loopCount/50) % 2) == 0){
+	if(!drawn_this_iter && ((loopCount/5) % 2) == 0){
 		drawn_this_iter = disp.text(&dt_q,1);
 	}
 	
-	if(!drawn_this_iter && (((loopCount/50) + 1) % 2) == 0){
+	if(!drawn_this_iter && (((loopCount/5) + 1) % 2) == 0){
 		drawn_this_iter = disp.text(&dt_p,1);
 	}
 	
