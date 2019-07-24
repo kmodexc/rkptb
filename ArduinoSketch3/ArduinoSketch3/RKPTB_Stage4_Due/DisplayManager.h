@@ -10,6 +10,12 @@
 #define __DISPLAYMANAGER_H__
 
 
+enum Unit{
+	Volt,
+	MilliAmps
+};
+
+
 class DisplayManager
 {
 //variables
@@ -17,12 +23,20 @@ public:
 protected:
 private:
 
+	// Display texts for live values
+	DisplayText dt_q;
+	DisplayText dt_p;
+	DisplayText dt_ps;
+
 //functions
 public:
 
-	// Konstruktors
+	// Constructors
 	DisplayManager();
 	~DisplayManager();
+	
+	// Setter for live values
+	
 	
 	
 protected:
