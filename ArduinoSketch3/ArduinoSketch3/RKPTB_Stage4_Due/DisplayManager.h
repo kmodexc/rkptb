@@ -46,6 +46,9 @@ public:
 	
 	// Setter for live values
 	void set_q_set(_float val,Unit un);
+	void set_q_is(_float val,Unit un);
+	void set_p_set(_float val,Unit un);
+	void set_p_is(_float val,Unit un);
 	
 	
 	// Update loop

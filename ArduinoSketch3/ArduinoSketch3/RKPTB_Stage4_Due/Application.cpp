@@ -46,6 +46,12 @@ void Application::loop(unsigned long loopCount) {
 		
 		disp_man.set_q_set(q_set.getSetVal(),Unit::Volt);
 		
+		disp_man.set_q_is(q_set.getIsVal(),Unit::MilliAmps);
+		
+		disp_man.set_p_set(p_set.getSetVal(),Unit::Volt);
+		
+		disp_man.set_p_is(p_set.getIsVal(),Unit::MilliAmps);
+		
 		disp_man.loop(loopCount);
 	}
 }
