@@ -9,8 +9,8 @@
 
 Application::Application()
 : q_set(7, 9, 1, 0, 37, 7, 47, 49),
-p_set(6, 8, 6, 5, 35, 4, 45, 51),
-parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, Voltage, Voltage)
+  p_set(6, 8, 6, 5, 35, 4, 45, 51),
+ parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, Voltage, Voltage)
 {
 	//q_set.setDisplayMode(Raw);
 	//p_set.setDisplayMode(Raw);
@@ -48,6 +48,10 @@ void Application::loop(unsigned long loopCount) {
 	disp_man.set_p_set(p_set.getSetVal(),(Unit)p_set.getSetMode());
 	
 	disp_man.set_p_is(p_set.getIsVal(),(Unit)p_set.getIsMode());
+	
+	disp_man.set_ps_pre_set(parSet.getSetValIn(),(Unit)parSet.getSetMode());
+	
+	disp_man.set_ps_set(parSet.getSetVal(),(Unit)parSet.getSetMode());
 	
 	disp_man.loop(loopCount);
 }

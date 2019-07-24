@@ -49,6 +49,8 @@ public:
 	void set_q_is(_float val,Unit un);
 	void set_p_set(_float val,Unit un);
 	void set_p_is(_float val,Unit un);
+	void set_ps_pre_set(_float val,Unit un);
+	void set_ps_set(_float val,Unit un);
 	
 	
 	// Update loop
