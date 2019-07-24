@@ -90,7 +90,7 @@ void _float::print(char* str)
   if (str) {
     int32_t iNum = 0;
     if (data >= 0) iNum = data;
-    str[4] = (iNum % 10) + 48;
+    //str[4] = (iNum % 10) + 48;
     iNum /= 10;
     str[3] = (iNum % 10) + 48;
     iNum /= 10;

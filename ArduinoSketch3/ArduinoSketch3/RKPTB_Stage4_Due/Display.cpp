@@ -36,7 +36,7 @@ void Display::send(char* str, size_t len) {
 
 void Display::send(char* str, size_t len, uint8_t control) {
 	if (len <= 0) return;
-	if (Serial) Serial.println(str);
+	//if (Serial) Serial.println(str);
 	uint8_t fb = NAK;
 	do {
 		uint8_t bcc = control;
@@ -58,13 +58,40 @@ void Display::send(char* str, size_t len, uint8_t control) {
 			delay(100);
 		}
 		if (Serial) {
-			Serial.print("fb = ");
-			Serial.println(fb);
+			//Serial.print("fb = ");
+			//Serial.println(fb);
 		}
 
 	} while (fb == NAK);
 
 	clearStr(str, len);
+}
+
+bool Display::requestBuffer(uint8_t *buffer,size_t size)
+{
+	if(size > 0){
+		send("S",1,DC2);
+		uint8_t* it = buffer;
+		if (Wire.requestFrom(DISPLAY_READ_ADDR, (uint8_t)size) > 0) {
+			if(Wire.read() == 17 && Wire.read()){
+				while(Wire.available()){
+					uint8_t val = Wire.read();
+					//if(Serial) Serial.print(val);
+					//if(Serial) Serial.print(' ');
+					if(val == 255) break;
+					*(it++) = val;
+				}
+			}
+			while(Wire.available()){
+				Wire.read();
+			}
+		}
+		if(it != buffer){
+			//if(Serial) Serial.println();
+			return true;
+		}
+	}
+	return false;
 }
 
 void Display::printFloat(char* str, int32_t length, int32_t iNum)
@@ -112,14 +139,17 @@ size_t Display::dynIntToStr(char* str, size_t lenMax, int32_t iNum) {
 }
 
 void Display::command(char* cmd) {
+	command(cmd,false);
+}
+
+void Display::command(char* cmd,bool extra_null) {
 	char* it = cmd;
 	char* wr_it = wr_buf;
 	while (*(it) != 0) {
 		*(wr_it++) = *(it++);
 	}
-	send(wr_buf, (wr_it - wr_buf) + 1);
+	send(wr_buf, (wr_it - wr_buf) + (extra_null ? 1 : 0));
 }
-
 
 bool Display::text(int x, int y, char* txt) {
 	//clearRect(x,y,x+250,y+25);

@@ -9,8 +9,8 @@
 
 Application::Application()
 : q_set(7, 9, 1, 0, 37, 7, 47, 49),
-  p_set(6, 8, 6, 5, 35, 4, 45, 51),
- parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, Voltage, Voltage)
+p_set(6, 8, 6, 5, 35, 4, 45, 51),
+parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, Voltage, Voltage)
 {
 	//q_set.setDisplayMode(Raw);
 	//p_set.setDisplayMode(Raw);
@@ -52,6 +52,21 @@ void Application::loop(unsigned long loopCount) {
 	disp_man.set_ps_pre_set(parSet.getSetValIn(),(Unit)parSet.getSetMode());
 	
 	disp_man.set_ps_set(parSet.getSetVal(),(Unit)parSet.getSetMode());
+	
+	switch(disp_man.getTouchEvent()){
+		case q_set_mode_change:
+		q_set.setSetMode((q_set.getSetMode() == Voltage ? Current : Voltage));
+		break;
+		case p_set_mode_change:
+		p_set.setSetMode((p_set.getSetMode() == Voltage ? Current : Voltage));
+		break;
+		case q_is_mode_change:
+		q_set.setIsMode((q_set.getIsMode() == Voltage ? Current : Voltage));
+		break;
+		case p_is_mode_change:
+		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		break;
+	}
 	
 	disp_man.loop(loopCount);
 }

@@ -51,7 +51,6 @@ public:
   void setDisplayMode(DisplayMode mode);
   DisplayMode getDisplayMode();
   static uint32_t stab_ana_read(int32_t pin);
-protected:
   void setSetMode(ControlledPinMode mode);
   void setIsMode(ControlledPinMode mode);
 };

@@ -1,4 +1,4 @@
-/* 
+/*
 * DisplayManager.h
 *
 * Created: 24.07.2019 15:58:38
@@ -18,13 +18,22 @@ enum Unit{
 	MilliAmps
 };
 
+enum TouchEvent{
+	nothing,
+	q_set_mode_change,
+	q_is_mode_change,
+	p_set_mode_change,
+	p_is_mode_change,
+	ps_switch_val
+};
+
 
 class DisplayManager
 {
-//variables
-public:
-protected:
-private:
+	//variables
+	public:
+	protected:
+	private:
 
 	// Display
 	Display disp;
@@ -33,9 +42,15 @@ private:
 	DisplayText dt_q;
 	DisplayText dt_p;
 	DisplayText dt_ps;
+	
+	// receive buffer
+	uint8_t rec_buffer[10];
+	
+	// receive buffer touch events
+	TouchEvent te;
 
-//functions
-public:
+	//functions
+	public:
 
 	// Constructors
 	DisplayManager();
@@ -53,6 +68,12 @@ public:
 	void set_ps_set(_float val,Unit un);
 	
 	
+	// request function for touch events
+	TouchEvent getTouchEvent();
+	
+	// function to read and interpret the send buffer
+	void readSendBuffer();	
+	
 	// Update loop
 	void loop(uint64_t loopCount);
 	
@@ -60,8 +81,8 @@ public:
 	void unit_print(char* str,Unit u);
 	
 	
-protected:
-private:
+	protected:
+	private:
 
 }; //DisplayManager
 

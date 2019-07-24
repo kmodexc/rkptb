@@ -38,10 +38,12 @@ class Display{
 	void sendStr(char* str,size_t len);
 	void send(char *str,size_t len);
 	void send(char *str,size_t len,uint8_t control);
+	bool requestBuffer(uint8_t *buffer,size_t size);
 	void printFloat(char* str, int32_t length, int32_t iNum);
 	void printInt(char* str, int32_t length, int32_t iNum);
 	size_t dynIntToStr(char* str,size_t maxLen,int32_t iNum);
 	void command(char* cmd);
+	void command(char* cmd,bool extra_null);
 	bool text(int x,int y,char* txt);
 	bool text(DisplayText* txt);
 	bool text(DisplayText* txt,uint8_t max_redraw_char);
