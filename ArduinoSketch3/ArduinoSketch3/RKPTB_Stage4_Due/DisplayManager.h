@@ -9,6 +9,9 @@
 #ifndef __DISPLAYMANAGER_H__
 #define __DISPLAYMANAGER_H__
 
+#include "_float.h"
+#include "Display.h"
+
 
 enum Unit{
 	Volt,
@@ -23,6 +26,9 @@ public:
 protected:
 private:
 
+	// Display
+	Display disp;
+
 	// Display texts for live values
 	DisplayText dt_q;
 	DisplayText dt_p;
@@ -35,9 +41,15 @@ public:
 	DisplayManager();
 	~DisplayManager();
 	
+	// Initialization
+	void initialize();
+	
 	// Setter for live values
 	void set_q_set(_float val,Unit un);
 	
+	
+	// Update loop
+	void loop(uint64_t loopCount);
 	
 	// Static helpers for Unit
 	void unit_print(char* str,Unit u);
