@@ -9,7 +9,7 @@
 #define WR_BUF_LEN 100
 
 struct DisplayText{
-  static const size_t STRLEN = 15;
+  static const size_t STRLEN = 30;
   char new_str[STRLEN];
   char old_str[STRLEN];
   bool drawn;

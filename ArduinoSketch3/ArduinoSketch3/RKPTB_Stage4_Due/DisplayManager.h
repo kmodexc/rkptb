@@ -36,7 +36,11 @@ public:
 	~DisplayManager();
 	
 	// Setter for live values
+	void set_q_set(_float val,Unit un);
 	
+	
+	// Static helpers for Unit
+	void unit_print(char* str,Unit u);
 	
 	
 protected:
