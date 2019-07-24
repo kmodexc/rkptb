@@ -1,7 +1,7 @@
 /* 
 * DisplayManager.cpp
 *
-* Created: 24.07.2019 14:47:23
+* Created: 24.07.2019 15:58:37
 * Author: Marius
 */
 
@@ -17,8 +17,3 @@ DisplayManager::DisplayManager()
 DisplayManager::~DisplayManager()
 {
 } //~DisplayManager
-
-void DisplayManager::set_q_set(uint32_t qs, Unit u)
-{
-
-}
