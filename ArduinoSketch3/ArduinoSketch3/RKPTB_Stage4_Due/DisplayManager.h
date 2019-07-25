@@ -13,6 +13,8 @@
 #include "Display.h"
 
 
+#define DISPM_REC_BUFFER_SIZE 10
+
 enum Unit{
 	Volt,
 	MilliAmps
@@ -44,7 +46,7 @@ class DisplayManager
 	DisplayText dt_ps;
 	
 	// receive buffer
-	uint8_t rec_buffer[10];
+	uint8_t rec_buffer[DISPM_REC_BUFFER_SIZE];
 	
 	// receive buffer touch events
 	TouchEvent te;

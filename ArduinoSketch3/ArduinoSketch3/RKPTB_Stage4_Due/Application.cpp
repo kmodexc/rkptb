@@ -66,6 +66,8 @@ void Application::loop(unsigned long loopCount) {
 		case p_is_mode_change:
 		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
 		break;
+		default:
+		break;
 	}
 	
 	disp_man.loop(loopCount);

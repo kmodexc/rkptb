@@ -15,23 +15,26 @@ DisplayManager::DisplayManager()
 	dt_q.x = 100;
 	dt_q.y = 100;
 	disp.clearStr(dt_q.new_str,DisplayText::STRLEN);
+	disp.clearStr(dt_q.old_str,DisplayText::STRLEN);
 	disp.cpystr(dt_q.new_str,"Menge :");
 	
 	dt_p.drawCharwise = true;
 	dt_p.x = 100;
 	dt_p.y = 150;
 	disp.clearStr(dt_p.new_str,DisplayText::STRLEN);
+	disp.clearStr(dt_p.old_str,DisplayText::STRLEN);
 	disp.cpystr(dt_p.new_str,"Druck :");
 	
 	dt_ps.drawCharwise = true;
 	dt_ps.x = 100;
 	dt_ps.y = 200;
 	disp.clearStr(dt_ps.new_str,DisplayText::STRLEN);
+	disp.clearStr(dt_ps.old_str,DisplayText::STRLEN);
 	disp.cpystr(dt_ps.new_str,"Param :");
 	
 	
 	// init receive buffer
-	for(size_t cnt=0;cnt < 10; cnt++){
+	for(size_t cnt=0;cnt < DISPM_REC_BUFFER_SIZE; cnt++){
 		rec_buffer[cnt] = 0;
 	}
 	// init touch event
@@ -50,10 +53,10 @@ void DisplayManager::initialize()
 	disp.command("#ZF6");
 	disp.command("#DL");
 	
-	//disp.command("#AT10,20,20,25,1,11,qset_mode\0");
-	disp.command("#AT100,300,200,350,2,12,pset",true);
-	//disp.command("#AT300,300,400,250,3,13,qis",true);
-	//disp.command("#AT300,300,40,350,4,14,pis_mode\0");
+	disp.command("#AT100,300,200,350,1,0,qset\x0d");
+	disp.command("#AT100,375,200,425,2,0,pset\x0d");
+	disp.command("#AT300,300,400,350,3,0,qis\x0d");
+	disp.command("#AT300,375,400,425,4,0,pis\x0d");
 }
 
 void DisplayManager::set_q_set(_float val,Unit un)
@@ -107,8 +110,8 @@ TouchEvent DisplayManager::getTouchEvent()
 
 void DisplayManager::readSendBuffer()
 {
-	if(te == nothing && disp.requestBuffer(rec_buffer,5)){
-		switch(rec_buffer[2]){
+	if(te == nothing && disp.requestBuffer(rec_buffer,4)){
+		switch(rec_buffer[3]){
 			case 1:
 			te = q_set_mode_change;
 			break;
@@ -120,6 +123,9 @@ void DisplayManager::readSendBuffer()
 			break;
 			case 4:
 			te = p_is_mode_change;
+			break;
+			default:
+			TRACELN(rec_buffer[3]);
 			break;
 		}
 	}

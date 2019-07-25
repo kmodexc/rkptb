@@ -72,13 +72,13 @@ bool Display::requestBuffer(uint8_t *buffer,size_t size)
 	if(size > 0){
 		send("S",1,DC2);
 		uint8_t* it = buffer;
-		if (Wire.requestFrom(DISPLAY_READ_ADDR, (uint8_t)size) > 0) {
-			if(Wire.read() == 17 && Wire.read()){
+		if (Wire.requestFrom(DISPLAY_READ_ADDR, (uint8_t)(size+3)) > 0) {
+			if(Wire.read() == 17 && Wire.read() != 0){
 				while(Wire.available()){
 					uint8_t val = Wire.read();
-					//if(Serial) Serial.print(val);
-					//if(Serial) Serial.print(' ');
 					if(val == 255) break;
+					TRACE(val);
+					TRACE(' ');
 					*(it++) = val;
 				}
 			}
@@ -87,7 +87,7 @@ bool Display::requestBuffer(uint8_t *buffer,size_t size)
 			}
 		}
 		if(it != buffer){
-			//if(Serial) Serial.println();
+			TRACELN();
 			return true;
 		}
 	}
@@ -123,7 +123,7 @@ void Display::printInt(char* str, int32_t length, int32_t iNum) {
 size_t Display::dynIntToStr(char* str, size_t lenMax, int32_t iNum) {
 	if (lenMax <= 0) return 0;
 	int tmp = iNum;
-	int len = 1;
+	size_t len = 1;
 	if (iNum < 0) {
 		len = 2;
 		str[0] = '-';
@@ -210,31 +210,22 @@ bool Display::text(DisplayText* txt,uint8_t max_redraw_char)
 		return true;
 	}
 	else
-	{
+	{ // draw charwise begin
 		txt->update = false;
 		uint8_t drawn_char_cnt = 0;
 		
-		// delete longer str
-		
-		// check if there is something to delete
-		bool something_to_delete = false;
-		for (uint8_t cnt = len_new_str; cnt < len_old_str && txt->drawn; cnt++) {
-			if(txt->old_str[cnt] != ' '){
-				something_to_delete = true;
-				break;
-			}
-		}
-		if(something_to_delete){
-			if(drawn_char_cnt < max_redraw_char){
-				if(setFontColor(0, 0)){
-					drawn_char_cnt++;
-				}
-			}
-			// delete
+		// delete part
+		if(txt->drawn){
+			// delete longer old str
 			for (uint8_t cnt = len_new_str; cnt < len_old_str && txt->drawn; cnt++)
 			{
 				if(txt->old_str[cnt] != ' ')
 				{
+					if(drawn_char_cnt < max_redraw_char){
+						if(setFontColor(0, 0)){
+							drawn_char_cnt++;
+						}
+					}
 					if(drawn_char_cnt < max_redraw_char)
 					{
 						drawChar(txt->x + (cnt * dx), txt->y, txt->old_str[cnt]);
@@ -246,105 +237,24 @@ bool Display::text(DisplayText* txt,uint8_t max_redraw_char)
 						txt->update = true;
 					}
 				}
+				
 			}
-		}
-		
-		
-		// redraw string part
-		
-		// check if something to draw
-		bool something_to_draw = false;
-		for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++) {
-			if (txt->old_str[cnt] != txt->new_str[cnt]) {
-				something_to_draw = true;
-				break;
-			}
-		}
-		// only do this if there is anything to delete
-		if(something_to_draw){
 			
-			// check with priority these parts to draw where something was deleted
+			// delete existing parts if something to delete
 			for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
 			{
-				if (txt->old_str[cnt] != txt->new_str[cnt] && txt->old_str[cnt] == ' ')
+				if (txt->old_str[cnt] != txt->new_str[cnt] && txt->old_str[cnt] != ' ')
 				{
-					if(drawn_char_cnt < max_redraw_char)
-					{
-						if(setFontColor(8,0)){
-							drawn_char_cnt++;
-						}
-					}
-					else{
-						txt->update = true;
-					}
-					if(drawn_char_cnt < max_redraw_char)
-					{
-						drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
-						txt->old_str[cnt] = txt->new_str[cnt];
-						drawn_char_cnt++;
-					}
-					else{
-						txt->update = true;
-					}
-				}
-			}
-			
-			
-			// delete existing parts
-			if(txt->drawn){
-				// check if something to delete
-				something_to_delete = false;
-				for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
-				{
-					if (txt->old_str[cnt] != txt->new_str[cnt] && txt->old_str[cnt] != ' ')
-					{
-						something_to_delete = true;
-					}
-				}
-				
-				// delete
-				if(something_to_delete){
-					
+					// if already in this color mode nothing will be changed
 					if(drawn_char_cnt < max_redraw_char){
 						if(setFontColor(0, 0)){
 							drawn_char_cnt++;
 						}
 					}
-					
-					for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
-					{
-						if (txt->old_str[cnt] != txt->new_str[cnt] && txt->old_str[cnt] != ' ')
-						{
-							if(drawn_char_cnt < max_redraw_char)
-							{
-								drawChar(txt->x + (cnt * dx), txt->y, txt->old_str[cnt]);
-								txt->old_str[cnt] = ' ';
-								drawn_char_cnt++;
-							}
-							else{
-								txt->update = true;
-							}
-						}
-					}
-				}
-			}
-			
-			// draw
-			
-			if(drawn_char_cnt < max_redraw_char){
-				if(setFontColor(8, 0)){
-					drawn_char_cnt++;
-				}
-			}
-			// draw
-			for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
-			{
-				if (txt->old_str[cnt] != txt->new_str[cnt])
-				{
 					if(drawn_char_cnt < max_redraw_char)
 					{
-						drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
-						txt->old_str[cnt] = txt->new_str[cnt];
+						drawChar(txt->x + (cnt * dx), txt->y, txt->old_str[cnt]);
+						txt->old_str[cnt] = ' ';
 						drawn_char_cnt++;
 					}
 					else{
@@ -352,13 +262,22 @@ bool Display::text(DisplayText* txt,uint8_t max_redraw_char)
 					}
 				}
 			}
-		}
+		} // delete part
 		
 		
-		for (uint8_t cnt = len_old_str; cnt < len_new_str; cnt++)
+		// draw part
+		
+		// draw on overlapping parts
+		for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
 		{
-			if (txt->old_str[cnt] != txt->new_str[cnt])
+			// only draw deleted parts (marked as space)
+			if (txt->old_str[cnt] == ' ' && txt->new_str[cnt] != ' ')
 			{
+				if(drawn_char_cnt < max_redraw_char){
+					if(setFontColor(8, 0)){
+						drawn_char_cnt++;
+					}
+				}
 				if(drawn_char_cnt < max_redraw_char)
 				{
 					drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
@@ -371,16 +290,41 @@ bool Display::text(DisplayText* txt,uint8_t max_redraw_char)
 			}
 		}
 		
+		
+		// draw longer parts new str
+		for (uint8_t cnt = len_old_str; cnt < len_new_str; cnt++)
+		{
+			// only draw deleted parts (marked as space)
+			if (txt->old_str[cnt] == ' ' && txt->new_str[cnt] != ' ')
+			{
+				if(drawn_char_cnt < max_redraw_char){
+					if(setFontColor(8, 0)){
+						drawn_char_cnt++;
+					}
+				}
+				if(drawn_char_cnt < max_redraw_char)
+				{
+					drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
+					txt->old_str[cnt] = txt->new_str[cnt];
+					drawn_char_cnt++;
+				}
+				else{
+					txt->update = true;
+				}
+			}
+		}
+		
+		// end draw part
+		
+		// set return values depend on if something was drawn
 		if(drawn_char_cnt > 0){
 			return true;
 		}
 		else{
 			return false;
 		}
-	}
-
-	
-}
+	} // end charwise draw
+} // end text fuction
 
 void Display::drawChar(int x, int y, char c) {
 	char* writ = wr_buf;
