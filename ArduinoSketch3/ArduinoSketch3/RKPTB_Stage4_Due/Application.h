@@ -5,7 +5,7 @@
 #include <Wire.h>
 #include "ControlledOutput.h"
 #include "Measurement.h"
-#include "Display.h"
+#include "DisplayManager.h"
 
 #include "pindefs.h"
 
@@ -19,24 +19,7 @@ class Application{
 	CControlledOutput p_set;
 	CControlledOutput parSet;
 
-	CKey keyDispMode;
-
-	Display disp;
-
-	DisplayText stat;
-
-	DisplayText p_setVal;
-	DisplayText p_setMode;
-	DisplayText p_isVal;
-	DisplayText p_isMode;
-	
-	DisplayText q_setVal;
-	DisplayText q_setMode;
-	DisplayText q_isVal;
-	DisplayText q_isMode;
-	
-	DisplayText ps_setVal;
-	DisplayText ps_isVal;
+	DisplayManager disp_man;
 
 	public:
 	Application();

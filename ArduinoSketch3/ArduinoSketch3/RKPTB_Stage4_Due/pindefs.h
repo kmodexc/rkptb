@@ -18,5 +18,8 @@ const char STR_PS_SET[] = "Param";
 const char STR_P_IS[] = "Pist";
 const char STR_Q_IS[] = "Qist";
 
+#define TRACE(x) if(Serial)Serial.print(x)
+#define TRACELN(x) if(Serial)Serial.println(x)
+
 
 #endif
