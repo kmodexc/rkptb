@@ -67,27 +67,32 @@ void Application::loop(unsigned long loopCount) {
 		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
 		break;
 		
-		case p_is_mode_change:
+		case ps_val_1:
+		parSet.setSetVal(_float::direct(100));
 		break;
-		
-		case p_is_mode_change:
-		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		case ps_val_2:
+		parSet.setSetVal(_float::direct(200));
 		break;
-		
-		case p_is_mode_change:
-		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		case ps_val_3:
+		parSet.setSetVal(_float::direct(300));
 		break;
-		
-		case p_is_mode_change:
-		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		case ps_val_4:
+		parSet.setSetVal(_float::direct(400));
 		break;
-		
-		case p_is_mode_change:
-		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		case ps_val_5:
+		parSet.setSetVal(_float::direct(500));
 		break;
-		
-		case p_is_mode_change:
-		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		case ps_val_6:
+		parSet.setSetVal(_float::direct(600));
+		break;
+		case ps_val_7:
+		parSet.setSetVal(_float::direct(700));
+		break;
+		case ps_val_8:
+		parSet.setSetVal(_float::direct(800));
+		break;
+		case ps_val_9:
+		parSet.setSetVal(_float::direct(900));
 		break;
 		
 		default:

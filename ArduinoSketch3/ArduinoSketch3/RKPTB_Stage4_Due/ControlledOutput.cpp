@@ -32,6 +32,9 @@ void CControlledOutput::begin()
 	mIsModeSwitch.begin();
 	mSetSwitchVal.begin();
 	setIsMode(this->mIsMode);
+	if(mSetSwitchVal.aktive()){
+		setSetVal(_float::direct(0));
+	}
 }
 
 ControlledPinMode CControlledOutput::getSetMode() const
@@ -125,23 +128,26 @@ _float CControlledOutput::getIsI() const
 	return f;
 }
 
+void CControlledOutput::setSetVal(_float val)
+{
+	if (mSetMode == Voltage){
+		val *= 325;
+	}
+	else {
+		val *= 210;
+		val += 500;
+	}
+	analogWrite(mPinSetOut, val.getData() / 100);
+}
+
 void CControlledOutput::update()
 {
 	//Setze den Sollwert für Ausgang
 	if (!mSetSwitchVal.aktive() || mSetSwitchVal.wasPressed()) {
-		_float f = getSetValIn();
-		if (mSetMode == Voltage){
-			f *= 325;
-		}
-		else {
-			f *= 210;
-			f += 500;
-		}
-		analogWrite(mPinSetOut, f.getData() / 100);
+		setSetVal(getSetValIn());
 	}
+	// update mode switch
 	if (mSetModeSwitch.wasPressed())setSetMode(mSetMode == Voltage ? Current : Voltage);
-
-	//set Measurement Resistance in case of Mode change
 	if (mIsModeSwitch.wasPressed())setIsMode(mIsMode == Voltage ? Current : Voltage);
 }
 
