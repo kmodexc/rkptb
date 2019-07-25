@@ -26,7 +26,18 @@ enum TouchEvent{
 	q_is_mode_change,
 	p_set_mode_change,
 	p_is_mode_change,
-	ps_switch_val
+	ps_switch_val,
+	
+	ps_val_1,
+	ps_val_2,
+	ps_val_3,
+	ps_val_4,
+	ps_val_5,
+	ps_val_6,
+	ps_val_7,
+	ps_val_8,
+	ps_val_9
+	
 };
 
 

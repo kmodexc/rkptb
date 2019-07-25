@@ -57,6 +57,20 @@ void DisplayManager::initialize()
 	disp.command("#AT100,375,200,425,2,0,pset\x0d");
 	disp.command("#AT300,300,400,350,3,0,qis\x0d");
 	disp.command("#AT300,375,400,425,4,0,pis\x0d");
+	
+	
+	disp.command("#AT450,300,500,350,11,0,ps1\x0d");
+	disp.command("#AT525,300,575,350,12,0,ps2\x0d");
+	disp.command("#AT600,300,650,350,13,0,ps3\x0d");
+	
+	disp.command("#AT450,375,500,425,14,0,ps4\x0d");
+	disp.command("#AT525,375,575,425,15,0,ps5\x0d");
+	disp.command("#AT600,375,650,425,16,0,ps6\x0d");
+	
+	disp.command("#AT450,450,500,500,17,0,ps7\x0d");
+	disp.command("#AT525,450,575,500,18,0,ps8\x0d");
+	disp.command("#AT600,450,650,500,19,0,ps9\x0d");
+	
 }
 
 void DisplayManager::set_q_set(_float val,Unit un)
@@ -124,6 +138,36 @@ void DisplayManager::readSendBuffer()
 			case 4:
 			te = p_is_mode_change;
 			break;
+			
+			case 11:
+			te = ps_val_1;
+			break;
+			case 12:
+			te = ps_val_2;
+			break;
+			case 13:
+			te = ps_val_3;
+			break;
+			case 14:
+			te = ps_val_4;
+			break;
+			case 15:
+			te = ps_val_5;
+			break;
+			case 16:
+			te = ps_val_6;
+			break;
+			case 17:
+			te = ps_val_7;
+			break;
+			case 18:
+			te = ps_val_8;
+			break;
+			case 19:
+			te = ps_val_9;
+			break;
+			
+			
 			default:
 			TRACELN(rec_buffer[3]);
 			break;
