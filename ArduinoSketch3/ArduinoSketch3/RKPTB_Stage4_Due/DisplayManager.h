@@ -36,8 +36,11 @@ enum TouchEvent{
 	ps_val_6,
 	ps_val_7,
 	ps_val_8,
-	ps_val_9
+	ps_val_9,
 	
+	bar_graph_p,
+	bar_graph_q,
+	bar_graph_ps
 };
 
 
@@ -61,6 +64,7 @@ class DisplayManager
 	
 	// receive buffer touch events
 	TouchEvent te;
+	uint8_t barval;
 
 	//functions
 	public:
@@ -83,6 +87,7 @@ class DisplayManager
 	
 	// request function for touch events
 	TouchEvent getTouchEvent();
+	uint8_t getBarValue();
 	
 	// function to read and interpret the send buffer
 	void readSendBuffer();	

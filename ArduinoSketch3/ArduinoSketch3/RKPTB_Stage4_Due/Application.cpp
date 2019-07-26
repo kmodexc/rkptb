@@ -33,24 +33,14 @@ void Application::initialize() {
 }
 
 void Application::loop(unsigned long loopCount) {
-	// update Values of output
-	q_set.update();
-	p_set.update();
-	parSet.update();
 
 	//bool error = !digitalRead(PIN_ERROR);
 	//bool mrel = !digitalRead(PIN_RELEASE);
 	
-	disp_man.set_q_set(q_set.getSetVal(),(Unit)q_set.getSetMode());
-	
-	disp_man.set_q_is(q_set.getIsVal(),(Unit)q_set.getIsMode());
-	
-	disp_man.set_p_set(p_set.getSetVal(),(Unit)p_set.getSetMode());
-	
-	disp_man.set_p_is(p_set.getIsVal(),(Unit)p_set.getIsMode());
-	
-	disp_man.set_ps_pre_set(parSet.getSetValIn(),(Unit)parSet.getSetMode());
-	
+	disp_man.set_q_set(q_set.getSetVal(),(Unit)q_set.getSetMode());	
+	disp_man.set_q_is(q_set.getIsVal(),(Unit)q_set.getIsMode());	
+	disp_man.set_p_set(p_set.getSetVal(),(Unit)p_set.getSetMode());	
+	disp_man.set_p_is(p_set.getIsVal(),(Unit)p_set.getIsMode());	
 	disp_man.set_ps_set(parSet.getSetVal(),(Unit)parSet.getSetMode());
 	
 	switch(disp_man.getTouchEvent()){
@@ -93,6 +83,16 @@ void Application::loop(unsigned long loopCount) {
 		break;
 		case ps_val_9:
 		parSet.setSetVal(_float::direct(900));
+		break;
+		
+		case bar_graph_q:
+		q_set.setSetVal(_float::direct(11*disp_man.getBarValue()));
+		break;
+		case bar_graph_p:
+		p_set.setSetVal(_float::direct(11*disp_man.getBarValue()));
+		break;
+		case bar_graph_ps:
+		parSet.setSetVal(_float::direct(11*disp_man.getBarValue()));
 		break;
 		
 		default:
