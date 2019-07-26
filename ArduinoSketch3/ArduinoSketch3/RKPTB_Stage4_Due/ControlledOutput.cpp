@@ -32,9 +32,7 @@ void CControlledOutput::begin()
 	mIsModeSwitch.begin();
 	mSetSwitchVal.begin();
 	setIsMode(this->mIsMode);
-	if(mSetSwitchVal.aktive()){
-		setSetVal(_float::direct(0));
-	}
+	setSetVal(_float::direct(0));
 }
 
 ControlledPinMode CControlledOutput::getSetMode() const

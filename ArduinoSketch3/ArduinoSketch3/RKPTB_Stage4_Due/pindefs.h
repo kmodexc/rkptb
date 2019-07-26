@@ -11,6 +11,7 @@ const uint8_t LF = 10;
 const uint8_t CR = 13;
 const uint8_t DC1 = 0x11;
 const uint8_t DC2 = 0x12;
+const uint8_t BIN_ESC = 27;
 
 const char STR_P_SET[] = "Psoll";
 const char STR_Q_SET[] = "Qsoll";

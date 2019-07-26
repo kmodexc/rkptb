@@ -49,27 +49,49 @@ DisplayManager::~DisplayManager()
 void DisplayManager::initialize()
 {
 	disp.initialize();
-	disp.command("#TA");
-	disp.command("#ZF6");
-	disp.command("#DL");
-	
-	disp.command("#AT100,300,200,350,1,0,qset\x0d");
-	disp.command("#AT100,375,200,425,2,0,pset\x0d");
-	disp.command("#AT300,300,400,350,3,0,qis\x0d");
-	disp.command("#AT300,375,400,425,4,0,pis\x0d");
 	
 	
-	disp.command("#AT450,250,500,300,11,0,ps1\x0d");
-	disp.command("#AT525,250,575,300,12,0,ps2\x0d");
-	disp.command("#AT600,250,650,300,13,0,ps3\x0d");
+	// display settings
 	
-	disp.command("#AT450,325,500,375,14,0,ps4\x0d");
-	disp.command("#AT525,325,575,375,15,0,ps5\x0d");
-	disp.command("#AT600,325,650,375,16,0,ps6\x0d");
+	disp.command("#TA");	// terminal off
+	disp.command("#ZF6");	// text font (6)
+	disp.command("#DL");	// clear display
+	disp.command("#AQ1,");	// send bar graph value after each setting
 	
-	disp.command("#AT450,400,500,450,17,0,ps7\x0d");
-	disp.command("#AT525,400,575,450,18,0,ps8\x0d");
-	disp.command("#AT600,400,650,450,19,0,ps9\x0d");
+	
+	// measurement mode switch buttons
+	
+	disp.command("#FE0,0,0,0,0,0,");	// make colorless buttons
+	disp.command("#AT420,100,460,120,1,0,\x0d");
+	disp.command("#AT420,150,460,170,2,0,\x0d");
+	disp.command("#AT620,100,660,120,3,0,\x0d");
+	disp.command("#AT620,150,660,170,4,0,\x0d");
+		
+	
+	// bar graphs
+	
+	disp.command("#BF6,");	// Bar graph font
+	
+	// bar graph q
+	disp.command("#BR1,100,250,750,300,0,100,5,");
+	disp.command("#BX1,90,260,0=0.0;100=11.0\x0d");
+	disp.command("#BA1,0,");
+	disp.command("#AB1,");
+	disp.command("#ZL0,260,Q\x0d");
+	
+	// bar graph p
+	disp.command("#BR2,100,320,750,370,0,100,5,");
+	disp.command("#BX2,90,330,0=0.0;100=11.0\x0d");
+	disp.command("#BA2,0,");
+	disp.command("#AB2,");
+	disp.command("#ZL0,330,P\x0d");
+	
+	// bar graph ps
+	disp.command("#BR3,100,390,750,440,0,100,5,");
+	disp.command("#BX3,90,400,0=0.0;100=11.0\x0d");
+	disp.command("#BA3,0,");
+	disp.command("#AB3,");
+	disp.command("#ZL0,400,PS\x0d");	
 	
 }
 
@@ -122,55 +144,82 @@ TouchEvent DisplayManager::getTouchEvent()
 	return ret_ev;
 }
 
+uint8_t DisplayManager::getBarValue()
+{
+	return barval;
+}
+
 void DisplayManager::readSendBuffer()
 {
-	if(te == nothing && disp.requestBuffer(rec_buffer,4)){
-		switch(rec_buffer[3]){
-			case 1:
-			te = q_set_mode_change;
-			break;
-			case 2:
-			te = p_set_mode_change;
-			break;
-			case 3:
-			te = q_is_mode_change;
-			break;
-			case 4:
-			te = p_is_mode_change;
-			break;
-			
-			case 11:
-			te = ps_val_1;
-			break;
-			case 12:
-			te = ps_val_2;
-			break;
-			case 13:
-			te = ps_val_3;
-			break;
-			case 14:
-			te = ps_val_4;
-			break;
-			case 15:
-			te = ps_val_5;
-			break;
-			case 16:
-			te = ps_val_6;
-			break;
-			case 17:
-			te = ps_val_7;
-			break;
-			case 18:
-			te = ps_val_8;
-			break;
-			case 19:
-			te = ps_val_9;
-			break;
-			
-			
-			default:
-			TRACELN(rec_buffer[3]);
-			break;
+	// wait until prev message was pulled
+	if(te == nothing && disp.requestBuffer(rec_buffer,5)){
+		
+		// touch button response
+		if(rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'A' && rec_buffer[2] == 1){
+			switch(rec_buffer[3]){
+				case 1:
+				te = q_set_mode_change;
+				break;
+				case 2:
+				te = p_set_mode_change;
+				break;
+				case 3:
+				te = q_is_mode_change;
+				break;
+				case 4:
+				te = p_is_mode_change;
+				break;
+				
+				case 11:
+				te = ps_val_1;
+				break;
+				case 12:
+				te = ps_val_2;
+				break;
+				case 13:
+				te = ps_val_3;
+				break;
+				case 14:
+				te = ps_val_4;
+				break;
+				case 15:
+				te = ps_val_5;
+				break;
+				case 16:
+				te = ps_val_6;
+				break;
+				case 17:
+				te = ps_val_7;
+				break;
+				case 18:
+				te = ps_val_8;
+				break;
+				case 19:
+				te = ps_val_9;
+				break;
+				
+				
+				default:
+				TRACELN(rec_buffer[3]);
+				break;
+			}
+		}
+		
+		if(rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'B' && rec_buffer[2] == 2){
+			barval = rec_buffer[4];
+			switch(rec_buffer[3]){
+				case 2:
+				te = bar_graph_q;
+				break;
+				case 3:
+				te = bar_graph_p;
+				break;
+				case 4:
+				te = bar_graph_ps;
+				break;
+				default:
+				break;
+			}			
 		}
 	}
 }
@@ -181,17 +230,20 @@ void DisplayManager::loop(uint64_t loopCount)
 	
 	if(!drawn_this_iter && ((loopCount/5) % 4) == 0){
 		drawn_this_iter = disp.text(&dt_q,1);
+		drawn_this_iter = true;
 	}
 	
 	if(!drawn_this_iter && (((loopCount/5) + 1) % 4) == 0){
 		drawn_this_iter = disp.text(&dt_p,1);
+		drawn_this_iter = true;
 	}
 	
 	if(!drawn_this_iter && (((loopCount/5) + 2) % 4) == 0){
 		drawn_this_iter = disp.text(&dt_ps,1);
+		drawn_this_iter = true;
 	}
 	
-	if(!drawn_this_iter && (loopCount % 10) == 0){
+	if(!drawn_this_iter && (loopCount % 3) == 0){
 		drawn_this_iter = true;
 		readSendBuffer();
 	}
