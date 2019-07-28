@@ -54,44 +54,74 @@ void DisplayManager::initialize()
 	// display settings
 	
 	disp.command("#TA");	// terminal off
-	disp.command("#ZF6");	// text font (6)
+	disp.command("#ZF6,");	// text font (6)
 	disp.command("#DL");	// clear display
 	disp.command("#AQ1,");	// send bar graph value after each setting
-	
+	disp.flush();
 	
 	// measurement mode switch buttons
 	
 	disp.command("#FE0,0,0,0,0,0,");	// make colorless buttons
+	disp.flush();
 	disp.command("#AT420,100,460,120,1,0,\x0d");
+	disp.flush();
 	disp.command("#AT420,150,460,170,2,0,\x0d");
+	disp.flush();
 	disp.command("#AT620,100,660,120,3,0,\x0d");
+	disp.flush();
 	disp.command("#AT620,150,660,170,4,0,\x0d");
-		
+	disp.flush();
+	
 	
 	// bar graphs
 	
 	disp.command("#BF6,");	// Bar graph font
+	disp.flush();
 	
 	// bar graph q
 	disp.command("#BR1,100,250,750,300,0,100,5,");
+	disp.flush();
 	disp.command("#BX1,90,260,0=0.0;100=11.0\x0d");
+	disp.flush();
 	disp.command("#BA1,0,");
+	disp.flush();
 	disp.command("#AB1,");
+	disp.flush();
 	disp.command("#ZL0,260,Q\x0d");
+	disp.flush();
+	
+	// send loop to flush buffer
+	//disp.loop(0);
 	
 	// bar graph p
 	disp.command("#BR2,100,320,750,370,0,100,5,");
+	disp.flush();
 	disp.command("#BX2,90,330,0=0.0;100=11.0\x0d");
+	disp.flush();
 	disp.command("#BA2,0,");
+	disp.flush();
 	disp.command("#AB2,");
+	disp.flush();
 	disp.command("#ZL0,330,P\x0d");
+	disp.flush();
+	
+	// send loop to flush buffer
+	//disp.loop(0);
 	
 	// bar graph ps
 	disp.command("#BR3,100,390,750,440,0,100,5,");
+	disp.flush();
 	disp.command("#BX3,90,400,0=0.0;100=11.0\x0d");
+	disp.flush();
 	disp.command("#BA3,0,");
+	disp.flush();
 	disp.command("#AB3,");
-	disp.command("#ZL0,400,PS\x0d");	
+	disp.flush();
+	disp.command("#ZL0,400,PS\x0d");
+	disp.flush();	
+	
+	// send loop to flush buffer
+	//disp.loop(0);
 	
 }
 
@@ -229,18 +259,15 @@ void DisplayManager::loop(uint64_t loopCount)
 	bool drawn_this_iter = false;
 	
 	if(!drawn_this_iter && ((loopCount/5) % 4) == 0){
-		drawn_this_iter = disp.text(&dt_q,1);
-		drawn_this_iter = true;
+		drawn_this_iter = disp.text(&dt_q,2);
 	}
 	
 	if(!drawn_this_iter && (((loopCount/5) + 1) % 4) == 0){
-		drawn_this_iter = disp.text(&dt_p,1);
-		drawn_this_iter = true;
+		drawn_this_iter = disp.text(&dt_p,2);
 	}
 	
 	if(!drawn_this_iter && (((loopCount/5) + 2) % 4) == 0){
-		drawn_this_iter = disp.text(&dt_ps,1);
-		drawn_this_iter = true;
+		drawn_this_iter = disp.text(&dt_ps,2);
 	}
 	
 	if(!drawn_this_iter && (((loopCount/5) + 3) % 4) == 0 && ((loopCount % 5) == 0)){
