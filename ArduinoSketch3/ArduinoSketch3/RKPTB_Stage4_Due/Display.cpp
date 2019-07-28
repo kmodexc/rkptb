@@ -4,17 +4,28 @@
 #include "Application.h"
 
 void Display::initialize() {
+	send_buf_next = send_buf;
 	Wire.begin();
 	delay(100);
 	Serial.begin(9600);
 }
 
 void Display::loop(unsigned long loopCount) {
+	flush();
+}
 
+bool Display::flush()
+{
+	if(intern_send_buf(send_buf,send_buf_next-send_buf,DC1)){
+		clearStr((char*)send_buf,SEND_BUF_LEN);
+		send_buf_next = send_buf;
+		return true;
+	}
+	return false;
 }
 
 void Display::clearStr(char* str, size_t len) {
-	if (str == 0 || len <= 0 || len > 100) {
+	if (str == 0 || len <= 0) {
 		return;
 	}
 	char* it_end = str + len;
@@ -35,36 +46,14 @@ void Display::send(char* str, size_t len) {
 }
 
 void Display::send(char* str, size_t len, uint8_t control) {
-	if (len <= 0) return;
-	//if (Serial) Serial.println(str);
-	uint8_t fb = NAK;
-	do {
-		uint8_t bcc = control;
-		Wire.beginTransmission(DISPLAY_WRITE_ADDR);
-		Wire.write(control); //DC1
-		Wire.write(len);  //DataLength
-		bcc += len;
-		for (char *it = str; it != str + len; it++) {
-			Wire.write((uint8_t)(*it));
-			bcc += (uint8_t)(*it);
+	if(control == DC1 && ((send_buf_next - send_buf) + len) < SEND_BUF_LEN){
+		for(char* it = str; it < (str+len) ; it++){
+			*(send_buf_next++) = (uint8_t)(*it);
 		}
-		Wire.write(bcc);
-		Wire.endTransmission();
-
-		if (Wire.requestFrom(DISPLAY_READ_ADDR, (uint8_t)1) > 0) {
-			fb = Wire.read();
-		}
-		if (fb == NAK) {
-			delay(100);
-		}
-		if (Serial) {
-			//Serial.print("fb = ");
-			//Serial.println(fb);
-		}
-
-	} while (fb == NAK);
-
-	clearStr(str, len);
+	}
+	else{
+		intern_send_buf((uint8_t*)str,len,control);
+	}
 }
 
 bool Display::requestBuffer(uint8_t *buffer,size_t size)
@@ -144,17 +133,17 @@ void Display::command(char* cmd) {
 
 void Display::command(char* cmd,bool extra_null) {
 	char* it = cmd;
-	char* wr_it = wr_buf;
+	char* wr_it = tmp_buf;
 	while (*(it) != 0) {
 		*(wr_it++) = *(it++);
 	}
-	send(wr_buf, (wr_it - wr_buf) + (extra_null ? 1 : 0));
+	send(tmp_buf, (wr_it - tmp_buf) + (extra_null ? 1 : 0));
 }
 
 bool Display::text(int x, int y, char* txt) {
 	//clearRect(x,y,x+250,y+25);
 
-	char* writ = wr_buf;
+	char* writ = tmp_buf;
 	*(writ++) = '#';
 	*(writ++) = 'Z';
 	*(writ++) = 'L';
@@ -162,11 +151,11 @@ bool Display::text(int x, int y, char* txt) {
 	*(writ++) = ',';
 	writ += dynIntToStr(writ, 4, y);
 	*(writ++) = ',';
-	for (char* it = txt; *it != 0 && writ < (wr_buf + WR_BUF_LEN - 3 - 69); it++) {
+	for (char* it = txt; *it != 0 && writ < (tmp_buf + WR_BUF_LEN - 3 - 69); it++) {
 		*(writ++) = *it;
 	}
 	*(writ++) = 0;
-	send(wr_buf, writ - wr_buf);
+	send(tmp_buf, writ - tmp_buf);
 	
 	return true;
 }
@@ -327,7 +316,7 @@ bool Display::text(DisplayText* txt,uint8_t max_redraw_char)
 } // end text fuction
 
 void Display::drawChar(int x, int y, char c) {
-	char* writ = wr_buf;
+	char* writ = tmp_buf;
 	*(writ++) = '#';
 	*(writ++) = 'Z';
 	*(writ++) = 'L';
@@ -337,7 +326,7 @@ void Display::drawChar(int x, int y, char c) {
 	*(writ++) = ',';
 	*(writ++) = c;
 	*(writ++) = 0;
-	send(wr_buf, writ - wr_buf);
+	send(tmp_buf, writ - tmp_buf);
 }
 
 void Display::dispNumber(DisplayFloat* num)
@@ -370,7 +359,7 @@ void Display::cpystr(char* dest, const char* src) {
 }
 
 void Display::clearRect(size_t x0, size_t y0, size_t x1, size_t y1) {
-	char* writ = wr_buf;
+	char* writ = tmp_buf;
 	*(writ++) = '#';
 	*(writ++) = 'R';
 	*(writ++) = 'L';
@@ -382,12 +371,12 @@ void Display::clearRect(size_t x0, size_t y0, size_t x1, size_t y1) {
 	*(writ++) = ',';
 	writ += dynIntToStr(writ, 4, y1);
 	*(writ++) = ',';
-	send(wr_buf, writ - wr_buf);
+	send(tmp_buf, writ - tmp_buf);
 }
 
 bool Display::setFontColor(uint8_t vf, uint8_t hf) {
 	if(font_color_fg != vf || font_color_bg != hf){
-		char* writ = wr_buf;
+		char* writ = tmp_buf;
 		*(writ++) = '#';
 		*(writ++) = 'F';
 		*(writ++) = 'Z';
@@ -395,7 +384,7 @@ bool Display::setFontColor(uint8_t vf, uint8_t hf) {
 		*(writ++) = ',';
 		writ += dynIntToStr(writ, 1, hf);
 		*(writ++) = ',';
-		send(wr_buf, writ - wr_buf);
+		send(tmp_buf, writ - tmp_buf);
 		font_color_bg = hf;
 		font_color_fg = vf;
 		return true;
@@ -403,5 +392,46 @@ bool Display::setFontColor(uint8_t vf, uint8_t hf) {
 	return false;
 }
 
+
+bool Display::intern_send_buf(uint8_t* buf,uint8_t len,uint8_t control)
+{
+	if (len <= 0) return false;
+	uint8_t fb = NAK;
+	do {
+		uint8_t bcc = control;
+		Wire.beginTransmission(DISPLAY_WRITE_ADDR);
+		Wire.write(control); //DC1
+		Wire.write(len);  //DataLength
+		bcc += len;
+		for (uint8_t *it = buf; it != buf + len; it++) {
+			Wire.write(*it);
+			bcc += *it;
+		}
+		Wire.write(bcc);
+		Wire.endTransmission();
+		
+		delay(1);
+
+		if (Wire.requestFrom(DISPLAY_READ_ADDR, (uint8_t)1) > 0) {
+			fb = Wire.read();
+		}
+		
+		if (fb == NAK) {
+			delay(100);
+			if (Serial) {
+				for(uint8_t* it = buf;it<buf+len;it++){
+					Serial.print(*it);
+					Serial.print(' ');
+				}
+				Serial.print("  fb = ");
+				Serial.println(fb);
+			}
+		}
+		
+
+	} while (fb != ACK);
+	
+	return true;
+}
 
 #endif
