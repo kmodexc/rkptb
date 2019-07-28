@@ -67,7 +67,7 @@ void Display::send(char* str, size_t len, uint8_t control) {
 		}
 		
 
-	} while (fb == NAK);
+	} while (fb != ACK);
 }
 
 bool Display::requestBuffer(uint8_t *buffer,size_t size)
