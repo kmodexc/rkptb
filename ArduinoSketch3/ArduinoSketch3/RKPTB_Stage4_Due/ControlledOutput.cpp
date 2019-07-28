@@ -248,7 +248,7 @@ void CControlledOutput::printInt(char* str, int32_t length, int32_t iNum) {
 }
 uint32_t CControlledOutput::stab_ana_read(int32_t pin) {
 	uint64_t sum = 0;
-	const long valCount = 1 << 7;
+	const long valCount = 1 << 8;
 	for (long cnt = 0; cnt < valCount; cnt++) {
 		sum += analogRead(pin);
 	}

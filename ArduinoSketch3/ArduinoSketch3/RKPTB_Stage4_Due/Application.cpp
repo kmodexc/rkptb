@@ -100,5 +100,7 @@ void Application::loop(unsigned long loopCount) {
 	}
 	
 	disp_man.loop(loopCount);
+	
+	delay(1);
 }
 #endif

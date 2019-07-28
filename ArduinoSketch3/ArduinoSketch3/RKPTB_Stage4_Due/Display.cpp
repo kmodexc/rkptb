@@ -36,7 +36,7 @@ void Display::send(char* str, size_t len) {
 
 void Display::send(char* str, size_t len, uint8_t control) {
 	if (len <= 0) return;
-	//if (Serial) Serial.println(str);
+	if (Serial) Serial.println(str);
 	uint8_t fb = NAK;
 	do {
 		uint8_t bcc = control;
@@ -50,21 +50,24 @@ void Display::send(char* str, size_t len, uint8_t control) {
 		}
 		Wire.write(bcc);
 		Wire.endTransmission();
+		
+		delay(1);
 
 		if (Wire.requestFrom(DISPLAY_READ_ADDR, (uint8_t)1) > 0) {
 			fb = Wire.read();
 		}
+		
+		if (Serial) {
+			Serial.print("fb = ");
+			Serial.println(fb);
+		}
+		
 		if (fb == NAK) {
 			delay(100);
 		}
-		if (Serial) {
-			//Serial.print("fb = ");
-			//Serial.println(fb);
-		}
+		
 
-	} while (fb == NAK);
-
-	clearStr(str, len);
+	} while (false && fb == NAK);
 }
 
 bool Display::requestBuffer(uint8_t *buffer,size_t size)

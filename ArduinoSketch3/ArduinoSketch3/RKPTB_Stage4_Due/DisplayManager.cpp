@@ -243,7 +243,7 @@ void DisplayManager::loop(uint64_t loopCount)
 		drawn_this_iter = true;
 	}
 	
-	if(!drawn_this_iter && (loopCount % 3) == 0){
+	if(!drawn_this_iter && (((loopCount/5) + 3) % 4) == 0 && ((loopCount % 5) == 0)){
 		drawn_this_iter = true;
 		readSendBuffer();
 	}
