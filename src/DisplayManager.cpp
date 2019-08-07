@@ -90,7 +90,7 @@ void DisplayManager::loop(uint64_t loopCount)
 
 	disp.loop(loopCount);
 
-	if (loopCount % 100 == 0)
+	if (loopCount % 10 == 0)
 	{
 		// process events
 		TouchEvent ev = activePage->getTouchEvent();
