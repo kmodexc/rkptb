@@ -1,9 +1,17 @@
 #include <Arduino.h>
 
+#include "Application.h"
+
+Application app;
+
+uint64_t lc;
+
 void setup() {
-  // put your setup code here, to run once:
+  app.initialize();
+  lc = 0;
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
+  app.loop(lc);
+  lc++;
 }
