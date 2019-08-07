@@ -1,1 +1,7 @@
-
+.pio
+.vscode
+lib
+test
+.travis.yml
+platformio.ini
+include/README
