@@ -125,6 +125,10 @@ void Page::readSendBuffer(Graphics *pgr)
 			case 30:
 				touchEvent = menu_page_back;
 				break;
+			case 31:
+				touchEvent = precision_toggle;
+				break;
+
 
 			default:
 				TRACELN(rec_buffer[3]);

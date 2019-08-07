@@ -20,6 +20,9 @@ class MainPage : public Page
 	uint8_t q_val;
 	uint8_t p_val;
 	uint8_t ps_val;
+
+	// digits before comma
+	uint8_t dig_bef_com;
 	
 	//functions
 	public:
@@ -42,8 +45,12 @@ class MainPage : public Page
 	void set_ps_set(_float val,Unit un);
 
 	virtual TouchEvent getTouchEvent() override;
-	virtual uint8_t getTouchValue() override;	
-	
+	virtual uint8_t getTouchValue() override;
+
+	void setDigBefCom(uint8_t);	
+	uint8_t getDigBefCom();
+
+
 	// Update loop
 	void loop(uint64_t loopCount,Graphics*);
 	

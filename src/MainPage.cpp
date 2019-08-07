@@ -3,6 +3,8 @@
 // default constructor
 MainPage::MainPage()
 {
+	dig_bef_com = 1;
+
 	dt_q.drawCharwise = true;
 	dt_q.x = 100;
 	dt_q.y = 100;
@@ -113,42 +115,42 @@ void MainPage::repaint(Graphics *pg)
 
 void MainPage::set_q_set(_float val, Unit un)
 {
-	val.print(dt_q.new_str + 10);
+	val.print(dt_q.new_str + 10,dig_bef_com);
 	rkp::unit_print(dt_q.new_str + 16, un);
 	dt_q.update = true;
 }
 
 void MainPage::set_q_is(_float val, Unit un)
 {
-	val.print(dt_q.new_str + 20);
+	val.print(dt_q.new_str + 20,dig_bef_com);
 	rkp::unit_print(dt_q.new_str + 26, un);
 	dt_q.update = true;
 }
 
 void MainPage::set_p_set(_float val, Unit un)
 {
-	val.print(dt_p.new_str + 10);
+	val.print(dt_p.new_str + 10,dig_bef_com);
 	rkp::unit_print(dt_p.new_str + 16, un);
 	dt_p.update = true;
 }
 
 void MainPage::set_p_is(_float val, Unit un)
 {
-	val.print(dt_p.new_str + 20);
+	val.print(dt_p.new_str + 20,dig_bef_com);
 	rkp::unit_print(dt_p.new_str + 26, un);
 	dt_p.update = true;
 }
 
 void MainPage::set_ps_pre_set(_float val, Unit un)
 {
-	val.print(dt_ps.new_str + 20);
+	val.print(dt_ps.new_str + 20,dig_bef_com);
 	rkp::unit_print(dt_ps.new_str + 26, un);
 	dt_ps.update = true;
 }
 
 void MainPage::set_ps_set(_float val, Unit un)
 {
-	val.print(dt_ps.new_str + 10);
+	val.print(dt_ps.new_str + 10,dig_bef_com);
 	rkp::unit_print(dt_ps.new_str + 16, un);
 	dt_ps.update = true;
 }
@@ -169,6 +171,22 @@ TouchEvent MainPage::getTouchEvent()
 uint8_t MainPage::getTouchValue()
 {
 	return Page::getTouchValue();	
+}
+
+void MainPage::setDigBefCom(uint8_t dbc){
+	dig_bef_com = dbc;
+	if(dig_bef_com == 1){
+		dt_q.new_str[14] = ' ';
+		dt_p.new_str[14] = ' ';
+		dt_ps.new_str[14] = ' ';
+		dt_q.new_str[24] = ' ';
+		dt_p.new_str[24] = ' ';
+		dt_ps.new_str[24] = ' ';
+	}
+}
+
+uint8_t MainPage::getDigBefCom(){
+	return dig_bef_com;
 }
 
 void MainPage::loop(uint64_t loopCount, Graphics *pg)

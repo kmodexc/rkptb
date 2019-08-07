@@ -3,34 +3,36 @@
 
 #include "Arduino.h"
 
-class _float{
+class _float
+{
 	//public:
-		int64_t data;
-	public:
-		_float();
-		_float(int32_t i);
-    _float(uint32_t i);
-		_float(float f);
-		_float& operator+=(_float& f);
-    _float& operator+=(int f);
-		_float& operator-=(_float& f);
-		_float& operator*=(float);
-    _float& operator*=(int32_t);
-    _float& operator*=(int);
-		_float& operator/=(float);
-    _float& operator/=(int32_t);
-    _float& operator/=(int);
-		_float& operator=(_float& f);
-		_float& operator=(float f);
-		_float& operator=(int32_t f);
-    _float& operator=(uint32_t f);
+	int64_t data;
 
-		void print(char* str);
+public:
+	_float();
+	_float(int32_t i);
+	_float(uint32_t i);
+	_float(float f);
+	_float &operator+=(_float &f);
+	_float &operator+=(int f);
+	_float &operator-=(_float &f);
+	_float &operator*=(float);
+	_float &operator*=(int32_t);
+	_float &operator*=(int);
+	_float &operator/=(float);
+	_float &operator/=(int32_t);
+	_float &operator/=(int);
+	_float &operator=(_float &f);
+	_float &operator=(float f);
+	_float &operator=(int32_t f);
+	_float &operator=(uint32_t f);
 
-		long getData();
+	void print(char *str);
+	void print(char *str,uint8_t digit_before_comma);
 
-		static _float direct(long val);
+	long getData();
 
+	static _float direct(long val);
 };
 
 #endif

@@ -103,6 +103,12 @@ void DisplayManager::loop(uint64_t loopCount)
 			activePage = &menuPage;
 			Sleep(100);
 			activePage->repaint(&disp);
+		}else if (ev == precision_toggle){
+			if(mainPage.getDigBefCom() >= 2){
+				mainPage.setDigBefCom(1);
+			}else{
+				mainPage.setDigBefCom(2);
+			}
 		}
 		else if (touchEvent == nothing)
 		{
