@@ -15,6 +15,11 @@ class MainPage : public Page
 	DisplayText dt_q;
 	DisplayText dt_p;
 	DisplayText dt_ps;
+
+	// values of bargraphs in case of pages change
+	uint8_t q_val;
+	uint8_t p_val;
+	uint8_t ps_val;
 	
 	//functions
 	public:
@@ -35,7 +40,9 @@ class MainPage : public Page
 	void set_p_is(_float val,Unit un);
 	void set_ps_pre_set(_float val,Unit un);
 	void set_ps_set(_float val,Unit un);
-	
+
+	virtual TouchEvent getTouchEvent() override;
+	virtual uint8_t getTouchValue() override;	
 	
 	// Update loop
 	void loop(uint64_t loopCount,Graphics*);

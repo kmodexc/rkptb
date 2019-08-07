@@ -51,9 +51,6 @@ class Display : public Graphics{
 	bool requestBuffer(uint8_t *buffer,size_t size);
 	
 	
-	size_t dynIntToStr(char* str,size_t maxLen,int32_t iNum);
-	
-	
 	void command(const char* cmd);
 	
 	

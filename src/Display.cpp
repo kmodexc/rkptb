@@ -72,25 +72,6 @@ bool Display::requestBuffer(uint8_t *buffer,size_t size)
 	return false;
 }
 
-
-size_t Display::dynIntToStr(char* str, size_t lenMax, int32_t iNum) {
-	if (lenMax <= 0) return 0;
-	int tmp = iNum;
-	size_t len = 1;
-	if (iNum < 0) {
-		len = 2;
-		str[0] = '-';
-	}
-	while ((tmp /= 10) > 0) len++;
-	if (len > lenMax) return 0;
-	tmp = iNum;
-	for (char* it = str + (len - 1); it != (str - 1); it--) {
-		*it = (tmp % 10) + 48;
-		tmp /= 10;
-	}
-	return len;
-}
-
 void Display::command(const char* cmd) {
 	command(cmd,false);
 }
@@ -111,9 +92,9 @@ bool Display::text(int x, int y, char* txt) {
 	*(writ++) = '#';
 	*(writ++) = 'Z';
 	*(writ++) = 'L';
-	writ += dynIntToStr(writ, 4, x);
+	writ += rkp::dynIntToStr(writ, 4, x);
 	*(writ++) = ',';
-	writ += dynIntToStr(writ, 4, y);
+	writ += rkp::dynIntToStr(writ, 4, y);
 	*(writ++) = ',';
 	for (char* it = txt; *it != 0 && writ < (tmp_buf + WR_BUF_LEN - 3 - 69); it++) {
 		*(writ++) = *it;
@@ -284,9 +265,9 @@ void Display::drawChar(int x, int y, char c) {
 	*(writ++) = '#';
 	*(writ++) = 'Z';
 	*(writ++) = 'L';
-	writ += dynIntToStr(writ, 4, x);
+	writ += rkp::dynIntToStr(writ, 4, x);
 	*(writ++) = ',';
-	writ += dynIntToStr(writ, 4, y);
+	writ += rkp::dynIntToStr(writ, 4, y);
 	*(writ++) = ',';
 	*(writ++) = c;
 	*(writ++) = 0;
@@ -317,13 +298,13 @@ void Display::clearRect(size_t x0, size_t y0, size_t x1, size_t y1) {
 	*(writ++) = '#';
 	*(writ++) = 'R';
 	*(writ++) = 'L';
-	writ += dynIntToStr(writ, 4, x0);
+	writ += rkp::dynIntToStr(writ, 4, x0);
 	*(writ++) = ',';
-	writ += dynIntToStr(writ, 4, y0);
+	writ += rkp::dynIntToStr(writ, 4, y0);
 	*(writ++) = ',';
-	writ += dynIntToStr(writ, 4, x1);
+	writ += rkp::dynIntToStr(writ, 4, x1);
 	*(writ++) = ',';
-	writ += dynIntToStr(writ, 4, y1);
+	writ += rkp::dynIntToStr(writ, 4, y1);
 	*(writ++) = ',';
 	send(tmp_buf, writ - tmp_buf);
 }
@@ -334,9 +315,9 @@ bool Display::setFontColor(uint8_t vf, uint8_t hf) {
 		*(writ++) = '#';
 		*(writ++) = 'F';
 		*(writ++) = 'Z';
-		writ += dynIntToStr(writ, 1, vf);
+		writ += rkp::dynIntToStr(writ, 1, vf);
 		*(writ++) = ',';
-		writ += dynIntToStr(writ, 1, hf);
+		writ += rkp::dynIntToStr(writ, 1, hf);
 		*(writ++) = ',';
 		send(tmp_buf, writ - tmp_buf);
 		font_color_bg = hf;

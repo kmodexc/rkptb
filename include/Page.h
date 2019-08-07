@@ -19,6 +19,7 @@ enum TouchEvent{
 	p_set_mode_change,
 	p_is_mode_change,
 	ps_switch_val,
+	go_menu_page,
 	
 	ps_val_1,
 	ps_val_2,
@@ -32,7 +33,9 @@ enum TouchEvent{
 	
 	bar_graph_p,
 	bar_graph_q,
-	bar_graph_ps
+	bar_graph_ps,
+
+	menu_page_back
 };
 
 namespace rkp{

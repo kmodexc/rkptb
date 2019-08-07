@@ -7,6 +7,8 @@
 #define WR_BUF_LEN 100
 #define SEND_BUF_LEN 250
 
+#define FCMD(pg,str) pg->command(str);pg->flush()
+
 struct DisplayText{
 	static const size_t STRLEN = 30;
 	char new_str[STRLEN];

@@ -12,6 +12,7 @@
 #include "Display.h"
 
 #include "MainPage.h"
+#include "MenuPage.h"
 
 
 class DisplayManager
@@ -26,10 +27,13 @@ class DisplayManager
 
 
 	MainPage mainPage;
+	MenuPage menuPage;
 
 	Page* activePage;
 
-	
+	TouchEvent touchEvent;
+	uint8_t touchVal;
+
 	//functions
 	public:
 
