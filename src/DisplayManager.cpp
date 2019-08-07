@@ -90,9 +90,6 @@ void DisplayManager::initialize()
 	disp.command("#ZL0,260,Q\x0d");
 	disp.flush();
 	
-	// send loop to flush buffer
-	//disp.loop(0);
-	
 	// bar graph p
 	disp.command("#BR2,100,320,750,370,0,100,5,");
 	disp.flush();
@@ -105,9 +102,6 @@ void DisplayManager::initialize()
 	disp.command("#ZL0,330,P\x0d");
 	disp.flush();
 	
-	// send loop to flush buffer
-	//disp.loop(0);
-	
 	// bar graph ps
 	disp.command("#BR3,100,390,750,440,0,100,5,");
 	disp.flush();
@@ -119,9 +113,6 @@ void DisplayManager::initialize()
 	disp.flush();
 	disp.command("#ZL0,400,PS\x0d");
 	disp.flush();	
-	
-	// send loop to flush buffer
-	//disp.loop(0);
 	
 }
 
