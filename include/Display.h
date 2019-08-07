@@ -5,82 +5,59 @@
 #include <Wire.h>
 
 #include "pindefs.h"
+#include "Graphics.h"
+
+#include "helpers.h"
 
 #define WR_BUF_LEN 100
 #define SEND_BUF_LEN 250
 
-struct DisplayText{
-	static const size_t STRLEN = 30;
-	char new_str[STRLEN];
-	char old_str[STRLEN];
-	bool drawn;
-	int x;
-	int y;
-	bool update;
-	bool drawCharwise;
-};
 
-struct DisplayFloat{
-	_float num;
-	char old_str[6];
-	int x;
-	int y;
-};
-
-class Display{
+class Display : public Graphics{
 	
 	public:
 	
 	/************************************************************************/
-	/* initializes display class components                                                                     */
+	// initializes display class components                                                                     */
 	/************************************************************************/
 	void initialize();
 	
 	/************************************************************************/
-	/* loop cycle called function where the messages will be send as one                                                                     */
+	// loop cycle called function where the messages will be send as one                                                                     */
 	/************************************************************************/
 	void loop(unsigned long cnt);
 	
 	/************************************************************************/
-	/* flushes the buffer if something in                                                                     */
+	// flushes the buffer if something in                                                                     */
 	/************************************************************************/
 	bool flush();
 	
-	void clearStr(char* str,size_t len);
-	
-	
+
 	void sendStr(char* str,size_t len);
 	
 	/************************************************************************/
-	/* sends a message len at display                                                                     */
+	// sends a message len at display                                                                     */
 	/************************************************************************/
-	void send(char *str,size_t len);
+	void send(const char *str,size_t len);
 	
 	/************************************************************************/
-	/* send a message with specified control argument at display                                                                     */
+	// send a message with specified control argument at display                                                                     */
 	/************************************************************************/
-	void send(char *str,size_t len,uint8_t control);
+	void send(const char *str,size_t len,uint8_t control);
 	
 	/************************************************************************/
-	/* requests the send-buffer from display. This method is not called in loop so 
-	/* use this carefully                                                 */
+	// requests the send-buffer from display. This method is not called in loop so 
 	/************************************************************************/
 	bool requestBuffer(uint8_t *buffer,size_t size);
-	
-	
-	void printFloat(char* str, int32_t length, int32_t iNum);
-	
-	
-	void printInt(char* str, int32_t length, int32_t iNum);
 	
 	
 	size_t dynIntToStr(char* str,size_t maxLen,int32_t iNum);
 	
 	
-	void command(char* cmd);
+	void command(const char* cmd);
 	
 	
-	void command(char* cmd,bool extra_null);
+	void command(const char* cmd,bool extra_null);
 	
 	
 	bool text(int x,int y,char* txt);
@@ -97,13 +74,7 @@ class Display{
 	
 	void dispNumber(DisplayFloat* num);
 	
-	
-	void cpystr(char* dest, char* src);
-	
-	
-	void cpystr(char* dest, const char* src);
-	
-	
+
 	void clearRect(size_t x0,size_t y0,size_t x1,size_t y1);
 	
 	

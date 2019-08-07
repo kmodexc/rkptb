@@ -71,11 +71,13 @@ _float& _float::operator=(_float &f)
 _float& _float::operator=(float f)
 {
   data = f * 100.0;
+  return *this;
 }
 _float& _float::operator=(int32_t i)
 {
   data = i;
   data *= 100;
+  return *this;
 }
 _float& _float::operator=(uint32_t i)
 {
@@ -84,6 +86,7 @@ _float& _float::operator=(uint32_t i)
   }
   data = (int32_t)i;
   data *= 100;
+  return *this;
 }
 void _float::print(char* str)
 {

@@ -17,22 +17,11 @@ void Display::loop(unsigned long loopCount) {
 bool Display::flush()
 {
 	if(intern_send_buf(send_buf,send_buf_next-send_buf,DC1)){
-		clearStr((char*)send_buf,SEND_BUF_LEN);
+		rkp::clearStr((char*)send_buf,SEND_BUF_LEN);
 		send_buf_next = send_buf;
 		return true;
 	}
 	return false;
-}
-
-void Display::clearStr(char* str, size_t len) {
-	if (str == 0 || len <= 0) {
-		return;
-	}
-	char* it_end = str + len;
-	for (char* it = str; it != it_end; it++) {
-		*it = ' ';
-	}
-	str[len - 1] = 0;
 }
 
 void Display::sendStr(char* str, size_t len) {
@@ -41,13 +30,13 @@ void Display::sendStr(char* str, size_t len) {
 	send(str, len);
 }
 
-void Display::send(char* str, size_t len) {
+void Display::send(const char* str, size_t len) {
 	send(str, len, DC1);
 }
 
-void Display::send(char* str, size_t len, uint8_t control) {
+void Display::send(const char* str, size_t len, uint8_t control) {
 	if(control == DC1 && ((send_buf_next - send_buf) + len) < SEND_BUF_LEN){
-		for(char* it = str; it < (str+len) ; it++){
+		for(const char* it = str; it < (str+len) ; it++){
 			*(send_buf_next++) = (uint8_t)(*it);
 		}
 	}
@@ -83,31 +72,6 @@ bool Display::requestBuffer(uint8_t *buffer,size_t size)
 	return false;
 }
 
-void Display::printFloat(char* str, int32_t length, int32_t iNum)
-{
-	if (iNum < 0) iNum = 0;
-	if (5 > length) return;
-	str[4] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[3] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[2] = '.';
-	str[1] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[0] = (iNum % 10) + 48;
-}
-
-void Display::printInt(char* str, int32_t length, int32_t iNum) {
-	if (iNum < 0) iNum = 0;
-	if (4 > length) return;
-	str[3] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[2] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[1] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[0] = (iNum % 10) + 48;
-}
 
 size_t Display::dynIntToStr(char* str, size_t lenMax, int32_t iNum) {
 	if (lenMax <= 0) return 0;
@@ -127,12 +91,12 @@ size_t Display::dynIntToStr(char* str, size_t lenMax, int32_t iNum) {
 	return len;
 }
 
-void Display::command(char* cmd) {
+void Display::command(const char* cmd) {
 	command(cmd,false);
 }
 
-void Display::command(char* cmd,bool extra_null) {
-	char* it = cmd;
+void Display::command(const char* cmd,bool extra_null) {
+	const char* it = cmd;
 	char* wr_it = tmp_buf;
 	while (*(it) != 0) {
 		*(wr_it++) = *(it++);
@@ -161,7 +125,7 @@ bool Display::text(int x, int y, char* txt) {
 }
 
 bool Display::text(DisplayText* txt) {
-	return text(txt,250);
+	return text(txt,2);
 }
 
 bool Display::text(DisplayText* txt,uint8_t max_redraw_char)
@@ -192,7 +156,7 @@ bool Display::text(DisplayText* txt,uint8_t max_redraw_char)
 		
 		setFontColor(8, 0);
 		text(txt->x, txt->y, txt->new_str);
-		cpystr(txt->old_str, txt->new_str);
+		rkp::cpystr(txt->old_str, txt->new_str);
 		
 		txt->update = false;
 		
@@ -346,16 +310,6 @@ void Display::dispNumber(DisplayFloat* num)
 			str_num[cnt] = num->old_str[cnt];
 		}
 	}
-}
-
-void Display::cpystr(char* dest, char* src) {
-	for (size_t cnt = 0; src[cnt] != 0; cnt++) {
-		dest[cnt] = src[cnt];
-	}
-}
-
-void Display::cpystr(char* dest, const char* src) {
-	cpystr(dest, (char*)src);
 }
 
 void Display::clearRect(size_t x0, size_t y0, size_t x1, size_t y1) {
