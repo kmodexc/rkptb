@@ -2,6 +2,7 @@
 
 void MenuPage::initialize(Graphics *pg)
 {
+    Page::initialize(pg);
 }
 void MenuPage::repaint(Graphics *pg)
 {
@@ -12,6 +13,7 @@ void MenuPage::repaint(Graphics *pg)
     FCMD(pg,"#FE8,1,2,8,1,7,"); // make colored button
     FCMD(pg,"#AT10,10,100,50,30,0,Back\x0d");
     FCMD(pg,"#AT110,10,200,50,31,0,Prec\x0d");
+    FCMD(pg,"#AT210,10,300,50,32,0,CP\x0d");
 }
 void MenuPage::loop(uint64_t loopCount, Graphics *disp)
 {

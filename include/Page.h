@@ -36,7 +36,8 @@ enum TouchEvent{
 	bar_graph_ps,
 
 	menu_page_back,
-	precision_toggle
+	precision_toggle,
+	go_current_page,
 };
 
 namespace rkp{

@@ -3,27 +3,28 @@
 
 #include "ControlledOutput.h"
 
+
+using namespace rkp;
+using namespace rkp::r10k;
+
 CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch, int32_t pin_set_sw_val, ControlledPinMode sm, ControlledPinMode im)
-:
-mSetModeSwitch(pin_set_mode_switch),
-mIsModeSwitch(pin_is_mode_switch),
-mSetSwitchVal(pin_set_sw_val)
+	: mPinSetIn(pin_set_in),
+	  mPinSetUPre(pin_set_u_pre),
+	  mPinSetU(pin_set_u),
+	  mPinIsU(pin_is_u),
+	  mSetModeSwitch(pin_set_mode_switch),
+	  mIsModeSwitch(pin_is_mode_switch),
+	  mSetSwitchVal(pin_set_sw_val)
 {
 	this->mPinSetOut = pin_set_out;
-	this->mPinSetIn = pin_set_in;
-	this->mPinSetUPre = pin_set_u_pre;
-	this->mPinSetU = pin_set_u;
-	this->mPinIsU = pin_is_u;
 	this->mPinIsRes = pin_is_res;
 	this->mSetMode = sm;
 	this->mIsMode = im;
 }
 CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch)
-:
-CControlledOutput(pin_set_out, pin_set_in, pin_set_u_pre, pin_set_u, pin_set_mode_switch, pin_is_u, pin_is_res, pin_is_mode_switch, -1, Voltage, Current)
+	: CControlledOutput(pin_set_out, pin_set_in, pin_set_u_pre, pin_set_u, pin_set_mode_switch, pin_is_u, pin_is_res, pin_is_mode_switch, -1, Voltage, Current)
 {
 }
-
 
 void CControlledOutput::begin()
 {
@@ -33,6 +34,14 @@ void CControlledOutput::begin()
 	mSetSwitchVal.begin();
 	setIsMode(this->mIsMode);
 	setSetVal(_float::direct(0));
+}
+
+void CControlledOutput::measure()
+{
+	mPinSetIn.reset();
+	mPinSetUPre.reset();
+	mPinSetU.reset();
+	mPinIsU.reset();
 }
 
 ControlledPinMode CControlledOutput::getSetMode() const
@@ -45,93 +54,69 @@ ControlledPinMode CControlledOutput::getIsMode() const
 	return this->mIsMode;
 }
 
-_float CControlledOutput::getSetValIn() const
+_float CControlledOutput::getSetValIn()
 {
-	_float f(stab_ana_read(mPinSetIn));
+	_float f(mPinSetIn.getVal());
 	f *= 12;
 	f /= 4096;
 	return f;
 }
 
-_float CControlledOutput::getSetVal() const
+_float CControlledOutput::getSetVal()
 {
 	if (mSetMode == Voltage)
 	{
 		return getSetU();
 	}
-	else {
+	else
+	{
 		return getSetI();
 	}
 }
 
-_float CControlledOutput::getSetU() const
+_float CControlledOutput::getSetU()
 {
-	_float f(stab_ana_read(mPinSetU));
-	f *= 12;
-	f /= 4096;
-	return f;
+	return set_u_double_rounded(mPinSetU.getVal());
 }
 
-_float CControlledOutput::getSetI() const
+_float CControlledOutput::getSetI()
 {
-	_float upre(stab_ana_read(mPinSetUPre));
-	_float u(stab_ana_read(mPinSetU));
-
-	upre *= 12;   //Anpassung 3V referenz
-	upre /= 4096;
-
-	u *= 12;      // Anpassung 3V referenz
-	u /= 4096;
-
-	_float ishunt = upre;
-	ishunt -= u;
-	ishunt *= 1000;		// Skalierung mA
-	ishunt /= 220;		// Shunt Wiederstand 220 Ohm
-
-	_float imessb = u;
-	imessb /= 40;		// skalierung mA + 40k Ohm Messb.
-
-	_float iventil = ishunt;
-	iventil -= imessb;
-
-	return iventil;//_float::direct((long)(100.0*iventil));
+	return set_i_double_rounded(mPinSetUPre.getVal(),mPinSetU.getVal());
 }
 
-_float CControlledOutput::getIsVal() const
+_float CControlledOutput::getIsVal()
 {
 	return (mIsMode == Voltage ? getIsU() : getIsI());
 }
 
-_float CControlledOutput::getIsU() const
+_float CControlledOutput::getIsU()
 {
-	_float f(stab_ana_read(mPinIsU));
-	f *= 12;
-	f /= 4096;
-	return f;
+	return is_u_double_rounded(mPinIsU.getVal());
 }
 
-_float CControlledOutput::getIsI() const
+_float CControlledOutput::getIsI()
 {
-	_float f(stab_ana_read(mPinIsU));
+	return is_i_double_rounded(mPinIsU.getVal());
+}
 
-	f *= 12;  // Anpassung 3V
-	f /= 4096;
+uint32_t CControlledOutput::getUAdcRaw()
+{
+	return mPinSetU.getVal();
+}
 
-	// /=444.4444 da Wiederstand im Strommessbetrieb = 444.444 Ohm
-	// *=1000 anpassung nach mA
-
-	f *= 100000;
-	f /= 44444;
-
-	return f;
+uint32_t CControlledOutput::getUPreAdcRaw()
+{
+	return mPinSetUPre.getVal();
 }
 
 void CControlledOutput::setSetVal(_float val)
 {
-	if (mSetMode == Voltage){
+	if (mSetMode == Voltage)
+	{
 		val *= 325;
 	}
-	else {
+	else
+	{
 		val *= 210;
 		val += 500;
 	}
@@ -141,25 +126,32 @@ void CControlledOutput::setSetVal(_float val)
 void CControlledOutput::update()
 {
 	//Setze den Sollwert für Ausgang
-	if (!mSetSwitchVal.aktive() || mSetSwitchVal.wasPressed()) {
+	if (!mSetSwitchVal.aktive() || mSetSwitchVal.wasPressed())
+	{
 		setSetVal(getSetValIn());
 	}
 	// update mode switch
-	if (mSetModeSwitch.wasPressed())setSetMode(mSetMode == Voltage ? Current : Voltage);
-	if (mIsModeSwitch.wasPressed())setIsMode(mIsMode == Voltage ? Current : Voltage);
+	if (mSetModeSwitch.wasPressed())
+		setSetMode(mSetMode == Voltage ? Current : Voltage);
+	if (mIsModeSwitch.wasPressed())
+		setIsMode(mIsMode == Voltage ? Current : Voltage);
 }
 
-uint8_t CControlledOutput::show(char* set_val, char* set_mode, char* is_val, char* is_mode)
+uint8_t CControlledOutput::show(char *set_val, char *set_mode, char *is_val, char *is_mode)
 {
-	if (mDispMode == Normal) {
+	if (mDispMode == Normal)
+	{
 		// Print Set Value
 		getSetVal().print(set_val);
-		if (set_val) {
-			if (mSetMode == Voltage) {
+		if (set_val)
+		{
+			if (mSetMode == Voltage)
+			{
 				set_mode[0] = 'V';
 				set_mode[1] = ' ';
 			}
-			else {
+			else
+			{
 				set_mode[0] = 'm';
 				set_mode[1] = 'A';
 			}
@@ -167,40 +159,50 @@ uint8_t CControlledOutput::show(char* set_val, char* set_mode, char* is_val, cha
 
 		// Print Is Actual Value in RKP
 		getIsVal().print(is_val);
-		if (is_mode) {
-			if (getIsMode() == Voltage) {
+		if (is_mode)
+		{
+			if (getIsMode() == Voltage)
+			{
 				is_mode[0] = 'V';
 				is_mode[1] = ' ';
 			}
-			else {
+			else
+			{
 				is_mode[0] = 'm';
 				is_mode[1] = 'A';
 			}
 		}
 	}
-	else if (mDispMode == OldNewVal) {
+	else if (mDispMode == OldNewVal)
+	{
 		// Print Set Value
 		getSetVal().print(set_val);
-		if (set_mode) {
-			if (mSetMode == Voltage) {
+		if (set_mode)
+		{
+			if (mSetMode == Voltage)
+			{
 				set_mode[0] = 'V';
 			}
 		}
 
 		// Print SetIn Val
 		getSetValIn().print(is_val);
-		if (set_mode) {
-			if (mSetMode == Voltage) {
+		if (set_mode)
+		{
+			if (mSetMode == Voltage)
+			{
 				is_mode[0] = 'V';
 			}
 		}
 	}
-	else if (mDispMode == Raw) {
+	else if (mDispMode == Raw)
+	{
 		//printIntInt(&(str[2]), 4, analogRead(mPinSetUPre));
 		//printIntInt(&(str[7]), 4, analogRead(mPinSetU));
 		//printIntInt(&(str[12]), 4, analogRead(mPinIsU));
 	}
-	else if (mDispMode == Direct) {
+	else if (mDispMode == Direct)
+	{
 		//printIntFloat(&(str[2]), 5, (analogRead(mPinSetIn) * 300) / 4096);
 		//printIntFloat(&(str[8]), 5, (analogRead(mPinSetU) * 300) / 4096);
 		//printIntFloat(&(str[14]), 5, (analogRead(mPinIsU) * 300) / 4096);
@@ -208,7 +210,8 @@ uint8_t CControlledOutput::show(char* set_val, char* set_mode, char* is_val, cha
 	return 0xF;
 }
 
-uint8_t CControlledOutput::show(char* str) {
+uint8_t CControlledOutput::show(char *str)
+{
 	return show(str + 10, str + 17, str + 30, str + 37);
 }
 
@@ -220,39 +223,6 @@ void CControlledOutput::setIsMode(ControlledPinMode mode)
 {
 	this->mIsMode = mode;
 	digitalWrite(mPinIsRes, (mode == Current ? LOW : HIGH));
-}
-void CControlledOutput::printFloat(char* str, int32_t length, int32_t iNum)
-{
-	if (iNum < 0) iNum = 0;
-	if (5 > length) return;
-	str[4] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[3] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[2] = '.';
-	str[1] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[0] = (iNum % 10) + 48;
-}
-
-void CControlledOutput::printInt(char* str, int32_t length, int32_t iNum) {
-	if (iNum < 0) iNum = 0;
-	if (4 > length) return;
-	str[3] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[2] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[1] = (iNum % 10) + 48;
-	iNum /= 10;
-	str[0] = (iNum % 10) + 48;
-}
-uint32_t CControlledOutput::stab_ana_read(int32_t pin) {
-	uint64_t sum = 0;
-	const long valCount = 1 << 8;
-	for (long cnt = 0; cnt < valCount; cnt++) {
-		sum += analogRead(pin);
-	}
-	return sum / valCount;
 }
 
 void CControlledOutput::setDisplayMode(DisplayMode m)

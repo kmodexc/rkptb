@@ -13,6 +13,7 @@
 
 #include "MainPage.h"
 #include "MenuPage.h"
+#include "CurrentPage.h"
 
 
 class DisplayManager
@@ -28,6 +29,7 @@ class DisplayManager
 
 	MainPage mainPage;
 	MenuPage menuPage;
+	CurrentPage currentPage;
 
 	Page* activePage;
 
@@ -51,7 +53,9 @@ class DisplayManager
 	void set_p_is(_float val,Unit un);
 	void set_ps_pre_set(_float val,Unit un);
 	void set_ps_set(_float val,Unit un);
-	
+	// for current page
+	void set_u_adc_raw(uint32_t);
+	void set_u_pre_adc_raw(uint32_t);
 	
 	// request function for touch events
 	TouchEvent getTouchEvent();

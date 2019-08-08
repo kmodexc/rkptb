@@ -32,7 +32,7 @@ MainPage::~MainPage()
 
 void MainPage::initialize(Graphics *pg)
 {
-	
+	Page::initialize(pg);
 }
 
 void MainPage::repaint(Graphics *pg)

@@ -34,6 +34,7 @@ void DisplayManager::initialize()
 	// initialize pages
 	mainPage.initialize(&disp);
 	menuPage.initialize(&disp);
+	currentPage.initialize(&disp);
 
 	// set active page
 	activePage = &mainPage;
@@ -72,6 +73,24 @@ void DisplayManager::set_ps_set(_float val, Unit un)
 	activePage->set_ps_set(val, un);
 }
 
+void DisplayManager::set_u_adc_raw(uint32_t val)
+{
+	if (activePage != &currentPage)
+	{
+		return;
+	}
+	currentPage.set_u_adc_raw(val);
+}
+
+void DisplayManager::set_u_pre_adc_raw(uint32_t val)
+{
+	if (activePage != &currentPage)
+	{
+		return;
+	}
+	currentPage.set_upre_adc_raw(val);
+}
+
 TouchEvent DisplayManager::getTouchEvent()
 {
 	TouchEvent ev = touchEvent;
@@ -94,26 +113,42 @@ void DisplayManager::loop(uint64_t loopCount)
 	{
 		// process events
 		TouchEvent ev = activePage->getTouchEvent();
-		if (ev == menu_page_back)
+		switch (ev)
 		{
+		case menu_page_back:
 			activePage = &mainPage;
 			Sleep(100);
 			activePage->repaint(&disp);
-		}else if(ev == go_menu_page){
+			Sleep(100);
+			break;
+		case go_menu_page:
 			activePage = &menuPage;
 			Sleep(100);
 			activePage->repaint(&disp);
-		}else if (ev == precision_toggle){
-			if(mainPage.getDigBefCom() >= 2){
+			Sleep(100);
+			break;
+		case precision_toggle:
+			if (mainPage.getDigBefCom() >= 2)
+			{
 				mainPage.setDigBefCom(1);
-			}else{
+			}
+			else
+			{
 				mainPage.setDigBefCom(2);
 			}
-		}
-		else if (touchEvent == nothing)
-		{
-			touchEvent = ev;
-			touchVal = activePage->getTouchValue();
+			break;
+		case go_current_page:
+			activePage = &currentPage;
+			Sleep(100);
+			activePage->repaint(&disp);
+			Sleep(100);
+			break;
+		default:
+			if (touchEvent == nothing)
+			{
+				touchEvent = ev;
+				touchVal = activePage->getTouchValue();
+			}
 		}
 	}
 }

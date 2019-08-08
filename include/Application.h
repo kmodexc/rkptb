@@ -10,7 +10,6 @@
 #include "pindefs.h"
 
 class Application{
-	Measurement ms1;
 
 	//CControlledOutput Constructor sets pins for the Output
 	//(pin_set_out, pin_set_in,  pin_set_u_pre,  pin_set_u,  pin_set_mode_switch,  pin_is_u, pin_is_res, pin_is_mode_switch)

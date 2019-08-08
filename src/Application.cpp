@@ -36,13 +36,20 @@ void Application::loop(unsigned long loopCount) {
 
 	//bool error = !digitalRead(PIN_ERROR);
 	//bool mrel = !digitalRead(PIN_RELEASE);
+
+	q_set.measure();
+	p_set.measure();
+	parSet.measure();
 	
 	disp_man.set_q_set(q_set.getSetVal(),(Unit)q_set.getSetMode());	
 	disp_man.set_q_is(q_set.getIsVal(),(Unit)q_set.getIsMode());	
 	disp_man.set_p_set(p_set.getSetVal(),(Unit)p_set.getSetMode());	
 	disp_man.set_p_is(p_set.getIsVal(),(Unit)p_set.getIsMode());	
 	disp_man.set_ps_set(parSet.getSetVal(),(Unit)parSet.getSetMode());
-	
+
+	disp_man.set_u_pre_adc_raw(p_set.getUPreAdcRaw());
+	disp_man.set_u_adc_raw(p_set.getUAdcRaw());
+
 	switch(disp_man.getTouchEvent()){
 		case q_set_mode_change:
 		q_set.setSetMode((q_set.getSetMode() == Voltage ? Current : Voltage));
