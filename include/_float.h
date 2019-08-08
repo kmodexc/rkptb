@@ -10,6 +10,7 @@ class _float
 
 public:
 	_float();
+	_float(int i);
 	_float(int32_t i);
 	_float(uint32_t i);
 	_float(float f);
@@ -22,7 +23,7 @@ public:
 	_float &operator/=(float);
 	_float &operator/=(int32_t);
 	_float &operator/=(int);
-	_float &operator=(_float &f);
+	_float &operator=(const _float &f);
 	_float &operator=(float f);
 	_float &operator=(int32_t f);
 	_float &operator=(uint32_t f);

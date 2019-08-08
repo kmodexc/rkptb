@@ -20,6 +20,9 @@ enum TouchEvent{
 	p_is_mode_change,
 	ps_switch_val,
 	go_menu_page,
+	mem_q_tgl,
+	mem_p_tgl,
+	mem_ps_tgl,
 	
 	ps_val_1,
 	ps_val_2,

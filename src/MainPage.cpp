@@ -38,18 +38,22 @@ void MainPage::initialize(Graphics *pg)
 void MainPage::repaint(Graphics *pg)
 {
 	// delete display
-    FCMD(pg,"#DL");
-	FCMD(pg,"#FE0,0,0,0,0,0,"); // make colorless buttons
-    FCMD(pg,"#AT0,0,800,480,0,0,\x0d"); // make last buttons unreachable
+	FCMD(pg, "#DL");
+	FCMD(pg, "#FE0,0,0,0,0,0,");		 // make colorless buttons
+	FCMD(pg, "#AT0,0,800,480,0,0,\x0d"); // make last buttons unreachable
 
 	pg->command("#FE8,1,2,8,1,7,"); // make colored button
 	pg->flush();
 	pg->command("#AT10,10,100,50,5,0,Menu\x0d");
 	pg->flush();
 
+	pg->createButton(100, 0, 6, "mem q");
+	pg->createButton(200, 0, 7, "mem p");
+	pg->createButton(300, 0, 8, "mem ps");
+
 	// measurement mode switch buttons
 
-	FCMD(pg,"#FE0,0,0,0,0,0,"); // make colorless buttons
+	FCMD(pg, "#FE0,0,0,0,0,0,"); // make colorless buttons
 	pg->command("#AT420,100,460,120,1,0,\x0d");
 	pg->flush();
 	pg->command("#AT420,150,460,170,2,0,\x0d");
@@ -73,8 +77,8 @@ void MainPage::repaint(Graphics *pg)
 	pg->command("#BX1,90,260,0=0.0;100=11.0\x0d");
 	pg->flush();
 	val_cmd[3] = '1';
-	rkp::printInt(val_cmd+5,3,q_val);
-	FCMD(pg,val_cmd);
+	rkp::printInt(val_cmd + 5, 3, q_val);
+	FCMD(pg, val_cmd);
 	pg->command("#AB1,");
 	pg->flush();
 	pg->command("#ZL0,260,Q\x0d");
@@ -86,8 +90,8 @@ void MainPage::repaint(Graphics *pg)
 	pg->command("#BX2,90,330,0=0.0;100=11.0\x0d");
 	pg->flush();
 	val_cmd[3] = '2';
-	rkp::printInt(val_cmd+5,3,p_val);
-	FCMD(pg,val_cmd);
+	rkp::printInt(val_cmd + 5, 3, p_val);
+	FCMD(pg, val_cmd);
 	pg->command("#AB2,");
 	pg->flush();
 	pg->command("#ZL0,330,P\x0d");
@@ -99,14 +103,13 @@ void MainPage::repaint(Graphics *pg)
 	pg->command("#BX3,90,400,0=0.0;100=11.0\x0d");
 	pg->flush();
 	val_cmd[3] = '3';
-	rkp::printInt(val_cmd+5,3,ps_val);
-	FCMD(pg,val_cmd);
+	rkp::printInt(val_cmd + 5, 3, ps_val);
+	FCMD(pg, val_cmd);
 	pg->command("#AB3,");
 	pg->flush();
 	pg->command("#ZL0,400,PS\x0d");
 	pg->flush();
 
-	
 	// reset str
 	rkp::clearStr(dt_q.old_str, DisplayText::STRLEN);
 	rkp::clearStr(dt_p.old_str, DisplayText::STRLEN);
@@ -115,42 +118,42 @@ void MainPage::repaint(Graphics *pg)
 
 void MainPage::set_q_set(_float val, Unit un)
 {
-	val.print(dt_q.new_str + 10,dig_bef_com);
+	val.print(dt_q.new_str + 10, dig_bef_com);
 	rkp::unit_print(dt_q.new_str + 16, un);
 	dt_q.update = true;
 }
 
 void MainPage::set_q_is(_float val, Unit un)
 {
-	val.print(dt_q.new_str + 20,dig_bef_com);
+	val.print(dt_q.new_str + 20, dig_bef_com);
 	rkp::unit_print(dt_q.new_str + 26, un);
 	dt_q.update = true;
 }
 
 void MainPage::set_p_set(_float val, Unit un)
 {
-	val.print(dt_p.new_str + 10,dig_bef_com);
+	val.print(dt_p.new_str + 10, dig_bef_com);
 	rkp::unit_print(dt_p.new_str + 16, un);
 	dt_p.update = true;
 }
 
 void MainPage::set_p_is(_float val, Unit un)
 {
-	val.print(dt_p.new_str + 20,dig_bef_com);
+	val.print(dt_p.new_str + 20, dig_bef_com);
 	rkp::unit_print(dt_p.new_str + 26, un);
 	dt_p.update = true;
 }
 
 void MainPage::set_ps_pre_set(_float val, Unit un)
 {
-	val.print(dt_ps.new_str + 20,dig_bef_com);
+	val.print(dt_ps.new_str + 20, dig_bef_com);
 	rkp::unit_print(dt_ps.new_str + 26, un);
 	dt_ps.update = true;
 }
 
 void MainPage::set_ps_set(_float val, Unit un)
 {
-	val.print(dt_ps.new_str + 10,dig_bef_com);
+	val.print(dt_ps.new_str + 10, dig_bef_com);
 	rkp::unit_print(dt_ps.new_str + 16, un);
 	dt_ps.update = true;
 }
@@ -158,11 +161,16 @@ void MainPage::set_ps_set(_float val, Unit un)
 TouchEvent MainPage::getTouchEvent()
 {
 	TouchEvent ev = Page::getTouchEvent();
-	if(ev == bar_graph_q){
+	if (ev == bar_graph_q)
+	{
 		q_val = getTouchValue();
-	}else if(ev == bar_graph_p){
+	}
+	else if (ev == bar_graph_p)
+	{
 		p_val = getTouchValue();
-	}else if(ev == bar_graph_ps){
+	}
+	else if (ev == bar_graph_ps)
+	{
 		ps_val = getTouchValue();
 	}
 	return ev;
@@ -170,12 +178,24 @@ TouchEvent MainPage::getTouchEvent()
 
 uint8_t MainPage::getTouchValue()
 {
-	return Page::getTouchValue();	
+	return Page::getTouchValue();
 }
 
-void MainPage::setDigBefCom(uint8_t dbc){
+uint8_t MainPage::getQBarVal() const
+{
+	return q_val;
+}
+
+uint8_t MainPage::getPBarval() const
+{
+	return p_val;
+}
+
+void MainPage::setDigBefCom(uint8_t dbc)
+{
 	dig_bef_com = dbc;
-	if(dig_bef_com == 1){
+	if (dig_bef_com == 1)
+	{
 		dt_q.new_str[14] = ' ';
 		dt_p.new_str[14] = ' ';
 		dt_ps.new_str[14] = ' ';
@@ -185,7 +205,8 @@ void MainPage::setDigBefCom(uint8_t dbc){
 	}
 }
 
-uint8_t MainPage::getDigBefCom(){
+uint8_t MainPage::getDigBefCom()
+{
 	return dig_bef_com;
 }
 

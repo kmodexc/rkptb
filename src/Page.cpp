@@ -93,6 +93,15 @@ void Page::readSendBuffer(Graphics *pgr)
 			case 5:
 				touchEvent = go_menu_page;
 				break;
+			case 6:
+				touchEvent = mem_q_tgl;
+				break;
+			case 7:
+				touchEvent = mem_p_tgl;
+				break;
+			case 8:
+				touchEvent = mem_ps_tgl;
+				break;
 
 			case 11:
 				touchEvent = ps_val_1;

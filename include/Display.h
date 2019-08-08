@@ -76,7 +76,15 @@ class Display : public Graphics{
 	
 	
 	bool setFontColor(uint8_t vf,uint8_t hf);
+
+
+	void clearScreen();
+
+
+	void createButton(size_t x1,size_t y2,uint8_t code,const char* name);
 	
+	
+	void createButton(size_t x1,size_t y1,size_t sx,size_t sy,uint8_t code,const char* name);
 	
 	protected:
 	

@@ -41,4 +41,10 @@ class Graphics{
 	virtual bool text(DisplayText* txt) = 0;
 	
 	virtual bool setFontColor(uint8_t vf,uint8_t hf) = 0;
+
+	virtual void clearScreen() = 0;
+
+	virtual void createButton(size_t x1,size_t y1,uint8_t code,const char* name) = 0;
+
+	virtual void createButton(size_t x1,size_t y1,size_t sx,size_t sy,uint8_t code,const char* name) = 0;
 };

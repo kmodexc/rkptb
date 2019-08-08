@@ -47,6 +47,9 @@ class MainPage : public Page
 	virtual TouchEvent getTouchEvent() override;
 	virtual uint8_t getTouchValue() override;
 
+	uint8_t getQBarVal() const;
+	uint8_t getPBarval() const;
+
 	void setDigBefCom(uint8_t);	
 	uint8_t getDigBefCom();
 

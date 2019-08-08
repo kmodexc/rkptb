@@ -10,6 +10,10 @@ _float::_float(int32_t i)
 {
   this->operator=(i);
 }
+_float::_float(int i)
+{
+  this->operator=((int32_t)i);
+}
 _float::_float(uint32_t i)
 {
   this->operator=(i);
@@ -63,7 +67,7 @@ _float &_float::operator/=(int f)
   data /= f;
   return *this;
 }
-_float &_float::operator=(_float &f)
+_float &_float::operator=(const _float &f)
 {
   data = f.data;
   return *this;

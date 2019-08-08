@@ -20,6 +20,14 @@ class Application{
 
 	DisplayManager disp_man;
 
+	_float mem_q;
+	_float mem_p;
+	_float mem_ps;
+
+	_float last_q;
+	_float last_p;
+	_float last_ps;
+
 	public:
 	Application();
 	void initialize();

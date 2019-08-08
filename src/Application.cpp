@@ -10,7 +10,11 @@
 Application::Application()
 	: q_set(7, 9, 1, 0, 37, 7, 47, 49),
 	  p_set(6, 8, 6, 5, 35, 4, 45, 51),
-	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, Voltage, Voltage)
+	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, Voltage, Voltage),
+	  mem_q(0),
+	  mem_p(0),
+	  last_q(0),
+	  last_p(0)
 {
 	//q_set.setDisplayMode(Raw);
 	//p_set.setDisplayMode(Raw);
@@ -52,6 +56,8 @@ void Application::loop(unsigned long loopCount)
 	disp_man.set_u_pre_adc_raw(p_set.getUPreAdcRaw());
 	disp_man.set_u_adc_raw(p_set.getUAdcRaw());
 
+	_float tmp;
+
 	switch (disp_man.getTouchEvent())
 	{
 	case q_set_mode_change:
@@ -65,6 +71,24 @@ void Application::loop(unsigned long loopCount)
 		break;
 	case p_is_mode_change:
 		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		break;
+	case mem_q_tgl:
+		q_set.setSetVal(mem_q);
+		tmp = mem_q;
+		mem_q = last_q;
+		last_q = tmp;
+		break;
+	case mem_p_tgl:
+		p_set.setSetVal(mem_p);
+		tmp = mem_p;
+		mem_p = last_p;
+		last_p = tmp;
+		break;
+	case mem_ps_tgl:
+		parSet.setSetVal(mem_ps);
+		tmp = mem_ps;
+		mem_ps = last_ps;
+		last_ps = tmp;
 		break;
 
 	case ps_val_1:
@@ -96,13 +120,16 @@ void Application::loop(unsigned long loopCount)
 		break;
 
 	case bar_graph_q:
-		q_set.setSetVal(_float::direct(11 * disp_man.getBarValue()));
+		last_q = _float::direct(11 * disp_man.getBarValue());
+		q_set.setSetVal(last_q);
 		break;
 	case bar_graph_p:
-		p_set.setSetVal(_float::direct(11 * disp_man.getBarValue()));
+		last_p = _float::direct(11 * disp_man.getBarValue());
+		p_set.setSetVal(last_p);
 		break;
 	case bar_graph_ps:
-		parSet.setSetVal(_float::direct(11 * disp_man.getBarValue()));
+		last_ps = _float::direct(11 * disp_man.getBarValue());
+		parSet.setSetVal(last_ps);
 		break;
 
 	default:
