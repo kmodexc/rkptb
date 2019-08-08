@@ -6,12 +6,14 @@ Application app;
 
 uint64_t lc;
 
-void setup() {
+void setup()
+{
   app.initialize();
   lc = 0;
 }
 
-void loop() {
+void loop()
+{
   app.loop(lc);
   lc++;
 }
