@@ -8,11 +8,11 @@ void AboutPage::repaint(Graphics *pg)
     pg->createButton(0,0,40,"Back");
     pg->flush();
 
-    DisplayText name(100,100,"RKP-TestB");
+    DisplayText name(320,210,"RKP-TestBo");
     pg->text(&name);
     pg->flush();
 
-    DisplayText version(100,200,"SW-Ver: 1.2.0");
+    DisplayText version(320,250,"SW-Ver: 1.2.0");
     pg->text(&version);
     pg->flush();
 }

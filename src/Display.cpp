@@ -3,6 +3,8 @@
 
 #include "Application.h"
 
+using namespace rkp::commands::ascii;
+
 void Display::initialize()
 {
 	rkp::clearStr((char *)send_buf, SEND_BUF_LEN);
@@ -28,30 +30,23 @@ bool Display::flush()
 	return false;
 }
 
-void Display::sendStr(char *str, size_t len)
-{
-	str[len - 2] = LF;
-	str[len - 1] = CR;
-	send(str, len);
-}
-
-void Display::send(const char *str, size_t len)
+void Display::send(const uint8_t *str, size_t len)
 {
 	send(str, len, DC1);
 }
 
-void Display::send(const char *str, size_t len, uint8_t control)
+void Display::send(const uint8_t *str, size_t len, uint8_t control)
 {
 	if (control == DC1 && ((send_buf_next - send_buf) + len) < SEND_BUF_LEN)
 	{
-		for (const char *it = str; it < (str + len); it++)
+		for (const uint8_t *it = str; it < (str + len); it++)
 		{
-			*(send_buf_next++) = (uint8_t)(*it);
+			*(send_buf_next++) = (*it);
 		}
 	}
 	else
 	{
-		intern_send_buf((uint8_t *)str, len, control);
+		intern_send_buf(str, len, control);
 	}
 }
 
@@ -59,7 +54,9 @@ bool Display::requestBuffer(uint8_t *buffer, size_t size)
 {
 	if (size > 0)
 	{
-		send("S", 1, DC2);
+		size_t len = request_send_buffer(tmp_buf,WR_BUF_LEN);
+		send(tmp_buf, len, DC2);
+
 		uint8_t *it = buffer;
 		if (Wire.requestFrom(DISPLAY_READ_ADDR, (uint8_t)(size + 3)) > 0)
 		{
@@ -97,33 +94,18 @@ void Display::command(const char *cmd)
 void Display::command(const char *cmd, bool extra_null)
 {
 	const char *it = cmd;
-	char *wr_it = tmp_buf;
+	uint8_t *wr_it = tmp_buf;
 	while (*(it) != 0)
 	{
-		*(wr_it++) = *(it++);
+		*(wr_it++) = (uint8_t)*(it++);
 	}
 	send(tmp_buf, (wr_it - tmp_buf) + (extra_null ? 1 : 0));
 }
 
 bool Display::text(int x, int y, const char *txt)
 {
-	if (txt == nullptr || *txt == 0)
-		return false;
-	char *writ = tmp_buf;
-	*(writ++) = '#';
-	*(writ++) = 'Z';
-	*(writ++) = 'L';
-	writ += rkp::dynIntToStr(writ, 4, x);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 4, y);
-	*(writ++) = ',';
-	for (const char *it = txt; *it != 0 && writ < (tmp_buf + WR_BUF_LEN); it++)
-	{
-		*(writ++) = *it;
-	}
-	*(writ++) = 13;
-	send(tmp_buf, writ - tmp_buf);
-
+	size_t len = draw_text(tmp_buf, WR_BUF_LEN, x, y, txt);
+	send(tmp_buf, len);
 	return true;
 }
 
@@ -330,34 +312,16 @@ void Display::dispNumber(DisplayFloat *num)
 
 void Display::clearRect(size_t x0, size_t y0, size_t x1, size_t y1)
 {
-	char *writ = tmp_buf;
-	*(writ++) = '#';
-	*(writ++) = 'R';
-	*(writ++) = 'L';
-	writ += rkp::dynIntToStr(writ, 4, x0);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 4, y0);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 4, x1);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 4, y1);
-	*(writ++) = ',';
-	send(tmp_buf, writ - tmp_buf);
+	size_t len = clear_rectengular_space(tmp_buf,WR_BUF_LEN,x0,y0,x1,y1);
+	send(tmp_buf, len);
 }
 
 bool Display::setFontColor(uint8_t vf, uint8_t hf)
 {
 	if (font_color_fg != vf || font_color_bg != hf)
 	{
-		char *writ = tmp_buf;
-		*(writ++) = '#';
-		*(writ++) = 'F';
-		*(writ++) = 'Z';
-		writ += rkp::dynIntToStr(writ, 1, vf);
-		*(writ++) = ',';
-		writ += rkp::dynIntToStr(writ, 1, hf);
-		*(writ++) = ',';
-		send(tmp_buf, writ - tmp_buf);
+		size_t len = set_font_color(tmp_buf, WR_BUF_LEN, vf, hf);
+		send(tmp_buf, len);
 		font_color_bg = hf;
 		font_color_fg = vf;
 		return true;
@@ -368,9 +332,14 @@ bool Display::setFontColor(uint8_t vf, uint8_t hf)
 void Display::clearScreen()
 {
 	// delete display
-	FCMD(this, "#DL");
-	FCMD(this, "#FE0,0,0,0,0,0,");		   // make colorless buttons
-	FCMD(this, "#AT0,0,800,480,0,0,\x0d"); // make last buttons unreachable
+	send(tmp_buf,clear_display(tmp_buf,WR_BUF_LEN));
+	flush();
+	send(tmp_buf,set_button_colors(tmp_buf,WR_BUF_LEN,0,0,0,0,0,0));
+	flush();
+	send(tmp_buf,create_button_reseting(tmp_buf,WR_BUF_LEN,0,0,800,480,0,0," "));
+	flush();
+	send(tmp_buf,set_button_colors(tmp_buf,WR_BUF_LEN,8,1,2,8,1,7));
+	flush();
 }
 
 void Display::createButton(size_t x1, size_t y1, uint8_t code, const char *name)
@@ -380,37 +349,12 @@ void Display::createButton(size_t x1, size_t y1, uint8_t code, const char *name)
 
 void Display::createButton(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name)
 {
-	if (name == nullptr)
-		return;
-
-	FCMD(this, "#FE8,1,2,8,1,7,"); // make colored button
-
-	char *writ = tmp_buf;
-	*(writ++) = '#';
-	*(writ++) = 'A';
-	*(writ++) = 'T';
-	writ += rkp::dynIntToStr(writ, 3, x1);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 3, y1);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 3, x1 + sx);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 3, y1 + sy);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 3, code);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 3, 0);
-	*(writ++) = ',';
-	for (; (*name) != 0;)
-	{
-		*(writ++) = *(name++);
-	}
-	*(writ++) = LF;
-	send(tmp_buf, writ - tmp_buf);
+	size_t len = create_button_reseting(tmp_buf, WR_BUF_LEN, x1, y1, x1 + sx, y1 + sy, 0, code, name);
+	send(tmp_buf, len);
 	flush();
 }
 
-bool Display::intern_send_buf(uint8_t *buf, uint8_t len, uint8_t control)
+bool Display::intern_send_buf(const uint8_t *buf, uint8_t len, uint8_t control)
 {
 	if (len <= 0 || buf == nullptr || *buf == 0)
 		return false;
@@ -422,7 +366,7 @@ bool Display::intern_send_buf(uint8_t *buf, uint8_t len, uint8_t control)
 		Wire.write(control); //DC1
 		Wire.write(len);	 //DataLength
 		bcc += len;
-		for (uint8_t *it = buf; it != buf + len; it++)
+		for (const uint8_t *it = buf; it != buf + len; it++)
 		{
 			Wire.write(*it);
 			bcc += *it;
@@ -442,12 +386,12 @@ bool Display::intern_send_buf(uint8_t *buf, uint8_t len, uint8_t control)
 			delay(100);
 			if (Serial)
 			{
-				for (uint8_t *it = buf; it < buf + len; it++)
+				for (const uint8_t *it = buf; it < buf + len; it++)
 				{
 					Serial.print(*it);
 					Serial.print(' ');
 				}
-				for (uint8_t *it = buf; it < buf + len; it++)
+				for (const uint8_t *it = buf; it < buf + len; it++)
 				{
 					Serial.print((char)*it);
 				}

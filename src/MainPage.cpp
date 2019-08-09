@@ -37,16 +37,9 @@ void MainPage::initialize(Graphics *pg)
 
 void MainPage::repaint(Graphics *pg)
 {
-	// delete display
-	FCMD(pg, "#DL");
-	FCMD(pg, "#FE0,0,0,0,0,0,");		 // make colorless buttons
-	FCMD(pg, "#AT0,0,800,480,0,0,\x0d"); // make last buttons unreachable
+	pg->clearScreen();
 
-	pg->command("#FE8,1,2,8,1,7,"); // make colored button
-	pg->flush();
-	pg->command("#AT10,10,100,50,5,0,Menu\x0d");
-	pg->flush();
-
+	pg->createButton(0, 0, 5, "Menu");
 	pg->createButton(100, 0, 6, "mem q");
 	pg->createButton(200, 0, 7, "mem p");
 	pg->createButton(300, 0, 8, "mem ps");
@@ -54,14 +47,10 @@ void MainPage::repaint(Graphics *pg)
 	// measurement mode switch buttons
 
 	FCMD(pg, "#FE0,0,0,0,0,0,"); // make colorless buttons
-	pg->command("#AT420,100,460,120,1,0,\x0d");
-	pg->flush();
-	pg->command("#AT420,150,460,170,2,0,\x0d");
-	pg->flush();
-	pg->command("#AT620,100,660,120,3,0,\x0d");
-	pg->flush();
-	pg->command("#AT620,150,660,170,4,0,\x0d");
-	pg->flush();
+	pg->createButton(420, 100, 460, 120, 1, " ");
+	pg->createButton(420, 150, 460, 170, 2, " ");
+	pg->createButton(620, 100, 660, 120, 3, " ");
+	pg->createButton(620, 150, 660, 170, 4, " ");
 
 	// bar graphs
 

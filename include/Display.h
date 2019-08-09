@@ -9,6 +9,8 @@
 
 #include "helpers.h"
 
+#include "DisplayCommands.h"
+
 #define WR_BUF_LEN 100
 #define SEND_BUF_LEN 250
 
@@ -32,18 +34,15 @@ class Display : public Graphics{
 	/************************************************************************/
 	bool flush();
 	
-
-	void sendStr(char* str,size_t len);
-	
 	/************************************************************************/
 	// sends a message len at display                                                                     */
 	/************************************************************************/
-	void send(const char *str,size_t len);
+	void send(const uint8_t *str,size_t len);
 	
 	/************************************************************************/
 	// send a message with specified control argument at display                                                                     */
 	/************************************************************************/
-	void send(const char *str,size_t len,uint8_t control);
+	void send(const uint8_t *str,size_t len,uint8_t control);
 	
 	/************************************************************************/
 	// requests the send-buffer from display. This method is not called in loop so 
@@ -91,12 +90,12 @@ class Display : public Graphics{
 	/************************************************************************/
 	/* internal method for sending a buffer                                                                     */
 	/************************************************************************/
-	bool intern_send_buf(uint8_t* buf,uint8_t len,uint8_t control);
+	bool intern_send_buf(const uint8_t* buf,uint8_t len,uint8_t control);
 	
 	/************************************************************************/
 	/* temporary buffer for any byte operation needed                                                                     */
 	/************************************************************************/
-	char tmp_buf[WR_BUF_LEN];
+	uint8_t tmp_buf[WR_BUF_LEN];
 	
 	private:
 	
