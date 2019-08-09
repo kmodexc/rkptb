@@ -41,6 +41,7 @@ enum TouchEvent{
 	menu_page_back,
 	precision_toggle,
 	go_current_page,
+	go_about_page
 };
 
 namespace rkp{

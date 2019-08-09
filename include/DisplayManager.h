@@ -14,6 +14,7 @@
 #include "MainPage.h"
 #include "MenuPage.h"
 #include "CurrentPage.h"
+#include "AboutPage.h"
 
 
 class DisplayManager
@@ -30,6 +31,7 @@ class DisplayManager
 	MainPage mainPage;
 	MenuPage menuPage;
 	CurrentPage currentPage;
+	AboutPage aboutPage;
 
 	Page* activePage;
 

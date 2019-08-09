@@ -26,8 +26,11 @@ void DisplayManager::initialize()
 	// display settings
 
 	disp.command("#TA");   // terminal off
+	disp.flush();
 	disp.command("#ZF6,"); // text font (6)
+	disp.flush();
 	disp.command("#DL");   // clear display
+	disp.flush();
 	disp.command("#AQ1,"); // send bar graph value after each setting
 	disp.flush();
 
@@ -35,9 +38,10 @@ void DisplayManager::initialize()
 	mainPage.initialize(&disp);
 	menuPage.initialize(&disp);
 	currentPage.initialize(&disp);
+	aboutPage.initialize(&disp);
 
 	// set active page
-	activePage = &mainPage;
+	activePage = &aboutPage;
 
 	// paint active page
 	activePage->repaint(&disp);
@@ -139,6 +143,12 @@ void DisplayManager::loop(uint64_t loopCount)
 			break;
 		case go_current_page:
 			activePage = &currentPage;
+			Sleep(100);
+			activePage->repaint(&disp);
+			Sleep(100);
+			break;
+		case go_about_page:
+			activePage = &aboutPage;
 			Sleep(100);
 			activePage->repaint(&disp);
 			Sleep(100);

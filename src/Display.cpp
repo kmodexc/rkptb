@@ -5,6 +5,7 @@
 
 void Display::initialize()
 {
+	rkp::clearStr((char *)send_buf, SEND_BUF_LEN);
 	send_buf_next = send_buf;
 	Wire.begin();
 	delay(100);
@@ -104,10 +105,10 @@ void Display::command(const char *cmd, bool extra_null)
 	send(tmp_buf, (wr_it - tmp_buf) + (extra_null ? 1 : 0));
 }
 
-bool Display::text(int x, int y, char *txt)
+bool Display::text(int x, int y, const char *txt)
 {
-	//clearRect(x,y,x+250,y+25);
-
+	if (txt == nullptr || *txt == 0)
+		return false;
 	char *writ = tmp_buf;
 	*(writ++) = '#';
 	*(writ++) = 'Z';
@@ -116,11 +117,11 @@ bool Display::text(int x, int y, char *txt)
 	*(writ++) = ',';
 	writ += rkp::dynIntToStr(writ, 4, y);
 	*(writ++) = ',';
-	for (char *it = txt; *it != 0 && writ < (tmp_buf + WR_BUF_LEN - 3 - 69); it++)
+	for (const char *it = txt; *it != 0 && writ < (tmp_buf + WR_BUF_LEN); it++)
 	{
 		*(writ++) = *it;
 	}
-	*(writ++) = 0;
+	*(writ++) = 13;
 	send(tmp_buf, writ - tmp_buf);
 
 	return true;
@@ -138,8 +139,6 @@ bool Display::text(DisplayText *txt, uint8_t max_redraw_char)
 
 	if (max_redraw_char == 0)
 		return false;
-
-	txt->drawn = true;
 
 	const uint8_t dx = 20;
 
@@ -161,6 +160,7 @@ bool Display::text(DisplayText *txt, uint8_t max_redraw_char)
 		{
 			setFontColor(0, 0);
 			text(txt->x, txt->y, txt->old_str);
+			flush();
 		}
 
 		setFontColor(8, 0);
@@ -168,88 +168,60 @@ bool Display::text(DisplayText *txt, uint8_t max_redraw_char)
 		rkp::cpystr(txt->old_str, txt->new_str);
 
 		txt->update = false;
+		txt->drawn = true;
 
 		return true;
 	}
-	else
-	{ // draw charwise begin
-		txt->update = false;
-		uint8_t drawn_char_cnt = 0;
+	// draw charwise begin
+	txt->drawn = true;
+	txt->update = false;
+	uint8_t drawn_char_cnt = 0;
 
-		// delete part
-		if (txt->drawn)
+	// delete part
+	if (txt->drawn)
+	{
+		// delete longer old str
+		for (uint8_t cnt = len_new_str; cnt < len_old_str && txt->drawn; cnt++)
 		{
-			// delete longer old str
-			for (uint8_t cnt = len_new_str; cnt < len_old_str && txt->drawn; cnt++)
+			if (txt->old_str[cnt] != ' ')
 			{
-				if (txt->old_str[cnt] != ' ')
+				if (drawn_char_cnt < max_redraw_char)
 				{
-					if (drawn_char_cnt < max_redraw_char)
+					if (setFontColor(0, 0))
 					{
-						if (setFontColor(0, 0))
-						{
-							drawn_char_cnt++;
-						}
-					}
-					if (drawn_char_cnt < max_redraw_char)
-					{
-						drawChar(txt->x + (cnt * dx), txt->y, txt->old_str[cnt]);
-						txt->old_str[cnt] = ' ';
 						drawn_char_cnt++;
 					}
-					else
-					{
-						txt->update = true;
-					}
 				}
-			}
-
-			// delete existing parts if something to delete
-			for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
-			{
-				if (txt->old_str[cnt] != txt->new_str[cnt] && txt->old_str[cnt] != ' ')
+				if (drawn_char_cnt < max_redraw_char)
 				{
-					// if already in this color mode nothing will be changed
-					if (drawn_char_cnt < max_redraw_char)
-					{
-						if (setFontColor(0, 0))
-						{
-							drawn_char_cnt++;
-						}
-					}
-					if (drawn_char_cnt < max_redraw_char)
-					{
-						drawChar(txt->x + (cnt * dx), txt->y, txt->old_str[cnt]);
-						txt->old_str[cnt] = ' ';
-						drawn_char_cnt++;
-					}
-					else
-					{
-						txt->update = true;
-					}
+					drawChar(txt->x + (cnt * dx), txt->y, txt->old_str[cnt]);
+					txt->old_str[cnt] = ' ';
+					drawn_char_cnt++;
+				}
+				else
+				{
+					txt->update = true;
 				}
 			}
-		} // delete part
+		}
 
-		// draw part
-
-		// draw on overlapping parts
+		// delete existing parts if something to delete
 		for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
 		{
-			// only draw deleted parts (marked as space)
-			if (txt->old_str[cnt] == ' ' && txt->new_str[cnt] != ' ')
+			if (txt->old_str[cnt] != txt->new_str[cnt] && txt->old_str[cnt] != ' ')
 			{
+				// if already in this color mode nothing will be changed
 				if (drawn_char_cnt < max_redraw_char)
 				{
-					if (setFontColor(8, 0))
+					if (setFontColor(0, 0))
 					{
 						drawn_char_cnt++;
 					}
 				}
 				if (drawn_char_cnt < max_redraw_char)
 				{
-					drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
-					txt->old_str[cnt] = txt->new_str[cnt];
+					drawChar(txt->x + (cnt * dx), txt->y, txt->old_str[cnt]);
+					txt->old_str[cnt] = ' ';
 					drawn_char_cnt++;
 				}
 				else
@@ -258,60 +230,81 @@ bool Display::text(DisplayText *txt, uint8_t max_redraw_char)
 				}
 			}
 		}
+	} // delete part
 
-		// draw longer parts new str
-		for (uint8_t cnt = len_old_str; cnt < len_new_str; cnt++)
+	// draw part
+
+	// draw on overlapping parts
+	for (uint8_t cnt = 0; cnt < DisplayText::STRLEN && txt->old_str[cnt] && txt->new_str[cnt]; cnt++)
+	{
+		// only draw deleted parts (marked as space)
+		if (txt->old_str[cnt] == ' ' && txt->new_str[cnt] != ' ')
 		{
-			// only draw deleted parts (marked as space)
-			if (txt->old_str[cnt] == ' ' && txt->new_str[cnt] != ' ')
+			if (drawn_char_cnt < max_redraw_char)
 			{
-				if (drawn_char_cnt < max_redraw_char)
+				if (setFontColor(8, 0))
 				{
-					if (setFontColor(8, 0))
-					{
-						drawn_char_cnt++;
-					}
-				}
-				if (drawn_char_cnt < max_redraw_char)
-				{
-					drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
-					txt->old_str[cnt] = txt->new_str[cnt];
 					drawn_char_cnt++;
 				}
-				else
-				{
-					txt->update = true;
-				}
+			}
+			if (drawn_char_cnt < max_redraw_char)
+			{
+				drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
+				txt->old_str[cnt] = txt->new_str[cnt];
+				drawn_char_cnt++;
+			}
+			else
+			{
+				txt->update = true;
 			}
 		}
+	}
 
-		// end draw part
+	// draw longer parts new str
+	for (uint8_t cnt = len_old_str; cnt < len_new_str; cnt++)
+	{
+		// only draw deleted parts (marked as space)
+		if (txt->old_str[cnt] == ' ' && txt->new_str[cnt] != ' ')
+		{
+			if (drawn_char_cnt < max_redraw_char)
+			{
+				if (setFontColor(8, 0))
+				{
+					drawn_char_cnt++;
+				}
+			}
+			if (drawn_char_cnt < max_redraw_char)
+			{
+				drawChar(txt->x + (cnt * dx), txt->y, txt->new_str[cnt]);
+				txt->old_str[cnt] = txt->new_str[cnt];
+				drawn_char_cnt++;
+			}
+			else
+			{
+				txt->update = true;
+			}
+		}
+	}
 
-		// set return values depend on if something was drawn
-		if (drawn_char_cnt > 0)
-		{
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	} // end charwise draw
+	// end draw part
+
+	// set return values depend on if something was drawn
+	if (drawn_char_cnt > 0)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+
 } // end text fuction
 
 void Display::drawChar(int x, int y, char c)
 {
-	char *writ = tmp_buf;
-	*(writ++) = '#';
-	*(writ++) = 'Z';
-	*(writ++) = 'L';
-	writ += rkp::dynIntToStr(writ, 4, x);
-	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 4, y);
-	*(writ++) = ',';
-	*(writ++) = c;
-	*(writ++) = 0;
-	send(tmp_buf, writ - tmp_buf);
+	char mystr[] = " ";
+	mystr[0] = c;
+	text(x, y, mystr);
 }
 
 void Display::dispNumber(DisplayFloat *num)
@@ -382,10 +375,10 @@ void Display::clearScreen()
 
 void Display::createButton(size_t x1, size_t y1, uint8_t code, const char *name)
 {
-	createButton(x1+10,y1+10,90,40,code,name);
+	createButton(x1 + 10, y1 + 10, 90, 40, code, name);
 }
 
-void Display::createButton(size_t x1, size_t y1, size_t sx, size_t sy,uint8_t code, const char *name)
+void Display::createButton(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name)
 {
 	if (name == nullptr)
 		return;
@@ -400,9 +393,9 @@ void Display::createButton(size_t x1, size_t y1, size_t sx, size_t sy,uint8_t co
 	*(writ++) = ',';
 	writ += rkp::dynIntToStr(writ, 3, y1);
 	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 3, x1+sx);
+	writ += rkp::dynIntToStr(writ, 3, x1 + sx);
 	*(writ++) = ',';
-	writ += rkp::dynIntToStr(writ, 3, y1+sy);
+	writ += rkp::dynIntToStr(writ, 3, y1 + sy);
 	*(writ++) = ',';
 	writ += rkp::dynIntToStr(writ, 3, code);
 	*(writ++) = ',';
@@ -412,19 +405,19 @@ void Display::createButton(size_t x1, size_t y1, size_t sx, size_t sy,uint8_t co
 	{
 		*(writ++) = *(name++);
 	}
-	*(writ++) = 0x0d;
+	*(writ++) = LF;
 	send(tmp_buf, writ - tmp_buf);
 	flush();
 }
 
 bool Display::intern_send_buf(uint8_t *buf, uint8_t len, uint8_t control)
 {
-	if (len <= 0)
+	if (len <= 0 || buf == nullptr || *buf == 0)
 		return false;
 	uint8_t fb = NAK;
 	do
 	{
-		uint8_t bcc = control;
+		uint32_t bcc = control;
 		Wire.beginTransmission(DISPLAY_WRITE_ADDR);
 		Wire.write(control); //DC1
 		Wire.write(len);	 //DataLength
@@ -434,7 +427,7 @@ bool Display::intern_send_buf(uint8_t *buf, uint8_t len, uint8_t control)
 			Wire.write(*it);
 			bcc += *it;
 		}
-		Wire.write(bcc);
+		Wire.write((unsigned char)(bcc % 256));
 		Wire.endTransmission();
 
 		delay(1);
@@ -444,7 +437,7 @@ bool Display::intern_send_buf(uint8_t *buf, uint8_t len, uint8_t control)
 			fb = Wire.read();
 		}
 
-		if (fb == NAK)
+		if (fb != ACK)
 		{
 			delay(100);
 			if (Serial)
@@ -453,6 +446,10 @@ bool Display::intern_send_buf(uint8_t *buf, uint8_t len, uint8_t control)
 				{
 					Serial.print(*it);
 					Serial.print(' ');
+				}
+				for (uint8_t *it = buf; it < buf + len; it++)
+				{
+					Serial.print((char)*it);
 				}
 				Serial.print("  fb = ");
 				Serial.println(fb);

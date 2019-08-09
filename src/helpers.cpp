@@ -63,13 +63,9 @@ size_t rkp::dynIntToStr(char* str, size_t lenMax, int32_t iNum) {
 	return len;
 }
 
-void rkp::cpystr(char* dest, char* src) {
+void rkp::cpystr(char* dest, const char* src) {
 	for (size_t cnt = 0; src[cnt] != 0; cnt++) {
 		dest[cnt] = src[cnt];
 	}
-}
-
-void rkp::cpystr(char* dest, const char* src) {
-	cpystr(dest, (char*)src);
 }
 

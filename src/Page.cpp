@@ -140,6 +140,9 @@ void Page::readSendBuffer(Graphics *pgr)
 			case 32:
 				touchEvent = go_current_page;
 				break;
+			case 33:
+				touchEvent = go_about_page;
+				break;
 
 			case 40:
 				touchEvent = menu_page_back;

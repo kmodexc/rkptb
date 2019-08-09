@@ -3,22 +3,12 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "_float.h"
+#include "DisplayText.h"
 
 #define WR_BUF_LEN 100
 #define SEND_BUF_LEN 250
 
 #define FCMD(pg,str) pg->command(str);pg->flush()
-
-struct DisplayText{
-	static const size_t STRLEN = 30;
-	char new_str[STRLEN];
-	char old_str[STRLEN];
-	bool drawn;
-	int x;
-	int y;
-	bool update;
-	bool drawCharwise;
-};
 
 struct DisplayFloat{
 	_float num;

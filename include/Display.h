@@ -57,7 +57,7 @@ class Display : public Graphics{
 	void command(const char* cmd,bool extra_null);
 	
 	
-	bool text(int x,int y,char* txt);
+	bool text(int x,int y,const char* txt);
 	
 	
 	bool text(DisplayText* txt);
