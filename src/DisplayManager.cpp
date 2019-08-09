@@ -25,11 +25,11 @@ void DisplayManager::initialize()
 
 	// display settings
 
-	disp.command("#TA");   // terminal off
+	disp.command("#TA"); // terminal off
 	disp.flush();
 	disp.command("#ZF6,"); // text font (6)
 	disp.flush();
-	disp.command("#DL");   // clear display
+	disp.command("#DL"); // clear display
 	disp.flush();
 	disp.command("#AQ1,"); // send bar graph value after each setting
 	disp.flush();
@@ -39,9 +39,10 @@ void DisplayManager::initialize()
 	menuPage.initialize(&disp);
 	currentPage.initialize(&disp);
 	aboutPage.initialize(&disp);
+	analogPage.initialize(&disp);
 
 	// set active page
-	activePage = &aboutPage;
+	activePage = &mainPage;
 
 	// paint active page
 	activePage->repaint(&disp);
@@ -107,6 +108,13 @@ uint8_t DisplayManager::getBarValue()
 	return touchVal;
 }
 
+ControlMode DisplayManager::getControlMode(){
+	if(activePage == &analogPage){
+		return AnalogInputs;
+	}
+	return TouchScreen;
+}
+
 void DisplayManager::loop(uint64_t loopCount)
 {
 	activePage->loop(loopCount, &disp);
@@ -121,37 +129,45 @@ void DisplayManager::loop(uint64_t loopCount)
 		{
 		case menu_page_back:
 			activePage = &mainPage;
-			Sleep(100);
+			Sleep(10);
 			activePage->repaint(&disp);
-			Sleep(100);
+			Sleep(10);
 			break;
 		case go_menu_page:
 			activePage = &menuPage;
-			Sleep(100);
+			Sleep(10);
 			activePage->repaint(&disp);
-			Sleep(100);
+			Sleep(10);
 			break;
 		case precision_toggle:
 			if (mainPage.getDigBefCom() >= 2)
 			{
 				mainPage.setDigBefCom(1);
+				analogPage.setDigBefCom(1);
 			}
 			else
 			{
 				mainPage.setDigBefCom(2);
+				analogPage.setDigBefCom(2);
 			}
 			break;
 		case go_current_page:
 			activePage = &currentPage;
-			Sleep(100);
+			Sleep(10);
 			activePage->repaint(&disp);
-			Sleep(100);
+			Sleep(10);
 			break;
 		case go_about_page:
 			activePage = &aboutPage;
-			Sleep(100);
+			Sleep(10);
 			activePage->repaint(&disp);
-			Sleep(100);
+			Sleep(10);
+			break;
+		case go_analog_page:
+			activePage = &analogPage;
+			Sleep(10);
+			activePage->repaint(&disp);
+			Sleep(10);
 			break;
 		default:
 			if (touchEvent == nothing)

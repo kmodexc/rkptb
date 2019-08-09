@@ -136,9 +136,9 @@ void MainPage::set_p_is(_float val, Unit un)
 
 void MainPage::set_ps_pre_set(_float val, Unit un)
 {
-	val.print(dt_ps.new_str + 20, dig_bef_com);
-	rkp::unit_print(dt_ps.new_str + 26, un);
-	dt_ps.update = true;
+	// val.print(dt_ps.new_str + 20, dig_bef_com);
+	// rkp::unit_print(dt_ps.new_str + 26, un);
+	// dt_ps.update = true;
 }
 
 void MainPage::set_ps_set(_float val, Unit un)

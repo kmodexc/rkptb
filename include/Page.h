@@ -41,7 +41,13 @@ enum TouchEvent{
 	menu_page_back,
 	precision_toggle,
 	go_current_page,
-	go_about_page
+	go_about_page,
+	go_analog_page
+};
+
+enum ControlMode{
+	TouchScreen,
+	AnalogInputs
 };
 
 namespace rkp{

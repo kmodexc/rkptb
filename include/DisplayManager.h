@@ -15,6 +15,7 @@
 #include "MenuPage.h"
 #include "CurrentPage.h"
 #include "AboutPage.h"
+#include "AnalogPage.h"
 
 
 class DisplayManager
@@ -32,6 +33,7 @@ class DisplayManager
 	MenuPage menuPage;
 	CurrentPage currentPage;
 	AboutPage aboutPage;
+	AnalogPage analogPage;
 
 	Page* activePage;
 
@@ -62,6 +64,9 @@ class DisplayManager
 	// request function for touch events
 	TouchEvent getTouchEvent();
 	uint8_t getBarValue();
+
+	// function to get control status for set-values
+	ControlMode getControlMode(); 
 	
 	// Update loop
 	void loop(uint64_t loopCount);
