@@ -21,6 +21,14 @@ class MainPage : public Page
 	uint8_t p_val;
 	uint8_t ps_val;
 
+	uint8_t mem_q_val;
+	uint8_t mem_p_val;
+	uint8_t mem_ps_val;
+
+	bool update_q;
+	bool update_p;
+	bool update_ps;
+
 	// digits before comma
 	uint8_t dig_bef_com;
 	
@@ -47,12 +55,12 @@ class MainPage : public Page
 	virtual TouchEvent getTouchEvent() override;
 	virtual uint8_t getTouchValue() override;
 
-	uint8_t getQBarVal() const;
-	uint8_t getPBarval() const;
-
 	void setDigBefCom(uint8_t);	
 	uint8_t getDigBefCom();
 
+	void setQBarValue(Graphics*,uint8_t);
+	void setPBarValue(Graphics*,uint8_t);
+	void setPSBarValue(Graphics*,uint8_t);
 
 	// Update loop
 	void loop(uint64_t loopCount,Graphics*);
