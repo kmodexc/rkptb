@@ -18,6 +18,7 @@ namespace ascii
     size_t clear_rectengular_space(uint8_t *dest,size_t dest_size,size_t x0, size_t y0, size_t x1, size_t y1);
     size_t set_button_colors(uint8_t *dest,size_t dest_size,uint8_t n1,uint8_t n2,uint8_t n3,uint8_t s1,uint8_t s2,uint8_t s3);
     size_t clear_display(uint8_t *dest,size_t dest_size);
+    size_t clear_touch_area(uint8_t *dest,size_t dest_size);
 }
 } // namespace commands
 } // namespace rkp

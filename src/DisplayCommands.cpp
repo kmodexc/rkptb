@@ -133,3 +133,16 @@ size_t rkp::commands::ascii::clear_display(uint8_t *dest,size_t dest_size){
     dest[2] = (uint8_t)'L';
     return 3;
 }
+
+size_t rkp::commands::ascii::clear_touch_area(uint8_t *dest,size_t dest_size){
+    if (dest == nullptr || dest_size < 7)
+        return 0;
+    dest[0] = (uint8_t)'#';
+    dest[1] = (uint8_t)'A';
+    dest[2] = (uint8_t)'L';
+    dest[3] = (uint8_t)'0';
+    dest[4] = (uint8_t)',';
+    dest[5] = (uint8_t)'0';
+    dest[6] = (uint8_t)',';
+    return 7;
+}

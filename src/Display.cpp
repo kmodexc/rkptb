@@ -334,9 +334,7 @@ void Display::clearScreen()
 	// delete display
 	send(tmp_buf,clear_display(tmp_buf,WR_BUF_LEN));
 	flush();
-	send(tmp_buf,set_button_colors(tmp_buf,WR_BUF_LEN,0,0,0,0,0,0));
-	flush();
-	send(tmp_buf,create_button_reseting(tmp_buf,WR_BUF_LEN,0,0,800,480,0,0," "));
+	send(tmp_buf,clear_touch_area(tmp_buf,WR_BUF_LEN));
 	flush();
 	send(tmp_buf,set_button_colors(tmp_buf,WR_BUF_LEN,8,1,2,8,1,7));
 	flush();
