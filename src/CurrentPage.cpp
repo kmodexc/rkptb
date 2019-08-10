@@ -32,11 +32,8 @@ void CurrentPage::initialize(Graphics *pg)
 void CurrentPage::repaint(Graphics *pg)
 {
 	// delete display
-	FCMD(pg, "#DL");
-	FCMD(pg, "#FE0,0,0,0,0,0,");		 // make colorless buttons
-	FCMD(pg, "#AT0,0,800,480,0,0,\x0d"); // make last buttons unreachable
-	FCMD(pg, "#FE8,1,2,8,1,7,");		 // make colored button
-	FCMD(pg, "#AT10,10,100,50,40,0,Back\x0d");
+	pg->clearScreen();
+	pg->createButton(0,0,30,"Back");
 
 	clearStr(dt_1.old_str, DisplayText::STRLEN);
 	clearStr(dt_2.old_str, DisplayText::STRLEN);

@@ -33,7 +33,7 @@ void AnalogPage::repaint(Graphics *pg)
 	
 	// measurement mode switch buttons
 
-	FCMD(pg, "#FE0,0,0,0,0,0,"); // make colorless buttons
+	pg->setButtonColor(BCInvisible);
 	pg->createButton(420, 100, 460, 120, 1, " ");
 	pg->createButton(420, 150, 460, 170, 2, " ");
 	pg->createButton(620, 100, 660, 120, 3, " ");

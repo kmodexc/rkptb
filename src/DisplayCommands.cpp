@@ -125,7 +125,8 @@ size_t rkp::commands::ascii::set_button_colors(uint8_t *dest, size_t dest_size, 
     return ((uint8_t *)writ - dest);
 }
 
-size_t rkp::commands::ascii::clear_display(uint8_t *dest,size_t dest_size){
+size_t rkp::commands::ascii::clear_display(uint8_t *dest, size_t dest_size)
+{
     if (dest == nullptr || dest_size < 3)
         return 0;
     dest[0] = (uint8_t)'#';
@@ -134,7 +135,8 @@ size_t rkp::commands::ascii::clear_display(uint8_t *dest,size_t dest_size){
     return 3;
 }
 
-size_t rkp::commands::ascii::clear_touch_area(uint8_t *dest,size_t dest_size){
+size_t rkp::commands::ascii::clear_touch_area(uint8_t *dest, size_t dest_size)
+{
     if (dest == nullptr || dest_size < 7)
         return 0;
     dest[0] = (uint8_t)'#';
@@ -145,4 +147,93 @@ size_t rkp::commands::ascii::clear_touch_area(uint8_t *dest,size_t dest_size){
     dest[5] = (uint8_t)'0';
     dest[6] = (uint8_t)',';
     return 7;
+}
+
+size_t rkp::commands::ascii::create_bargraph(uint8_t *dest, size_t dest_size, uint8_t code, size_t x1, size_t y1, size_t x2, size_t y2, uint8_t aw, uint8_t ew, uint8_t typ)
+{
+    if (dest == nullptr || dest_size < 32)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'B';
+    *(writ++) = 'R';
+    writ += rkp::dynIntToStr(writ, 2, code);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, x1);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, y1);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, x2);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, y2);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, aw);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, ew);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 1, typ);
+    *(writ++) = ',';
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::ascii::set_bargraph_font(uint8_t *dest, size_t dest_size, uint8_t font)
+{
+    if (dest == nullptr || dest_size < 5)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'B';
+    *(writ++) = 'F';
+    writ += rkp::dynIntToStr(writ, 1, font);
+    *(writ++) = ',';
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::ascii::set_bargraph_skale(uint8_t *dest, size_t dest_size, uint8_t code, size_t x1, size_t y1, const char *format)
+{
+    if (dest == nullptr || dest_size < 15)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'B';
+    *(writ++) = 'X';
+    writ += rkp::dynIntToStr(writ, 2, code);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, x1);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, y1);
+    *(writ++) = ',';
+    for (const char *it = format; *it != 0 && (uint8_t *)writ < (dest + dest_size - 1); it++)
+    {
+        *(writ++) = *it;
+    }
+    *(writ++) = CR;
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::ascii::enable_touch_set_bar(uint8_t *dest,size_t dest_size,uint8_t code)
+{
+    if (dest == nullptr || dest_size < 6)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'A';
+    *(writ++) = 'B';
+    writ += rkp::dynIntToStr(writ, 2, code);
+    *(writ++) = ',';
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::ascii::set_bar_val(uint8_t *dest,size_t dest_size,uint8_t code,uint8_t val){
+    if (dest == nullptr || dest_size < 10)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'B';
+    *(writ++) = 'A';
+    writ += rkp::dynIntToStr(writ, 2, code);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, val);
+    *(writ++) = ',';
+    return ((uint8_t *)writ - dest);
 }

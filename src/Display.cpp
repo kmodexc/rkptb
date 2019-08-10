@@ -54,7 +54,7 @@ bool Display::requestBuffer(uint8_t *buffer, size_t size)
 {
 	if (size > 0)
 	{
-		size_t len = request_send_buffer(tmp_buf,WR_BUF_LEN);
+		size_t len = request_send_buffer(tmp_buf, WR_BUF_LEN);
 		send(tmp_buf, len, DC2);
 
 		uint8_t *it = buffer;
@@ -97,7 +97,7 @@ void Display::command(const char *cmd, bool extra_null)
 	uint8_t *wr_it = tmp_buf;
 	while (*(it) != 0)
 	{
-		*(wr_it++) = (uint8_t)*(it++);
+		*(wr_it++) = (uint8_t) * (it++);
 	}
 	send(tmp_buf, (wr_it - tmp_buf) + (extra_null ? 1 : 0));
 }
@@ -312,7 +312,7 @@ void Display::dispNumber(DisplayFloat *num)
 
 void Display::clearRect(size_t x0, size_t y0, size_t x1, size_t y1)
 {
-	size_t len = clear_rectengular_space(tmp_buf,WR_BUF_LEN,x0,y0,x1,y1);
+	size_t len = clear_rectengular_space(tmp_buf, WR_BUF_LEN, x0, y0, x1, y1);
 	send(tmp_buf, len);
 }
 
@@ -332,11 +332,9 @@ bool Display::setFontColor(uint8_t vf, uint8_t hf)
 void Display::clearScreen()
 {
 	// delete display
-	send(tmp_buf,clear_display(tmp_buf,WR_BUF_LEN));
+	send(tmp_buf, clear_display(tmp_buf, WR_BUF_LEN));
 	flush();
-	send(tmp_buf,clear_touch_area(tmp_buf,WR_BUF_LEN));
-	flush();
-	send(tmp_buf,set_button_colors(tmp_buf,WR_BUF_LEN,8,1,2,8,1,7));
+	send(tmp_buf, clear_touch_area(tmp_buf, WR_BUF_LEN));
 	flush();
 }
 
@@ -349,6 +347,45 @@ void Display::createButton(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t c
 {
 	size_t len = create_button_reseting(tmp_buf, WR_BUF_LEN, x1, y1, x1 + sx, y1 + sy, 0, code, name);
 	send(tmp_buf, len);
+	flush();
+}
+
+void Display::setButtonColor(ButtonColor c)
+{
+	switch (c)
+	{
+	case BCInvisible:
+		send(tmp_buf, set_button_colors(tmp_buf, WR_BUF_LEN, 0, 0, 0, 0, 0, 0));
+		flush();
+		break;
+	default:
+		send(tmp_buf, set_button_colors(tmp_buf, WR_BUF_LEN, 8, 1, 2, 8, 1, 7));
+		flush();
+	}
+}
+
+void Display::createBargraph(size_t x1, size_t y1, uint8_t code, const char *name)
+{
+	createBargraph(x1, y1, 650, 50, code, name);
+}
+
+void Display::createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name)
+{
+	send(tmp_buf, create_bargraph(tmp_buf, WR_BUF_LEN, code, x1, y1, x1+sx, y1+sy, 0, 100, 5));
+	flush();
+	send(tmp_buf, set_bargraph_font(tmp_buf, WR_BUF_LEN, 6));
+	flush();
+	send(tmp_buf, set_bargraph_skale(tmp_buf, WR_BUF_LEN, code, x1 - 10, y1 + 10, "0=0.0;100=11.0"));
+	flush();
+	send(tmp_buf, enable_touch_set_bar(tmp_buf, WR_BUF_LEN, code));
+	flush();
+	send(tmp_buf, draw_text(tmp_buf, WR_BUF_LEN, x1 - 100, y1 + 10, name));
+	flush();
+}
+
+void Display::setBargraphVal(uint8_t code, uint8_t val)
+{
+	send(tmp_buf, set_bar_val(tmp_buf, WR_BUF_LEN, code, val));
 	flush();
 }
 

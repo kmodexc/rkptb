@@ -8,6 +8,7 @@ void MenuPage::repaint(Graphics *pg)
 {
     pg->clearScreen();
     
+    pg->setButtonColor(BCNormal);
     pg->createButton(0,0,30,"Back");
     pg->createButton(100,0,31,"Prec");
     pg->createButton(200,0,32," CurPg");

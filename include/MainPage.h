@@ -58,10 +58,6 @@ class MainPage : public Page
 	void setDigBefCom(uint8_t);	
 	uint8_t getDigBefCom();
 
-	void setQBarValue(Graphics*,uint8_t);
-	void setPBarValue(Graphics*,uint8_t);
-	void setPSBarValue(Graphics*,uint8_t);
-
 	// Update loop
 	void loop(uint64_t loopCount,Graphics*);
 	
