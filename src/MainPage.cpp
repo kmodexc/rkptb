@@ -49,9 +49,9 @@ void MainPage::repaint(Graphics *pg)
 
 	pg->setButtonColor(BCNormal);
 	pg->createButton(0, 0, 5, "Menu");
-	pg->createButton(100, 0, 6, "mem q");
-	pg->createButton(200, 0, 7, "mem p");
-	pg->createButton(300, 0, 8, "mem ps");
+	pg->createButton(200, 0, 6, "MEM Q");
+	pg->createButton(300, 0, 7, "MEM P");
+	pg->createButton(400, 0, 8, "MEM PS");
 
 	// measurement mode switch buttons
 	pg->setButtonColor(BCInvisible);

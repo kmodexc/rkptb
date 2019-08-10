@@ -32,7 +32,7 @@ void DisplayManager::initialize()
 	numberPage.initialize(&disp);
 
 	// set active page
-	activePage = &numberPage;
+	activePage = &mainPage;
 
 	// paint active page
 	activePage->repaint(&disp);

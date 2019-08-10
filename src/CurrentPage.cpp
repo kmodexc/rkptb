@@ -31,7 +31,7 @@ void CurrentPage::initialize(Graphics *pg)
 
 void CurrentPage::repaint(Graphics *pg)
 {
-	pg->createButton(0,0,30,"Back");
+	pg->createButton(0,0,5,"Menu");
 
 	clearStr(dt_1.old_str, DisplayText::STRLEN);
 	clearStr(dt_2.old_str, DisplayText::STRLEN);

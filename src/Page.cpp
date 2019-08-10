@@ -155,10 +155,6 @@ void Page::readSendBuffer(Graphics *pgr)
 				touchEvent = go_number_page;
 				break;
 
-			case 40:
-				touchEvent = menu_page_back;
-				break;
-
 			default:
 				TRACELN(rec_buffer[3]);
 				break;
