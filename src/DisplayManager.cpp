@@ -23,17 +23,6 @@ void DisplayManager::initialize()
 	// initialize display first
 	disp.initialize();
 
-	// display settings
-
-	disp.command("#TA"); // terminal off
-	disp.flush();
-	disp.command("#ZF6,"); // text font (6)
-	disp.flush();
-	disp.command("#DL"); // clear display
-	disp.flush();
-	disp.command("#AQ1,"); // send bar graph value after each setting
-	disp.flush();
-
 	// initialize pages
 	mainPage.initialize(&disp);
 	menuPage.initialize(&disp);

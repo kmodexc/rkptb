@@ -48,9 +48,7 @@ public:
 	/************************************************************************/
 	bool requestBuffer(uint8_t *buffer, size_t size);
 
-	void command(const char *cmd);
-
-	void command(const char *cmd, bool extra_null);
+	__attribute__((deprecated)) void command(const char *cmd);
 
 	bool text(int x, int y, const char *txt);
 

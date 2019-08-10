@@ -3,7 +3,7 @@
 
 #include "Application.h"
 
-using namespace rkp::commands::ascii;
+using namespace rkp::commands::bin;
 
 void Display::initialize()
 {
@@ -12,6 +12,17 @@ void Display::initialize()
 	Wire.begin();
 	delay(100);
 	Serial.begin(9600);
+
+	// display settings
+
+	send(tmp_buf,disable_terminal(tmp_buf,WR_BUF_LEN));
+	flush();
+	send(tmp_buf,set_font_type(tmp_buf,WR_BUF_LEN,6));
+	flush();
+	send(tmp_buf,set_instrument_val_sendmode(tmp_buf,WR_BUF_LEN,1));
+	flush();
+
+	clearScreen();
 }
 
 void Display::loop(unsigned long loopCount)
@@ -88,18 +99,13 @@ bool Display::requestBuffer(uint8_t *buffer, size_t size)
 
 void Display::command(const char *cmd)
 {
-	command(cmd, false);
-}
-
-void Display::command(const char *cmd, bool extra_null)
-{
 	const char *it = cmd;
 	uint8_t *wr_it = tmp_buf;
 	while (*(it) != 0)
 	{
-		*(wr_it++) = (uint8_t) * (it++);
+		*(wr_it++) = (uint8_t) *(it++);
 	}
-	send(tmp_buf, (wr_it - tmp_buf) + (extra_null ? 1 : 0));
+	send(tmp_buf, (wr_it - tmp_buf));
 }
 
 bool Display::text(int x, int y, const char *txt)

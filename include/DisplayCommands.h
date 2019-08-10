@@ -24,6 +24,9 @@ namespace ascii
     size_t set_bargraph_skale(uint8_t *dest,size_t dest_size,uint8_t code,size_t x1,size_t y2,const char* format);
     size_t enable_touch_set_bar(uint8_t *dest,size_t dest_size,uint8_t code);
     size_t set_bar_val(uint8_t *dest,size_t dest_size,uint8_t code,uint8_t val);
+    size_t disable_terminal(uint8_t *dest,size_t dest_size);
+    size_t set_font_type(uint8_t *dest,size_t dest_size,uint8_t font);
+    size_t set_instrument_val_sendmode(uint8_t *dest,size_t dest_size,uint8_t send_mode);
 }
 namespace bin
 {
@@ -40,6 +43,9 @@ namespace bin
     size_t set_bargraph_skale(uint8_t *dest,size_t dest_size,uint8_t code,size_t x1,size_t y2,const char* format);
     size_t enable_touch_set_bar(uint8_t *dest,size_t dest_size,uint8_t code);
     size_t set_bar_val(uint8_t *dest,size_t dest_size,uint8_t code,uint8_t val);
+    size_t disable_terminal(uint8_t *dest,size_t dest_size);
+    size_t set_font_type(uint8_t *dest,size_t dest_size,uint8_t font);
+    size_t set_instrument_val_sendmode(uint8_t *dest,size_t dest_size,uint8_t send_mode);
 }
 } // namespace commands
 } // namespace rkp

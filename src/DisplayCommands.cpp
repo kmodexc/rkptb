@@ -239,11 +239,47 @@ size_t rkp::commands::ascii::set_bar_val(uint8_t *dest, size_t dest_size, uint8_
     return ((uint8_t *)writ - dest);
 }
 
+size_t rkp::commands::ascii::disable_terminal(uint8_t *dest, size_t dest_size)
+{
+    if (dest == nullptr || dest_size < 3)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'T';
+    *(writ++) = 'A';
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::ascii::set_font_type(uint8_t *dest, size_t dest_size, uint8_t font)
+{
+    if (dest == nullptr || dest_size < 5)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'Z';
+    *(writ++) = 'F';
+    writ += rkp::dynIntToStr(writ, 1, font);
+    *(writ++) = ',';
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::ascii::set_instrument_val_sendmode(uint8_t *dest, size_t dest_size, uint8_t send_mode)
+{
+    if (dest == nullptr || dest_size < 5)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'A';
+    *(writ++) = 'Q';
+    writ += rkp::dynIntToStr(writ, 1, send_mode);
+    *(writ++) = ',';
+    return ((uint8_t *)writ - dest);
+}
+
 size_t rkp::commands::bin::create_button_reseting(uint8_t *dest, size_t dest_size, size_t x1, size_t y1, size_t x2, size_t y2, uint8_t set_code, uint8_t ret_code, const char *name)
 {
     if (dest == nullptr || dest_size < 14)
         return 0;
-
 
     uint8_t *writ = dest;
     *(writ++) = BIN_ESC;
@@ -450,4 +486,39 @@ size_t rkp::commands::bin::set_bar_val(uint8_t *dest, size_t dest_size, uint8_t 
     *(writ++) = code;
     *(writ++) = val;
     return (writ - dest);
+}
+
+size_t rkp::commands::bin::disable_terminal(uint8_t *dest, size_t dest_size)
+{
+    if (dest == nullptr || dest_size < 3)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'T';
+    *(writ++) = 'A';
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::bin::set_font_type(uint8_t *dest, size_t dest_size, uint8_t font)
+{
+    if (dest == nullptr || dest_size < 4)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'Z';
+    *(writ++) = 'F';
+    *(writ++) = font;
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::bin::set_instrument_val_sendmode(uint8_t *dest, size_t dest_size, uint8_t send_mode)
+{
+    if (dest == nullptr || dest_size < 4)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'A';
+    *(writ++) = 'Q';
+    *(writ++) = send_mode;
+    return ((uint8_t *)writ - dest);
 }
