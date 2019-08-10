@@ -276,6 +276,47 @@ size_t rkp::commands::ascii::set_instrument_val_sendmode(uint8_t *dest, size_t d
     return ((uint8_t *)writ - dest);
 }
 
+size_t rkp::commands::ascii::create_editbox(uint8_t *dest, size_t dest_size, uint8_t code, uint8_t maxChars, size_t x1, size_t y1, size_t x2, size_t y2, const char *defstr)
+{
+    if (dest == nullptr || dest_size < 25)
+        return 0;
+    char *writ = (char *)dest;
+    *(writ++) = '#';
+    *(writ++) = 'E';
+    *(writ++) = 'L';
+    writ += rkp::dynIntToStr(writ, 2, code);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 2, maxChars);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, x1);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, y1);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, x2);
+    *(writ++) = ',';
+    writ += rkp::dynIntToStr(writ, 3, y2);
+    *(writ++) = ',';
+    for (const char *it = defstr; it != nullptr && *it != 0 && (uint8_t *)writ < (dest + dest_size - 1); it++)
+    {
+        *(writ++) = *it;
+    }
+    *(writ++) = CR;
+    return ((uint8_t *)writ - dest);
+}
+
+size_t rkp::commands::ascii::activate_editbox(uint8_t *dest, size_t dest_size, uint8_t code)
+{
+    if (dest == nullptr || dest_size < 6)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = '#';
+    *(writ++) = 'E';
+    *(writ++) = 'A';
+    writ += rkp::dynIntToStr((char *)writ, 2, code);
+    *(writ++) = ',';
+    return (writ - dest);
+}
+
 size_t rkp::commands::bin::create_button_reseting(uint8_t *dest, size_t dest_size, size_t x1, size_t y1, size_t x2, size_t y2, uint8_t set_code, uint8_t ret_code, const char *name)
 {
     if (dest == nullptr || dest_size < 14)
@@ -492,33 +533,121 @@ size_t rkp::commands::bin::disable_terminal(uint8_t *dest, size_t dest_size)
 {
     if (dest == nullptr || dest_size < 3)
         return 0;
-    char *writ = (char *)dest;
+    uint8_t *writ = dest;
     *(writ++) = BIN_ESC;
     *(writ++) = 'T';
     *(writ++) = 'A';
-    return ((uint8_t *)writ - dest);
+    return (writ - dest);
 }
 
 size_t rkp::commands::bin::set_font_type(uint8_t *dest, size_t dest_size, uint8_t font)
 {
     if (dest == nullptr || dest_size < 4)
         return 0;
-    char *writ = (char *)dest;
+    uint8_t *writ = dest;
     *(writ++) = BIN_ESC;
     *(writ++) = 'Z';
     *(writ++) = 'F';
     *(writ++) = font;
-    return ((uint8_t *)writ - dest);
+    return (writ - dest);
 }
 
 size_t rkp::commands::bin::set_instrument_val_sendmode(uint8_t *dest, size_t dest_size, uint8_t send_mode)
 {
     if (dest == nullptr || dest_size < 4)
         return 0;
-    char *writ = (char *)dest;
+    uint8_t *writ = dest;
     *(writ++) = BIN_ESC;
     *(writ++) = 'A';
     *(writ++) = 'Q';
     *(writ++) = send_mode;
-    return ((uint8_t *)writ - dest);
+    return (writ - dest);
+}
+
+size_t rkp::commands::bin::create_editbox(uint8_t *dest, size_t dest_size, uint8_t code, uint8_t maxChars, size_t x1, size_t y1, size_t x2, size_t y2, const char *defstr)
+{
+    if (dest == nullptr || dest_size < 14)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'E';
+    *(writ++) = 'L';
+    *(writ++) = code;
+    *(writ++) = maxChars;
+    *(writ++) = x1 & 0xFF;
+    *(writ++) = (x1 >> 8) & 0xFF;
+    *(writ++) = y1 & 0xFF;
+    *(writ++) = (y1 >> 8) & 0xFF;
+    *(writ++) = x2 & 0xFF;
+    *(writ++) = (x2 >> 8) & 0xFF;
+    *(writ++) = y2 & 0xFF;
+    *(writ++) = (y2 >> 8) & 0xFF;
+    for (const char *it = defstr; it != nullptr && *it != 0 && (uint8_t *)writ < (dest + dest_size - 1); it++)
+    {
+        *(writ++) = *it;
+    }
+    *(writ++) = 0;
+    return (writ - dest);
+}
+
+size_t rkp::commands::bin::activate_editbox(uint8_t *dest, size_t dest_size, uint8_t code)
+{
+    if (dest == nullptr || dest_size < 4)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'E';
+    *(writ++) = 'A';
+    *(writ++) = code;
+    return (writ - dest);
+}
+
+size_t rkp::commands::bin::create_keyboard(uint8_t *dest, size_t dest_size, uint8_t code, const char *codestr)
+{
+    if (dest == nullptr || dest_size < 5)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'K';
+    *(writ++) = 'B';
+    *(writ++) = code;
+    for (const char *it = codestr; it != nullptr && *it != 0 && (uint8_t *)writ < (dest + dest_size - 1); it++)
+    {
+        *(writ++) = *it;
+    }
+    *(writ++) = 0;
+    return (writ - dest);
+}
+
+size_t rkp::commands::bin::position_keyboard(uint8_t *dest, size_t dest_size, size_t x1, size_t y1, size_t x2, size_t y2, uint8_t gap)
+{
+    if (dest == nullptr || dest_size < 12)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'K';
+    *(writ++) = 'P';
+    *(writ++) = x1 & 0xFF;
+    *(writ++) = (x1 >> 8) & 0xFF;
+    *(writ++) = y1 & 0xFF;
+    *(writ++) = (y1 >> 8) & 0xFF;
+    *(writ++) = x2 & 0xFF;
+    *(writ++) = (x2 >> 8) & 0xFF;
+    *(writ++) = y2 & 0xFF;
+    *(writ++) = (y2 >> 8) & 0xFF;
+    *(writ++) = gap;
+    return (writ - dest);
+}
+
+size_t rkp::commands::bin::activate_keyboard(uint8_t *dest, size_t dest_size, uint8_t code, uint8_t editbox)
+{
+    if (dest == nullptr || dest_size < 5)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'K';
+    *(writ++) = 'S';
+    *(writ++) = code;
+    *(writ++) = editbox;
+    return (writ - dest);
 }

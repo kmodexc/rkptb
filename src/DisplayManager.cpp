@@ -29,9 +29,10 @@ void DisplayManager::initialize()
 	currentPage.initialize(&disp);
 	aboutPage.initialize(&disp);
 	analogPage.initialize(&disp);
+	numberPage.initialize(&disp);
 
 	// set active page
-	activePage = &mainPage;
+	activePage = &numberPage;
 
 	// paint active page
 	activePage->repaint(&disp);
@@ -97,8 +98,10 @@ uint8_t DisplayManager::getBarValue()
 	return touchVal;
 }
 
-ControlMode DisplayManager::getControlMode(){
-	if(activePage == &analogPage){
+ControlMode DisplayManager::getControlMode()
+{
+	if (activePage == &analogPage)
+	{
 		return AnalogInputs;
 	}
 	return TouchScreen;
@@ -117,12 +120,14 @@ void DisplayManager::loop(uint64_t loopCount)
 		switch (ev)
 		{
 		case menu_page_back:
+			activePage->unshow(&disp);
 			activePage = &mainPage;
 			Sleep(10);
 			activePage->repaint(&disp);
 			Sleep(10);
 			break;
 		case go_menu_page:
+			activePage->unshow(&disp);
 			activePage = &menuPage;
 			Sleep(10);
 			activePage->repaint(&disp);
@@ -141,19 +146,29 @@ void DisplayManager::loop(uint64_t loopCount)
 			}
 			break;
 		case go_current_page:
+			activePage->unshow(&disp);
 			activePage = &currentPage;
 			Sleep(10);
 			activePage->repaint(&disp);
 			Sleep(10);
 			break;
 		case go_about_page:
+			activePage->unshow(&disp);
 			activePage = &aboutPage;
 			Sleep(10);
 			activePage->repaint(&disp);
 			Sleep(10);
 			break;
 		case go_analog_page:
+			activePage->unshow(&disp);
 			activePage = &analogPage;
+			Sleep(10);
+			activePage->repaint(&disp);
+			Sleep(10);
+			break;
+		case go_number_page:
+			activePage->unshow(&disp);
+			activePage = &numberPage;
 			Sleep(10);
 			activePage->repaint(&disp);
 			Sleep(10);

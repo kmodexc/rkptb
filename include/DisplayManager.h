@@ -16,6 +16,7 @@
 #include "CurrentPage.h"
 #include "AboutPage.h"
 #include "AnalogPage.h"
+#include "NumberPage.h"
 
 
 class DisplayManager
@@ -34,6 +35,7 @@ class DisplayManager
 	CurrentPage currentPage;
 	AboutPage aboutPage;
 	AnalogPage analogPage;
+	NumberPage numberPage;
 
 	Page* activePage;
 

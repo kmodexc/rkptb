@@ -42,7 +42,8 @@ enum TouchEvent{
 	precision_toggle,
 	go_current_page,
 	go_about_page,
-	go_analog_page
+	go_analog_page,
+	go_number_page
 };
 
 enum ControlMode{
@@ -79,6 +80,8 @@ class Page{
 	// Update loop
 	virtual void loop(uint64_t loopCount,Graphics* disp);
 
+	// methond to delete the screen
+	virtual void unshow(Graphics *pg);
 
 	private:
 

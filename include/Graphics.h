@@ -8,7 +8,6 @@
 #define WR_BUF_LEN 100
 #define SEND_BUF_LEN 250
 
-
 enum ButtonColor
 {
 	BCNormal,
@@ -51,4 +50,10 @@ public:
 	virtual void createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name) = 0;
 
 	virtual void setBargraphVal(uint8_t code, uint8_t val);
+
+	virtual void createEditbox(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code) = 0;
+
+	virtual void createNumpad(size_t xq, size_t y1, uint8_t editbox) = 0;
+
+	virtual void unshowEditbox(uint8_t editbox) = 0;
 };

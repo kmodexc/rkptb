@@ -71,12 +71,18 @@ public:
 	void createButton(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name);
 
 	void setButtonColor(ButtonColor c);
-	
+
 	void createBargraph(size_t x1, size_t y1, uint8_t code, const char *name);
 
 	void createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name);
 
-	void setBargraphVal(uint8_t code,uint8_t val);
+	void setBargraphVal(uint8_t code, uint8_t val);
+
+	void createEditbox(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code);
+
+	void createNumpad(size_t xq, size_t y1, uint8_t editbox);
+
+	void unshowEditbox(uint8_t editbox);
 
 protected:
 	/************************************************************************/

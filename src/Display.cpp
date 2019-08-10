@@ -15,11 +15,11 @@ void Display::initialize()
 
 	// display settings
 
-	send(tmp_buf,disable_terminal(tmp_buf,WR_BUF_LEN));
+	send(tmp_buf, disable_terminal(tmp_buf, WR_BUF_LEN));
 	flush();
-	send(tmp_buf,set_font_type(tmp_buf,WR_BUF_LEN,6));
+	send(tmp_buf, set_font_type(tmp_buf, WR_BUF_LEN, 6));
 	flush();
-	send(tmp_buf,set_instrument_val_sendmode(tmp_buf,WR_BUF_LEN,1));
+	send(tmp_buf, set_instrument_val_sendmode(tmp_buf, WR_BUF_LEN, 1));
 	flush();
 
 	clearScreen();
@@ -103,7 +103,7 @@ void Display::command(const char *cmd)
 	uint8_t *wr_it = tmp_buf;
 	while (*(it) != 0)
 	{
-		*(wr_it++) = (uint8_t) *(it++);
+		*(wr_it++) = (uint8_t) * (it++);
 	}
 	send(tmp_buf, (wr_it - tmp_buf));
 }
@@ -117,7 +117,7 @@ bool Display::text(int x, int y, const char *txt)
 
 bool Display::text(DisplayText *txt)
 {
-	return text(txt, 2);
+	return text(txt, 3);
 }
 
 bool Display::text(DisplayText *txt, uint8_t max_redraw_char)
@@ -377,7 +377,7 @@ void Display::createBargraph(size_t x1, size_t y1, uint8_t code, const char *nam
 
 void Display::createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name)
 {
-	send(tmp_buf, create_bargraph(tmp_buf, WR_BUF_LEN, code, x1, y1, x1+sx, y1+sy, 0, 100, 5));
+	send(tmp_buf, create_bargraph(tmp_buf, WR_BUF_LEN, code, x1, y1, x1 + sx, y1 + sy, 0, 100, 5));
 	flush();
 	send(tmp_buf, set_bargraph_font(tmp_buf, WR_BUF_LEN, 6));
 	flush();
@@ -392,6 +392,30 @@ void Display::createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t
 void Display::setBargraphVal(uint8_t code, uint8_t val)
 {
 	send(tmp_buf, set_bar_val(tmp_buf, WR_BUF_LEN, code, val));
+	flush();
+}
+
+void Display::createEditbox(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code)
+{
+	send(tmp_buf, create_editbox(tmp_buf, WR_BUF_LEN, code, 0, x1, y1, x1 + sx, y1 + sy, ""));
+	flush();
+	send(tmp_buf, activate_editbox(tmp_buf, WR_BUF_LEN, code));
+	flush();
+}
+
+void Display::createNumpad(size_t x1, size_t y1, uint8_t editbox)
+{
+	send(tmp_buf, create_keyboard(tmp_buf, WR_BUF_LEN, 1, "123|456|789|\\80.\\D"));
+	flush();
+	send(tmp_buf, position_keyboard(tmp_buf, WR_BUF_LEN, x1,y1,x1+250,y1+300,10));
+	flush();
+	send(tmp_buf, activate_keyboard(tmp_buf, WR_BUF_LEN, 1,editbox));
+	flush();
+}
+
+void Display::unshowEditbox(uint8_t editbox)
+{
+	send(tmp_buf, activate_editbox(tmp_buf, WR_BUF_LEN, 0));
 	flush();
 }
 

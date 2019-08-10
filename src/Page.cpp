@@ -67,10 +67,15 @@ void Page::loop(uint64_t loopCount, Graphics *disp)
 	readSendBuffer(disp);
 }
 
+void Page::unshow(Graphics *pg)
+{
+	pg->clearScreen();
+}
+
 void Page::readSendBuffer(Graphics *pgr)
 {
 	// wait until prev message was pulled
-	if (touchEvent == nothing && pgr->requestBuffer(rec_buffer, 5))
+	if (touchEvent == nothing && pgr->requestBuffer(rec_buffer, 9))
 	{
 
 		// touch button response
@@ -146,6 +151,9 @@ void Page::readSendBuffer(Graphics *pgr)
 			case 34:
 				touchEvent = go_analog_page;
 				break;
+			case 35:
+				touchEvent = go_number_page;
+				break;
 
 			case 40:
 				touchEvent = menu_page_back;
@@ -157,6 +165,7 @@ void Page::readSendBuffer(Graphics *pgr)
 			}
 		}
 
+		// Bargraph
 		if (rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'B' && rec_buffer[2] == 2)
 		{
 			eventVal = rec_buffer[4];
@@ -174,6 +183,14 @@ void Page::readSendBuffer(Graphics *pgr)
 			default:
 				break;
 			}
+		}
+
+		// Editbox
+		if (rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'E')
+		{
+			// to do...
+			eventVal = 0;
+			touchEvent = nothing;
 		}
 	}
 }

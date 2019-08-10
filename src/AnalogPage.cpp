@@ -27,8 +27,6 @@ void AnalogPage::initialize(Graphics *pg)
 
 void AnalogPage::repaint(Graphics *pg)
 {
-	pg->clearScreen();
-
 	pg->createButton(0, 0, 30, "Back");
 	
 	// measurement mode switch buttons

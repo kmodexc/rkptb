@@ -31,8 +31,6 @@ void CurrentPage::initialize(Graphics *pg)
 
 void CurrentPage::repaint(Graphics *pg)
 {
-	// delete display
-	pg->clearScreen();
 	pg->createButton(0,0,30,"Back");
 
 	clearStr(dt_1.old_str, DisplayText::STRLEN);
