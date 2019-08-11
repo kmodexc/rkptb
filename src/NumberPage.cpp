@@ -19,7 +19,9 @@ TouchEvent NumberPage::getTouchEvent()
     {
     case editbox_data_avail:
         // todo here
-        
+        for(uint8_t *it = Page::getTouchData();it != nullptr && *it != 0 && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE;it++){
+            
+        }
         return nothing;
         break;
     default:
