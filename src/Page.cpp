@@ -24,6 +24,13 @@ void Page::initialize(Graphics *pg)
 
 	// init touch event
 	touchEvent = nothing;
+
+	mVisible = false;
+}
+
+void Page::repaint(Graphics *pg)
+{
+	mVisible = true;
 }
 
 void Page::set_q_set(_float val, Unit un)
@@ -70,6 +77,12 @@ void Page::loop(uint64_t loopCount, Graphics *disp)
 void Page::unshow(Graphics *pg)
 {
 	pg->clearScreen();
+	mVisible = false;
+}
+
+bool Page::isVisible()
+{
+	return mVisible;
 }
 
 void Page::readSendBuffer(Graphics *pgr)
@@ -107,32 +120,41 @@ void Page::readSendBuffer(Graphics *pgr)
 			case 8:
 				touchEvent = mem_ps_tgl;
 				break;
-
+			case 9:
+				touchEvent = go_numpad_q;
+				break;
+			case 10:
+				touchEvent = go_numpad_p;
+				break;
 			case 11:
+				touchEvent = go_numpad_ps;
+				break;
+
+			case 51:
 				touchEvent = ps_val_1;
 				break;
-			case 12:
+			case 52:
 				touchEvent = ps_val_2;
 				break;
-			case 13:
+			case 53:
 				touchEvent = ps_val_3;
 				break;
-			case 14:
+			case 54:
 				touchEvent = ps_val_4;
 				break;
-			case 15:
+			case 55:
 				touchEvent = ps_val_5;
 				break;
-			case 16:
+			case 56:
 				touchEvent = ps_val_6;
 				break;
-			case 17:
+			case 57:
 				touchEvent = ps_val_7;
 				break;
-			case 18:
+			case 58:
 				touchEvent = ps_val_8;
 				break;
-			case 19:
+			case 59:
 				touchEvent = ps_val_9;
 				break;
 

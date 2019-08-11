@@ -3,6 +3,14 @@
 #include "Page.h"
 #include "pindefs.h"
 #include "helpers.h"
+#include "NumberPage.h"
+
+enum MainPageMode{
+	MPM_Normal,
+	MPM_Numpad_Q,
+	MPM_Numpad_P,
+	MPM_Numpad_PS
+};
 
 class MainPage : public Page
 {
@@ -31,7 +39,11 @@ class MainPage : public Page
 
 	// digits before comma
 	uint8_t dig_bef_com;
+
+	NumberPage numberPage;
 	
+	MainPageMode mpmode;
+
 	//functions
 	public:
 

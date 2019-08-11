@@ -6,6 +6,8 @@ void MenuPage::initialize(Graphics *pg)
 }
 void MenuPage::repaint(Graphics *pg)
 {    
+    Page::repaint(pg);
+
     pg->setButtonColor(BCNormal);
     pg->createButton(0,0,30,"MainPage");
     pg->createButton(100,0,31,"Tgl|Prec");

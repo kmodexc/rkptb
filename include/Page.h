@@ -26,6 +26,9 @@ enum TouchEvent
 	mem_q_tgl,
 	mem_p_tgl,
 	mem_ps_tgl,
+	go_numpad_q,
+	go_numpad_p,
+	go_numpad_ps,
 
 	ps_val_1,
 	ps_val_2,
@@ -70,7 +73,7 @@ public:
 	virtual void initialize(Graphics *);
 
 	// repaint the whole page (clear and pait evrything)
-	virtual void repaint(Graphics *) = 0;
+	virtual void repaint(Graphics *);
 
 	// Setter for live values
 	virtual void set_q_set(_float val, Unit un);
@@ -90,7 +93,11 @@ public:
 	// methond to delete the screen
 	virtual void unshow(Graphics *pg);
 
+	virtual bool isVisible();
+
 private:
+	bool mVisible;
+
 	// receive buffer
 	uint8_t rec_buffer[DISPM_REC_BUFFER_SIZE];
 

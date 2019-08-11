@@ -4,7 +4,7 @@ void AnalogPage::initialize(Graphics *pg)
 {
 	Page::initialize(pg);
 
-    dig_bef_com = 1;
+	dig_bef_com = 1;
 
 	dt_q.drawCharwise = true;
 	dt_q.x = 100;
@@ -27,8 +27,10 @@ void AnalogPage::initialize(Graphics *pg)
 
 void AnalogPage::repaint(Graphics *pg)
 {
+	Page::repaint(pg);
+
 	pg->createButton(0, 0, 5, "Menu");
-	
+
 	// measurement mode switch buttons
 
 	pg->setButtonColor(BCInvisible);
@@ -129,4 +131,3 @@ void AnalogPage::loop(uint64_t loopCount, Graphics *pg)
 		Page::loop(loopCount, pg);
 	}
 }
-

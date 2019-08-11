@@ -41,10 +41,13 @@ MainPage::~MainPage()
 void MainPage::initialize(Graphics *pg)
 {
 	Page::initialize(pg);
+	numberPage.initialize(pg);
 }
 
 void MainPage::repaint(Graphics *pg)
 {
+	Page::repaint(pg);
+
 	pg->clearScreen();
 
 	pg->setButtonColor(BCNormal);
@@ -52,6 +55,10 @@ void MainPage::repaint(Graphics *pg)
 	pg->createButton(200, 0, 6, "MEM Q");
 	pg->createButton(300, 0, 7, "MEM P");
 	pg->createButton(400, 0, 8, "MEM PS");
+
+	pg->createButton(500, 0, 9, "SET Q");
+	pg->createButton(600, 0, 10, "SET P");
+	pg->createButton(700, 0, 11, "SET PS");
 
 	// measurement mode switch buttons
 	pg->setButtonColor(BCInvisible);
@@ -61,12 +68,12 @@ void MainPage::repaint(Graphics *pg)
 	pg->createButton(620, 150, 40, 20, 4, "");
 
 	// bar graphs
-	pg->createBargraph(100,250,1,"Q");
-	pg->setBargraphVal(1,q_val);
-	pg->createBargraph(100,320,2,"P");
-	pg->setBargraphVal(2,p_val);
-	pg->createBargraph(100,390,3,"PS");
-	pg->setBargraphVal(3,ps_val);
+	pg->createBargraph(100, 250, 1, "Q");
+	pg->setBargraphVal(1, q_val);
+	pg->createBargraph(100, 320, 2, "P");
+	pg->setBargraphVal(2, p_val);
+	pg->createBargraph(100, 390, 3, "PS");
+	pg->setBargraphVal(3, ps_val);
 
 	// reset str
 	rkp::clearStr(dt_q.old_str, DisplayText::STRLEN);
@@ -137,19 +144,43 @@ TouchEvent MainPage::getTouchEvent()
 		tmp = mem_q_val;
 		mem_q_val = q_val;
 		q_val = tmp;
-		update_q = true;;
+		update_q = true;
 		break;
 	case mem_p_tgl:
 		tmp = mem_p_val;
 		mem_p_val = p_val;
 		p_val = tmp;
-		update_p = true;;
+		update_p = true;
 		break;
 	case mem_ps_tgl:
 		tmp = mem_ps_val;
 		mem_ps_val = ps_val;
 		ps_val = tmp;
-		update_ps = true;;
+		update_ps = true;
+		break;
+	case go_numpad_q:
+		mpmode = MPM_Numpad_Q;
+		break;
+	case go_numpad_p:
+		mpmode = MPM_Numpad_P;
+		break;
+	case go_numpad_ps:
+		mpmode = MPM_Numpad_PS;
+		break;
+	case number_page_enter:
+		if(mpmode == MPM_Numpad_Q){
+			// ev = bar_graph_q;
+			// td = numberPage.getValue();
+		}
+		if(mpmode == MPM_Numpad_P){
+			// ev = bar_graph_p;
+			// td = numberPage.getValue();
+		}
+		if(mpmode == MPM_Numpad_PS){
+			// ev = bar_graph_ps;
+			// td = numberPage.getValue();
+		}
+		mpmode = MPM_Normal;
 		break;
 	default:
 		break;
@@ -185,42 +216,68 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 {
 	bool drawn_this_iter = false;
 
-	if (!drawn_this_iter && ((loopCount / 5) % 4) == 0)
+	if (!numberPage.isVisible() && (mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
 	{
-		drawn_this_iter = pg->text(&dt_q);
+		unshow(pg);
+		numberPage.repaint(pg);
+		drawn_this_iter = true;
 	}
 
-	if (!drawn_this_iter && (((loopCount / 5) + 1) % 4) == 0)
+	if (numberPage.isVisible() && mpmode == MPM_Normal)
 	{
-		drawn_this_iter = pg->text(&dt_p);
+		numberPage.unshow(pg);
+		repaint(pg);
+		drawn_this_iter = true;
 	}
 
-	if (!drawn_this_iter && (((loopCount / 5) + 2) % 4) == 0)
+	if (mpmode == MPM_Normal)
 	{
-		drawn_this_iter = pg->text(&dt_ps);
+		if (!drawn_this_iter && ((loopCount / 5) % 4) == 0)
+		{
+			drawn_this_iter = pg->text(&dt_q);
+		}
+
+		if (!drawn_this_iter && (((loopCount / 5) + 1) % 4) == 0)
+		{
+			drawn_this_iter = pg->text(&dt_p);
+		}
+
+		if (!drawn_this_iter && (((loopCount / 5) + 2) % 4) == 0)
+		{
+			drawn_this_iter = pg->text(&dt_ps);
+		}
+
+		if (!drawn_this_iter && update_q)
+		{
+			pg->setBargraphVal(1, q_val);
+			drawn_this_iter = true;
+			update_q = false;
+		}
+
+		if (!drawn_this_iter && update_p)
+		{
+			pg->setBargraphVal(2, p_val);
+			drawn_this_iter = true;
+			update_p = false;
+		}
+
+		if (!drawn_this_iter && update_ps)
+		{
+			pg->setBargraphVal(3, ps_val);
+			drawn_this_iter = true;
+			update_ps = false;
+		}
+
+		if (!drawn_this_iter && (((loopCount / 5) + 3) % 4) == 0 && ((loopCount % 5) == 0))
+		{
+			drawn_this_iter = true;
+			Page::loop(loopCount, pg);
+		}
 	}
 
-	if(!drawn_this_iter && update_q){
-		pg->setBargraphVal(1,q_val);
-		drawn_this_iter = true;
-		update_q = false;
-	}
-
-	if(!drawn_this_iter && update_p){
-		pg->setBargraphVal(2,p_val);
-		drawn_this_iter = true;
-		update_p = false;
-	}
-
-	if(!drawn_this_iter && update_ps){
-		pg->setBargraphVal(3,ps_val);
-		drawn_this_iter = true;
-		update_ps = false;
-	}
-
-	if (!drawn_this_iter && (((loopCount / 5) + 3) % 4) == 0 && ((loopCount % 5) == 0))
+	if (!drawn_this_iter && (mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
 	{
+		numberPage.loop(loopCount, pg);
 		drawn_this_iter = true;
-		Page::loop(loopCount, pg);
 	}
 }
