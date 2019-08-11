@@ -407,7 +407,7 @@ void Display::createNumpad(size_t x1, size_t y1, uint8_t editbox)
 {
 	send(tmp_buf, create_keyboard(tmp_buf, WR_BUF_LEN, 1, "123|456|789|\\80.\\D"));
 	flush();
-	send(tmp_buf, position_keyboard(tmp_buf, WR_BUF_LEN, x1,y1,x1+250,y1+300,10));
+	send(tmp_buf, position_keyboard(tmp_buf, WR_BUF_LEN, x1,y1,x1+300,y1+300,10));
 	flush();
 	send(tmp_buf, activate_keyboard(tmp_buf, WR_BUF_LEN, 1,editbox));
 	flush();

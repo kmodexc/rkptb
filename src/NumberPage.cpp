@@ -2,6 +2,7 @@
 
 void NumberPage::initialize(Graphics *pg)
 {
+    mVal = 0.0f;
     Page::initialize(pg);
 }
 
@@ -15,14 +16,29 @@ void NumberPage::repaint(Graphics *pg)
 TouchEvent NumberPage::getTouchEvent()
 {
     TouchEvent ev = Page::getTouchEvent();
+    float exp = 1.0f;
+    uint8_t *ptr_point = Page::getTouchData();
     switch (ev)
     {
     case editbox_data_avail:
         // todo here
-        for(uint8_t *it = Page::getTouchData();it != nullptr && *it != 0 && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE;it++){
-            
+        mVal = 0.0f;
+        for (uint8_t *it = Page::getTouchData(); it != nullptr && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE && *it != '.' && *it != 0; it++)
+        {
+            ptr_point++;
         }
-        return nothing;
+        for (uint8_t *it = ptr_point - 1; it != nullptr && it >= Page::getTouchData() && *it != 0 && *it <= '9' && *it >= '0'; it--)
+        {
+            mVal += (float)(*it - 48) * exp;
+            exp *= 10;
+        }
+        exp = 0.1f;
+        for (uint8_t *it = ptr_point + 1; it != nullptr && it >= Page::getTouchData() && *it != 0 && *it <= '9' && *it >= '0'; it--)
+        {
+            mVal += (float)((*it - 48) * exp);
+            exp /= 10;
+        }
+        ev = number_page_enter;
         break;
     default:
         break;
@@ -46,4 +62,8 @@ void NumberPage::unshow(Graphics *pg)
 {
     pg->unshowEditbox(1);
     Page::unshow(pg);
+}
+
+float NumberPage::getValue(){
+    return mVal;
 }

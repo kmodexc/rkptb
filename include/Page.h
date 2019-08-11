@@ -48,7 +48,8 @@ enum TouchEvent
 	go_analog_page,
 	go_number_page,
 
-	editbox_data_avail
+	editbox_data_avail,
+	number_page_enter
 };
 
 enum ControlMode

@@ -4,6 +4,8 @@
 
 class NumberPage : public Page
 {
+	float mVal;
+
 public:
 	// Initialization
 	virtual void initialize(Graphics *) override;
@@ -18,5 +20,7 @@ public:
 	// Update loop
 	virtual void loop(uint64_t loopCount, Graphics *disp) override;
 
-	virtual void unshow(Graphics*) override;
+	virtual void unshow(Graphics *) override;
+
+	float getValue();
 };
