@@ -125,13 +125,13 @@ TouchEvent MainPage::getTouchEvent()
 	switch (ev)
 	{
 	case bar_graph_q:
-		q_val = getTouchValue();
+		q_val = *getTouchData();
 		break;
 	case bar_graph_p:
-		p_val = getTouchValue();
+		p_val = *getTouchData();
 		break;
 	case bar_graph_ps:
-		ps_val = getTouchValue();
+		ps_val = *getTouchData();
 		break;
 	case mem_q_tgl:
 		tmp = mem_q_val;
@@ -157,9 +157,9 @@ TouchEvent MainPage::getTouchEvent()
 	return ev;
 }
 
-uint8_t MainPage::getTouchValue()
+uint8_t *MainPage::getTouchData()
 {
-	return Page::getTouchValue();
+	return Page::getTouchData();
 }
 
 void MainPage::setDigBefCom(uint8_t dbc)
