@@ -15,15 +15,24 @@ void NumberPage::repaint(Graphics *pg)
 TouchEvent NumberPage::getTouchEvent()
 {
     TouchEvent ev = Page::getTouchEvent();
-
+    switch (ev)
+    {
+    case editbox_data_avail:
+        // todo here
+        
+        return nothing;
+        break;
+    default:
+        break;
+    }
     return ev;
 }
 
-uint8_t NumberPage::getTouchValue()
+uint8_t *NumberPage::getTouchData()
 {
-    uint8_t tv = Page::getTouchValue();
+    uint8_t *td = Page::getTouchData();
 
-    return tv;
+    return td;
 }
 
 void NumberPage::loop(uint64_t loopCount, Graphics *pg)

@@ -57,9 +57,9 @@ TouchEvent Page::getTouchEvent()
 	return ret_ev;
 }
 
-uint8_t Page::getTouchValue()
+uint8_t *Page::getTouchData()
 {
-	return eventVal;
+	return eventData;
 }
 
 void Page::loop(uint64_t loopCount, Graphics *disp)
@@ -164,7 +164,7 @@ void Page::readSendBuffer(Graphics *pgr)
 		// Bargraph
 		if (rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'B' && rec_buffer[2] == 2)
 		{
-			eventVal = rec_buffer[4];
+			eventData[0] = rec_buffer[4];
 			switch (rec_buffer[3])
 			{
 			case 2:
@@ -185,8 +185,14 @@ void Page::readSendBuffer(Graphics *pgr)
 		if (rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'E')
 		{
 			// to do...
-			eventVal = 0;
-			touchEvent = nothing;
+			uint8_t len = rec_buffer[2];
+			uint8_t *tdit = eventData;
+			uint8_t *rbit = rec_buffer;
+			while (rbit < (rec_buffer + len + 3) && rbit < (rec_buffer + DISPM_REC_BUFFER_SIZE) && tdit < (eventData + TOUCH_EVENT_DATA_SIZE))
+			{
+				*(tdit++) = *(rbit++);
+			}
+			touchEvent = editbox_data_avail;
 		}
 	}
 }

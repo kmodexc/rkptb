@@ -13,7 +13,7 @@ public:
 
 	// request function for touch events
 	virtual TouchEvent getTouchEvent() override;
-	virtual uint8_t getTouchValue() override;
+	virtual uint8_t *getTouchData() override;
 
 	// Update loop
 	virtual void loop(uint64_t loopCount, Graphics *disp) override;

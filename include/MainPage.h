@@ -53,7 +53,7 @@ class MainPage : public Page
 	void set_ps_set(_float val,Unit un);
 
 	virtual TouchEvent getTouchEvent() override;
-	virtual uint8_t getTouchValue() override;
+	virtual uint8_t *getTouchData() override;
 
 	void setDigBefCom(uint8_t);	
 	uint8_t getDigBefCom();

@@ -177,7 +177,7 @@ void DisplayManager::loop(uint64_t loopCount)
 			if (touchEvent == nothing)
 			{
 				touchEvent = ev;
-				touchVal = activePage->getTouchValue();
+				touchVal = activePage->getTouchData()[0];
 			}
 		}
 	}
