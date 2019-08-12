@@ -44,6 +44,8 @@ class MainPage : public Page
 	
 	MainPageMode mpmode;
 
+	uint8_t td[TOUCH_EVENT_DATA_SIZE];
+
 	//functions
 	public:
 

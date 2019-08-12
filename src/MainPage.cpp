@@ -125,7 +125,11 @@ void MainPage::set_ps_set(_float val, Unit un)
 
 TouchEvent MainPage::getTouchEvent()
 {
-	TouchEvent ev = Page::getTouchEvent();
+	TouchEvent ev;
+	if (mpmode == MPM_Normal)
+		ev = Page::getTouchEvent();
+	else
+		ev = numberPage.getTouchEvent();
 
 	uint8_t tmp = 0;
 
@@ -168,17 +172,46 @@ TouchEvent MainPage::getTouchEvent()
 		mpmode = MPM_Numpad_PS;
 		break;
 	case number_page_enter:
-		if(mpmode == MPM_Numpad_Q){
-			// ev = bar_graph_q;
-			// td = numberPage.getValue();
+		if (mpmode == MPM_Numpad_Q)
+		{
+			ev = bar_graph_q;
+			if (true || dt_q.new_str[16] == 'V')
+			{
+				td[0] = (uint8_t)numberPage.getValue() * 10;
+				q_val = td[0];
+				update_q = true;
+			}
+			else if (dt_q.new_str[17] == 'A')
+			{
+				td[0] = (uint8_t)((numberPage.getValue() - 4.0f) * 25.0f / 4.0f);
+				q_val = td[0];
+				update_q = true;
+			}
+			TRACELN(dt_q.new_str[16]);
 		}
-		if(mpmode == MPM_Numpad_P){
-			// ev = bar_graph_p;
-			// td = numberPage.getValue();
+		if (mpmode == MPM_Numpad_P)
+		{
+			ev = bar_graph_p;
+			if (dt_p.new_str[16] == 'V')
+			{
+				td[0] = (uint8_t)numberPage.getValue() * 10;
+			}
+			else if (dt_p.new_str[17] == 'A')
+			{
+				td[0] = (uint8_t)((numberPage.getValue() - 4.0f) * 25.0f / 4.0f);
+			}
 		}
-		if(mpmode == MPM_Numpad_PS){
-			// ev = bar_graph_ps;
-			// td = numberPage.getValue();
+		if (mpmode == MPM_Numpad_PS)
+		{
+			ev = bar_graph_ps;
+			if (dt_ps.new_str[16] == 'V')
+			{
+				td[0] = (uint8_t)numberPage.getValue() * 10;
+			}
+			else if (dt_ps.new_str[17] == 'A')
+			{
+				td[0] = (uint8_t)((numberPage.getValue() - 4.0f) * 25.0f / 4.0f);
+			}
 		}
 		mpmode = MPM_Normal;
 		break;

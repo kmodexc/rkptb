@@ -32,7 +32,7 @@ void DisplayManager::initialize()
 	numberPage.initialize(&disp);
 
 	// set active page
-	activePage = &numberPage;
+	activePage = &mainPage;
 
 	// paint active page
 	activePage->repaint(&disp);
@@ -122,16 +122,32 @@ void DisplayManager::loop(uint64_t loopCount)
 		case menu_page_back:
 			activePage->unshow(&disp);
 			activePage = &mainPage;
-			Sleep(10);
 			activePage->repaint(&disp);
-			Sleep(10);
 			break;
 		case go_menu_page:
 			activePage->unshow(&disp);
 			activePage = &menuPage;
-			Sleep(10);
 			activePage->repaint(&disp);
-			Sleep(10);
+			break;
+		case go_current_page:
+			activePage->unshow(&disp);
+			activePage = &currentPage;
+			activePage->repaint(&disp);
+			break;
+		case go_about_page:
+			activePage->unshow(&disp);
+			activePage = &aboutPage;
+			activePage->repaint(&disp);
+			break;
+		case go_analog_page:
+			activePage->unshow(&disp);
+			activePage = &analogPage;
+			activePage->repaint(&disp);
+			break;
+		case go_number_page:
+			activePage->unshow(&disp);
+			activePage = &numberPage;
+			activePage->repaint(&disp);
 			break;
 		case precision_toggle:
 			if (mainPage.getDigBefCom() >= 2)
@@ -145,39 +161,13 @@ void DisplayManager::loop(uint64_t loopCount)
 				analogPage.setDigBefCom(2);
 			}
 			break;
-		case go_current_page:
-			activePage->unshow(&disp);
-			activePage = &currentPage;
-			Sleep(10);
-			activePage->repaint(&disp);
-			Sleep(10);
-			break;
-		case go_about_page:
-			activePage->unshow(&disp);
-			activePage = &aboutPage;
-			Sleep(10);
-			activePage->repaint(&disp);
-			Sleep(10);
-			break;
-		case go_analog_page:
-			activePage->unshow(&disp);
-			activePage = &analogPage;
-			Sleep(10);
-			activePage->repaint(&disp);
-			Sleep(10);
-			break;
-		case go_number_page:
-			activePage->unshow(&disp);
-			activePage = &numberPage;
-			Sleep(10);
-			activePage->repaint(&disp);
-			Sleep(10);
-			break;
+
 		default:
 			if (touchEvent == nothing)
 			{
 				touchEvent = ev;
 				touchVal = activePage->getTouchData()[0];
+				TRACELN(touchVal);
 			}
 		}
 	}
