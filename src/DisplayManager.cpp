@@ -120,33 +120,32 @@ void DisplayManager::loop(uint64_t loopCount)
 		switch (ev)
 		{
 		case menu_page_back:
-			activePage->unshow(&disp);
-			activePage = &mainPage;
-			activePage->repaint(&disp);
-			break;
 		case go_menu_page:
-			activePage->unshow(&disp);
-			activePage = &menuPage;
-			activePage->repaint(&disp);
-			break;
 		case go_current_page:
-			activePage->unshow(&disp);
-			activePage = &currentPage;
-			activePage->repaint(&disp);
-			break;
 		case go_about_page:
-			activePage->unshow(&disp);
-			activePage = &aboutPage;
-			activePage->repaint(&disp);
-			break;
 		case go_analog_page:
-			activePage->unshow(&disp);
-			activePage = &analogPage;
-			activePage->repaint(&disp);
-			break;
 		case go_number_page:
 			activePage->unshow(&disp);
-			activePage = &numberPage;
+			switch (ev) {
+			case menu_page_back:
+				activePage = &mainPage;
+				break;
+			case go_menu_page:
+				activePage = &menuPage;
+				break;
+			case go_current_page:
+				activePage = &currentPage;
+				break;
+			case go_about_page:
+				activePage = &aboutPage;
+				break;
+			case go_analog_page:
+				activePage = &analogPage;
+				break;
+			case go_number_page:
+				activePage = &numberPage;
+				break;
+			}
 			activePage->repaint(&disp);
 			break;
 		case precision_toggle:
@@ -161,7 +160,6 @@ void DisplayManager::loop(uint64_t loopCount)
 				analogPage.setDigBefCom(2);
 			}
 			break;
-
 		default:
 			if (touchEvent == nothing)
 			{
