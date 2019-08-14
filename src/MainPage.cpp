@@ -175,7 +175,7 @@ TouchEvent MainPage::getTouchEvent()
 		if (mpmode == MPM_Numpad_Q)
 		{
 			ev = bar_graph_q;
-			if (true || dt_q.new_str[16] == 'V')
+			if (dt_q.new_str[16] == 'V')
 			{
 				td[0] = (uint8_t)numberPage.getValue() * 10;
 				q_val = td[0];
@@ -187,7 +187,6 @@ TouchEvent MainPage::getTouchEvent()
 				q_val = td[0];
 				update_q = true;
 			}
-			TRACELN(dt_q.new_str[16]);
 		}
 		if (mpmode == MPM_Numpad_P)
 		{

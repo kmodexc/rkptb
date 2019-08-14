@@ -126,7 +126,8 @@ void DisplayManager::loop(uint64_t loopCount)
 		case go_analog_page:
 		case go_number_page:
 			activePage->unshow(&disp);
-			switch (ev) {
+			switch (ev)
+			{
 			case menu_page_back:
 				activePage = &mainPage;
 				break;
@@ -145,6 +146,8 @@ void DisplayManager::loop(uint64_t loopCount)
 			case go_number_page:
 				activePage = &numberPage;
 				break;
+			default:
+				break;
 			}
 			activePage->repaint(&disp);
 			break;
@@ -160,12 +163,16 @@ void DisplayManager::loop(uint64_t loopCount)
 				analogPage.setDigBefCom(2);
 			}
 			break;
+		case bar_graph_q:
+			TRACELN("bar graph change");
 		default:
 			if (touchEvent == nothing)
 			{
 				touchEvent = ev;
 				touchVal = activePage->getTouchData()[0];
-				TRACELN(touchVal);
+			}
+			else{
+				TRACELN("Event discarded");
 			}
 		}
 	}
