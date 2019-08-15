@@ -127,22 +127,30 @@ TouchEvent MainPage::getTouchEvent()
 {
 	TouchEvent ev;
 	if (mpmode == MPM_Normal)
+	{
 		ev = Page::getTouchEvent();
+		touchDataPtr = Page::getTouchData();
+	}
 	else
+	{
 		ev = numberPage.getTouchEvent();
+		touchDataPtr = numberPage.getTouchData();
+	}
 
 	uint8_t tmp = 0;
 
 	switch (ev)
 	{
+	case nothing:
+		break;
 	case bar_graph_q:
-		q_val = *getTouchData();
+		q_val = *(double *)getTouchData();
 		break;
 	case bar_graph_p:
-		p_val = *getTouchData();
+		p_val = *(double *)getTouchData();
 		break;
 	case bar_graph_ps:
-		ps_val = *getTouchData();
+		ps_val = *(double *)getTouchData();
 		break;
 	case mem_q_tgl:
 		tmp = mem_q_val;
@@ -172,49 +180,54 @@ TouchEvent MainPage::getTouchEvent()
 		mpmode = MPM_Numpad_PS;
 		break;
 	case number_page_enter:
+		TRACELN("number page enter handler start");
 		if (mpmode == MPM_Numpad_Q)
 		{
 			ev = bar_graph_q;
+			double *lpflt = (double *)(touchDataBuffer+10);
+			double val = numberPage.getValue();
+			*lpflt = val;
+			break;
 			if (dt_q.new_str[16] == 'V')
-			{
-				td[0] = (uint8_t)numberPage.getValue() * 10;
-				q_val = td[0];
-				update_q = true;
-			}
+				*lpflt = numberPage.getValue();
 			else if (dt_q.new_str[17] == 'A')
-			{
-				td[0] = (uint8_t)((numberPage.getValue() - 4.0f) * 25.0f / 4.0f);
-				q_val = td[0];
-				update_q = true;
-			}
+				*lpflt = numberPage.getValue() * 5.0 / 8.0;
+			break;
+			q_val = *lpflt;
+			touchDataPtr = touchDataBuffer;
+			update_q = true;
 		}
+		break;
 		if (mpmode == MPM_Numpad_P)
 		{
 			ev = bar_graph_p;
+			double *lpflt = (double *)(touchDataBuffer+10);
 			if (dt_p.new_str[16] == 'V')
-			{
-				td[0] = (uint8_t)numberPage.getValue() * 10;
-			}
+				*lpflt = numberPage.getValue();
 			else if (dt_p.new_str[17] == 'A')
-			{
-				td[0] = (uint8_t)((numberPage.getValue() - 4.0f) * 25.0f / 4.0f);
-			}
+				*lpflt = numberPage.getValue() * 5.0 / 8.0;
+			p_val = *lpflt;
+			touchDataPtr = touchDataBuffer;
+			update_p = true;
 		}
 		if (mpmode == MPM_Numpad_PS)
 		{
 			ev = bar_graph_ps;
+			double *lpflt = (double *)touchDataBuffer;
 			if (dt_ps.new_str[16] == 'V')
-			{
-				td[0] = (uint8_t)numberPage.getValue() * 10;
-			}
+				*lpflt = numberPage.getValue();
 			else if (dt_ps.new_str[17] == 'A')
-			{
-				td[0] = (uint8_t)((numberPage.getValue() - 4.0f) * 25.0f / 4.0f);
-			}
+				*lpflt = numberPage.getValue() * 5.0 / 8.0;
+			ps_val = *lpflt;
+			touchDataPtr = touchDataBuffer;
+			update_ps = true;
 		}
+		TRACELN("numpad enter");
 		mpmode = MPM_Normal;
 		break;
 	default:
+		TRACE((int)ev);
+		TRACELN("  unknown event forewarded");
 		break;
 	}
 	return ev;
@@ -222,7 +235,7 @@ TouchEvent MainPage::getTouchEvent()
 
 uint8_t *MainPage::getTouchData()
 {
-	return Page::getTouchData();
+	return touchDataPtr;
 }
 
 void MainPage::setDigBefCom(uint8_t dbc)
@@ -248,7 +261,8 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 {
 	bool drawn_this_iter = false;
 
-	if (!numberPage.isVisible() && (mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
+	if (!numberPage.isVisible() &&
+		(mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
 	{
 		unshow(pg);
 		numberPage.repaint(pg);
@@ -281,21 +295,21 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 
 		if (!drawn_this_iter && update_q)
 		{
-			pg->setBargraphVal(1, q_val);
+			pg->setBargraphVal(1, q_val * 254.0 / 11.0);
 			drawn_this_iter = true;
 			update_q = false;
 		}
 
 		if (!drawn_this_iter && update_p)
 		{
-			pg->setBargraphVal(2, p_val);
+			pg->setBargraphVal(2, p_val * 254.0 / 11.0);
 			drawn_this_iter = true;
 			update_p = false;
 		}
 
 		if (!drawn_this_iter && update_ps)
 		{
-			pg->setBargraphVal(3, ps_val);
+			pg->setBargraphVal(3, ps_val * 254.0 / 11.0);
 			drawn_this_iter = true;
 			update_ps = false;
 		}
@@ -307,7 +321,8 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 		}
 	}
 
-	if (!drawn_this_iter && (mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
+	if (!drawn_this_iter &&
+		(mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
 	{
 		numberPage.loop(loopCount, pg);
 		drawn_this_iter = true;

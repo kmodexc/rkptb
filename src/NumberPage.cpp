@@ -2,14 +2,14 @@
 
 void NumberPage::initialize(Graphics *pg)
 {
-    mVal = 0.0f;
+    mVal = 0.0;
     Page::initialize(pg);
 }
 
 void NumberPage::repaint(Graphics *pg)
 {
     Page::repaint(pg);
-    pg->createButton(0, 0, 5, "Menu");
+    //pg->createButton(0, 0, 5, "Menu");
     pg->createEditbox(250, 50, 300, 50, 1);
     pg->createNumpad(250, 150, 1);
 }
@@ -17,31 +17,36 @@ void NumberPage::repaint(Graphics *pg)
 TouchEvent NumberPage::getTouchEvent()
 {
     TouchEvent ev = Page::getTouchEvent();
-    float exp = 1.0f;
+    double exp = 1.0;
     uint8_t *ptr_point = Page::getTouchData();
     switch (ev)
     {
+    case nothing:
+        break;
     case editbox_data_avail:
+        TRACELN("editbox event start");
         // todo here
-        mVal = 0.0f;
+        mVal = 0.0;
         for (uint8_t *it = Page::getTouchData(); it != nullptr && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE && *it != '.' && *it != 0; it++)
         {
             ptr_point++;
         }
         for (uint8_t *it = ptr_point - 1; it != nullptr && it >= Page::getTouchData() && *it != 0 && *it <= '9' && *it >= '0'; it--)
         {
-            mVal += (float)(*it - 48) * exp;
+            mVal += (*it - 48) * exp;
             exp *= 10;
         }
         exp = 0.1f;
         for (uint8_t *it = ptr_point + 1; it != nullptr && it >= Page::getTouchData() && *it != 0 && *it <= '9' && *it >= '0'; it--)
         {
-            mVal += (float)((*it - 48) * exp);
+            mVal += ((*it - 48) * exp);
             exp /= 10;
         }
+        TRACELN("editbox_data_avail to number_page_enter");
         ev = number_page_enter;
         break;
     default:
+        TRACELN("unknown event detected (numpage)");
         break;
     }
     return ev;
@@ -65,6 +70,6 @@ void NumberPage::unshow(Graphics *pg)
     Page::unshow(pg);
 }
 
-float NumberPage::getValue(){
+double NumberPage::getValue(){
     return mVal;
 }

@@ -126,16 +126,15 @@ void Application::loop(unsigned long loopCount)
 		break;
 
 	case bar_graph_q:
-		last_q = _float::direct(11 * disp_man.getBarValue());
+		last_q = disp_man.getBarValue();
 		q_set.setSetVal(last_q);
-		TRACELN("bar graph change app");
 		break;
 	case bar_graph_p:
-		last_p = _float::direct(11 * disp_man.getBarValue());
+		last_p = disp_man.getBarValue();
 		p_set.setSetVal(last_p);
 		break;
 	case bar_graph_ps:
-		last_ps = _float::direct(11 * disp_man.getBarValue());
+		last_ps = disp_man.getBarValue();
 		parSet.setSetVal(last_ps);
 		break;
 

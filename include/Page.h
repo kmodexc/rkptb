@@ -6,7 +6,9 @@
 #include "pindefs.h"
 
 #define DISPM_REC_BUFFER_SIZE 10
-#define TOUCH_EVENT_DATA_SIZE 10
+
+// must be greater 8 bcs a double (8-bytes) is stored in it
+#define TOUCH_EVENT_DATA_SIZE 20
 
 enum Unit
 {

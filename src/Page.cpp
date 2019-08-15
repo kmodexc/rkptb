@@ -186,7 +186,8 @@ void Page::readSendBuffer(Graphics *pgr)
 		// Bargraph
 		if (rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'B' && rec_buffer[2] == 2)
 		{
-			eventData[0] = rec_buffer[4];
+			double* pdbl_val = (double*)eventData;
+			*pdbl_val = (double)(rec_buffer[4])*11.0/254.0;
 			switch (rec_buffer[3])
 			{
 			case 2:
@@ -206,6 +207,7 @@ void Page::readSendBuffer(Graphics *pgr)
 		// Editbox
 		if (rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'E')
 		{
+			//TRACELN("editbox data avil detected");
 			// to do...
 			uint8_t len = rec_buffer[2];
 			uint8_t *tdit = eventData;
@@ -215,6 +217,8 @@ void Page::readSendBuffer(Graphics *pgr)
 				*(tdit++) = *(rbit++);
 			}
 			touchEvent = editbox_data_avail;
+
+			//TRACELN("editbox data avail send");
 		}
 	}
 }

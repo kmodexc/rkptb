@@ -4,7 +4,7 @@
 
 class NumberPage : public Page
 {
-	float mVal;
+	double mVal;
 
 public:
 	// Initialization
@@ -22,5 +22,5 @@ public:
 
 	virtual void unshow(Graphics *) override;
 
-	float getValue();
+	double getValue();
 };

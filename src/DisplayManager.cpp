@@ -93,7 +93,7 @@ TouchEvent DisplayManager::getTouchEvent()
 	return ev;
 }
 
-uint8_t DisplayManager::getBarValue()
+double DisplayManager::getBarValue()
 {
 	return touchVal;
 }
@@ -169,7 +169,7 @@ void DisplayManager::loop(uint64_t loopCount)
 			if (touchEvent == nothing)
 			{
 				touchEvent = ev;
-				touchVal = activePage->getTouchData()[0];
+				touchVal = *((double*)activePage->getTouchData());
 			}
 			else{
 				TRACELN("Event discarded");

@@ -14,6 +14,7 @@ public:
 	_float(int32_t i);
 	_float(uint32_t i);
 	_float(float f);
+	_float(double d);
 	_float &operator+=(_float &f);
 	_float &operator+=(int f);
 	_float &operator-=(_float &f);
@@ -25,6 +26,7 @@ public:
 	_float &operator/=(int);
 	_float &operator=(const _float &f);
 	_float &operator=(float f);
+	_float &operator=(double d);
 	_float &operator=(int32_t f);
 	_float &operator=(uint32_t f);
 

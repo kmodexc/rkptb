@@ -22,6 +22,9 @@ _float::_float(float f)
 {
   this->operator=(f);
 }
+_float::_float(double d){
+  this->operator=(d);
+}
 _float &_float::operator+=(_float &f)
 {
   data += f.data;
@@ -75,6 +78,10 @@ _float &_float::operator=(const _float &f)
 _float &_float::operator=(float f)
 {
   data = f * 100.0;
+  return *this;
+}
+_float &_float::operator=(double d){
+  data = round(d*100.0);
   return *this;
 }
 _float &_float::operator=(int32_t i)

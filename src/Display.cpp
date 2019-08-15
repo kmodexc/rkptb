@@ -377,11 +377,11 @@ void Display::createBargraph(size_t x1, size_t y1, uint8_t code, const char *nam
 
 void Display::createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name)
 {
-	send(tmp_buf, create_bargraph(tmp_buf, WR_BUF_LEN, code, x1, y1, x1 + sx, y1 + sy, 0, 100, 5));
+	send(tmp_buf, create_bargraph(tmp_buf, WR_BUF_LEN, code, x1, y1, x1 + sx, y1 + sy, 0, 254, 5));
 	flush();
 	send(tmp_buf, set_bargraph_font(tmp_buf, WR_BUF_LEN, 6));
 	flush();
-	send(tmp_buf, set_bargraph_skale(tmp_buf, WR_BUF_LEN, code, x1 - 10, y1 + 10, "0=0.0;100=11.0"));
+	send(tmp_buf, set_bargraph_skale(tmp_buf, WR_BUF_LEN, code, x1 - 10, y1 + 10, "0=0.0;254=11.0"));
 	flush();
 	send(tmp_buf, enable_touch_set_bar(tmp_buf, WR_BUF_LEN, code));
 	flush();

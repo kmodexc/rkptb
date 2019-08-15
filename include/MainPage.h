@@ -25,13 +25,13 @@ class MainPage : public Page
 	DisplayText dt_ps;
 
 	// values of bargraphs in case of pages change
-	uint8_t q_val;
-	uint8_t p_val;
-	uint8_t ps_val;
+	double q_val;
+	double p_val;
+	double ps_val;
 
-	uint8_t mem_q_val;
-	uint8_t mem_p_val;
-	uint8_t mem_ps_val;
+	double mem_q_val;
+	double mem_p_val;
+	double mem_ps_val;
 
 	bool update_q;
 	bool update_p;
@@ -44,7 +44,8 @@ class MainPage : public Page
 	
 	MainPageMode mpmode;
 
-	uint8_t td[TOUCH_EVENT_DATA_SIZE];
+	uint8_t touchDataBuffer[TOUCH_EVENT_DATA_SIZE];
+	uint8_t *touchDataPtr;
 
 	//functions
 	public:
