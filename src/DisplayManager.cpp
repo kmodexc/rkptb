@@ -93,7 +93,7 @@ TouchEvent DisplayManager::getTouchEvent()
 	return ev;
 }
 
-double DisplayManager::getBarValue()
+_float DisplayManager::getBarValue()
 {
 	return touchVal;
 }
@@ -164,14 +164,15 @@ void DisplayManager::loop(uint64_t loopCount)
 			}
 			break;
 		case bar_graph_q:
-			TRACELN("bar graph change");
+			TRACELN("bar graph change (dispman)");
 		default:
 			if (touchEvent == nothing)
 			{
 				touchEvent = ev;
-				touchVal = *((double*)activePage->getTouchData());
+				_float::deserialize(activePage->getTouchData(), TOUCH_EVENT_DATA_SIZE, &touchVal);
 			}
-			else{
+			else
+			{
 				TRACELN("Event discarded");
 			}
 		}

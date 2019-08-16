@@ -24,8 +24,6 @@ TouchEvent NumberPage::getTouchEvent()
     case nothing:
         break;
     case editbox_data_avail:
-        TRACELN("editbox event start");
-        // todo here
         mVal = 0.0;
         for (uint8_t *it = Page::getTouchData(); it != nullptr && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE && *it != '.' && *it != 0; it++)
         {
@@ -42,7 +40,6 @@ TouchEvent NumberPage::getTouchEvent()
             mVal += ((*it - 48) * exp);
             exp /= 10;
         }
-        TRACELN("editbox_data_avail to number_page_enter");
         ev = number_page_enter;
         break;
     default:

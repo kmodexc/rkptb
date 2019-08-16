@@ -1,6 +1,8 @@
 #ifndef _PINDEFS_H_
 #define _PINDEFS_H_
 
+#include "Arduino.h"
+
 const int32_t PIN_ERROR = 33;
 const int32_t PIN_RELEASE = 31;
 const uint8_t DISPLAY_WRITE_ADDR = 0x6F;

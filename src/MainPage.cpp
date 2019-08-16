@@ -5,31 +5,27 @@ MainPage::MainPage()
 {
 	dig_bef_com = 1;
 
-	mem_q_val = 0;
-	mem_p_val = 0;
-	mem_ps_val = 0;
+	mQ.update = false;
+	mP.update = false;
+	mPS.update = false;
 
-	update_q = false;
-	update_p = false;
-	update_ps = false;
+	mQ.dispTex.drawCharwise = true;
+	mQ.dispTex.x = 100;
+	mQ.dispTex.y = 100;
+	rkp::clearStr(mQ.dispTex.new_str, DisplayText::STRLEN);
+	rkp::cpystr(mQ.dispTex.new_str, "Menge :");
 
-	dt_q.drawCharwise = true;
-	dt_q.x = 100;
-	dt_q.y = 100;
-	rkp::clearStr(dt_q.new_str, DisplayText::STRLEN);
-	rkp::cpystr(dt_q.new_str, "Menge :");
+	mP.dispTex.drawCharwise = true;
+	mP.dispTex.x = 100;
+	mP.dispTex.y = 150;
+	rkp::clearStr(mP.dispTex.new_str, DisplayText::STRLEN);
+	rkp::cpystr(mP.dispTex.new_str, "Druck :");
 
-	dt_p.drawCharwise = true;
-	dt_p.x = 100;
-	dt_p.y = 150;
-	rkp::clearStr(dt_p.new_str, DisplayText::STRLEN);
-	rkp::cpystr(dt_p.new_str, "Druck :");
-
-	dt_ps.drawCharwise = true;
-	dt_ps.x = 100;
-	dt_ps.y = 200;
-	rkp::clearStr(dt_ps.new_str, DisplayText::STRLEN);
-	rkp::cpystr(dt_ps.new_str, "Param :");
+	mPS.dispTex.drawCharwise = true;
+	mPS.dispTex.x = 100;
+	mPS.dispTex.y = 200;
+	rkp::clearStr(mPS.dispTex.new_str, DisplayText::STRLEN);
+	rkp::cpystr(mPS.dispTex.new_str, "Param :");
 
 } //MainPage
 
@@ -69,58 +65,58 @@ void MainPage::repaint(Graphics *pg)
 
 	// bar graphs
 	pg->createBargraph(100, 250, 1, "Q");
-	pg->setBargraphVal(1, q_val);
+	pg->setBargraphVal(1, voltToBgVal(mQ.val));
 	pg->createBargraph(100, 320, 2, "P");
-	pg->setBargraphVal(2, p_val);
+	pg->setBargraphVal(2, voltToBgVal(mP.val));
 	pg->createBargraph(100, 390, 3, "PS");
-	pg->setBargraphVal(3, ps_val);
+	pg->setBargraphVal(3, voltToBgVal(mPS.val));
 
 	// reset str
-	rkp::clearStr(dt_q.old_str, DisplayText::STRLEN);
-	rkp::clearStr(dt_p.old_str, DisplayText::STRLEN);
-	rkp::clearStr(dt_ps.old_str, DisplayText::STRLEN);
+	rkp::clearStr(mQ.dispTex.old_str, DisplayText::STRLEN);
+	rkp::clearStr(mP.dispTex.old_str, DisplayText::STRLEN);
+	rkp::clearStr(mPS.dispTex.old_str, DisplayText::STRLEN);
 }
 
 void MainPage::set_q_set(_float val, Unit un)
 {
-	val.print(dt_q.new_str + 10, dig_bef_com);
-	rkp::unit_print(dt_q.new_str + 16, un);
-	dt_q.update = true;
+	val.print(mQ.dispTex.new_str + 10, dig_bef_com);
+	rkp::unit_print(mQ.dispTex.new_str + 16, un);
+	mQ.dispTex.update = true;
 }
 
 void MainPage::set_q_is(_float val, Unit un)
 {
-	val.print(dt_q.new_str + 20, dig_bef_com);
-	rkp::unit_print(dt_q.new_str + 26, un);
-	dt_q.update = true;
+	val.print(mQ.dispTex.new_str + 20, dig_bef_com);
+	rkp::unit_print(mQ.dispTex.new_str + 26, un);
+	mQ.dispTex.update = true;
 }
 
 void MainPage::set_p_set(_float val, Unit un)
 {
-	val.print(dt_p.new_str + 10, dig_bef_com);
-	rkp::unit_print(dt_p.new_str + 16, un);
-	dt_p.update = true;
+	val.print(mP.dispTex.new_str + 10, dig_bef_com);
+	rkp::unit_print(mP.dispTex.new_str + 16, un);
+	mP.dispTex.update = true;
 }
 
 void MainPage::set_p_is(_float val, Unit un)
 {
-	val.print(dt_p.new_str + 20, dig_bef_com);
-	rkp::unit_print(dt_p.new_str + 26, un);
-	dt_p.update = true;
+	val.print(mP.dispTex.new_str + 20, dig_bef_com);
+	rkp::unit_print(mP.dispTex.new_str + 26, un);
+	mP.dispTex.update = true;
 }
 
 void MainPage::set_ps_pre_set(_float val, Unit un)
 {
-	// val.print(dt_ps.new_str + 20, dig_bef_com);
-	// rkp::unit_print(dt_ps.new_str + 26, un);
-	// dt_ps.update = true;
+	// val.print(mPS.dispTex.new_str + 20, dig_bef_com);
+	// rkp::unit_print(mPS.dispTex.new_str + 26, un);
+	// mPS.dispTex.update = true;
 }
 
 void MainPage::set_ps_set(_float val, Unit un)
 {
-	val.print(dt_ps.new_str + 10, dig_bef_com);
-	rkp::unit_print(dt_ps.new_str + 16, un);
-	dt_ps.update = true;
+	val.print(mPS.dispTex.new_str + 10, dig_bef_com);
+	rkp::unit_print(mPS.dispTex.new_str + 16, un);
+	mPS.dispTex.update = true;
 }
 
 TouchEvent MainPage::getTouchEvent()
@@ -137,38 +133,27 @@ TouchEvent MainPage::getTouchEvent()
 		touchDataPtr = numberPage.getTouchData();
 	}
 
-	uint8_t tmp = 0;
-
 	switch (ev)
 	{
 	case nothing:
 		break;
 	case bar_graph_q:
-		q_val = *(double *)getTouchData();
+		bargraphChangeEventHandler(&mQ);
 		break;
 	case bar_graph_p:
-		p_val = *(double *)getTouchData();
+		bargraphChangeEventHandler(&mP);
 		break;
 	case bar_graph_ps:
-		ps_val = *(double *)getTouchData();
+		bargraphChangeEventHandler(&mPS);
 		break;
 	case mem_q_tgl:
-		tmp = mem_q_val;
-		mem_q_val = q_val;
-		q_val = tmp;
-		update_q = true;
+		memTglEventHandler(&mQ);
 		break;
 	case mem_p_tgl:
-		tmp = mem_p_val;
-		mem_p_val = p_val;
-		p_val = tmp;
-		update_p = true;
+		memTglEventHandler(&mP);
 		break;
 	case mem_ps_tgl:
-		tmp = mem_ps_val;
-		mem_ps_val = ps_val;
-		ps_val = tmp;
-		update_ps = true;
+		memTglEventHandler(&mPS);
 		break;
 	case go_numpad_q:
 		mpmode = MPM_Numpad_Q;
@@ -180,49 +165,21 @@ TouchEvent MainPage::getTouchEvent()
 		mpmode = MPM_Numpad_PS;
 		break;
 	case number_page_enter:
-		TRACELN("number page enter handler start");
 		if (mpmode == MPM_Numpad_Q)
 		{
 			ev = bar_graph_q;
-			double *lpflt = (double *)(touchDataBuffer+10);
-			double val = numberPage.getValue();
-			*lpflt = val;
-			break;
-			if (dt_q.new_str[16] == 'V')
-				*lpflt = numberPage.getValue();
-			else if (dt_q.new_str[17] == 'A')
-				*lpflt = numberPage.getValue() * 5.0 / 8.0;
-			break;
-			q_val = *lpflt;
-			touchDataPtr = touchDataBuffer;
-			update_q = true;
+			numpadEnterHandler(&mQ);
 		}
-		break;
 		if (mpmode == MPM_Numpad_P)
 		{
 			ev = bar_graph_p;
-			double *lpflt = (double *)(touchDataBuffer+10);
-			if (dt_p.new_str[16] == 'V')
-				*lpflt = numberPage.getValue();
-			else if (dt_p.new_str[17] == 'A')
-				*lpflt = numberPage.getValue() * 5.0 / 8.0;
-			p_val = *lpflt;
-			touchDataPtr = touchDataBuffer;
-			update_p = true;
+			numpadEnterHandler(&mP);
 		}
 		if (mpmode == MPM_Numpad_PS)
 		{
 			ev = bar_graph_ps;
-			double *lpflt = (double *)touchDataBuffer;
-			if (dt_ps.new_str[16] == 'V')
-				*lpflt = numberPage.getValue();
-			else if (dt_ps.new_str[17] == 'A')
-				*lpflt = numberPage.getValue() * 5.0 / 8.0;
-			ps_val = *lpflt;
-			touchDataPtr = touchDataBuffer;
-			update_ps = true;
+			numpadEnterHandler(&mPS);
 		}
-		TRACELN("numpad enter");
 		mpmode = MPM_Normal;
 		break;
 	default:
@@ -243,12 +200,12 @@ void MainPage::setDigBefCom(uint8_t dbc)
 	dig_bef_com = dbc;
 	if (dig_bef_com == 1)
 	{
-		dt_q.new_str[14] = ' ';
-		dt_p.new_str[14] = ' ';
-		dt_ps.new_str[14] = ' ';
-		dt_q.new_str[24] = ' ';
-		dt_p.new_str[24] = ' ';
-		dt_ps.new_str[24] = ' ';
+		mQ.dispTex.new_str[14] = ' ';
+		mP.dispTex.new_str[14] = ' ';
+		mPS.dispTex.new_str[14] = ' ';
+		mQ.dispTex.new_str[24] = ' ';
+		mP.dispTex.new_str[24] = ' ';
+		mPS.dispTex.new_str[24] = ' ';
 	}
 }
 
@@ -280,38 +237,38 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 	{
 		if (!drawn_this_iter && ((loopCount / 5) % 4) == 0)
 		{
-			drawn_this_iter = pg->text(&dt_q);
+			drawn_this_iter = pg->text(&mQ.dispTex);
 		}
 
 		if (!drawn_this_iter && (((loopCount / 5) + 1) % 4) == 0)
 		{
-			drawn_this_iter = pg->text(&dt_p);
+			drawn_this_iter = pg->text(&mP.dispTex);
 		}
 
 		if (!drawn_this_iter && (((loopCount / 5) + 2) % 4) == 0)
 		{
-			drawn_this_iter = pg->text(&dt_ps);
+			drawn_this_iter = pg->text(&mPS.dispTex);
 		}
 
-		if (!drawn_this_iter && update_q)
+		if (!drawn_this_iter && mQ.update)
 		{
-			pg->setBargraphVal(1, q_val * 254.0 / 11.0);
+			pg->setBargraphVal(1, voltToBgVal(mQ.val));
 			drawn_this_iter = true;
-			update_q = false;
+			mQ.update = false;
 		}
 
-		if (!drawn_this_iter && update_p)
+		if (!drawn_this_iter && mP.update)
 		{
-			pg->setBargraphVal(2, p_val * 254.0 / 11.0);
+			pg->setBargraphVal(2, voltToBgVal(mP.val));
 			drawn_this_iter = true;
-			update_p = false;
+			mP.update = false;
 		}
 
-		if (!drawn_this_iter && update_ps)
+		if (!drawn_this_iter && mPS.update)
 		{
-			pg->setBargraphVal(3, ps_val * 254.0 / 11.0);
+			pg->setBargraphVal(3, voltToBgVal(mPS.val));
 			drawn_this_iter = true;
-			update_ps = false;
+			mPS.update = false;
 		}
 
 		if (!drawn_this_iter && (((loopCount / 5) + 3) % 4) == 0 && ((loopCount % 5) == 0))
@@ -327,4 +284,60 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 		numberPage.loop(loopCount, pg);
 		drawn_this_iter = true;
 	}
+}
+
+uint8_t MainPage::voltToBgVal(const _float &f)
+{
+	_float cpy = f;
+	cpy *= 254;
+	cpy /= 11;
+	cpy += 1; // to round up
+	return cpy;
+}
+
+_float MainPage::bgValToVolt(uint8_t v)
+{
+	_float cpy(v);
+	cpy *= 11;
+	cpy /= 254;
+	return cpy;
+}
+
+_float MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
+{
+	_float sendVal;
+	if (cobg->dispTex.new_str[16] == 'V')
+		sendVal = numberPage.getValue();
+	else if (cobg->dispTex.new_str[17] == 'A'){
+		sendVal = numberPage.getValue();
+		//sendVal *= 8;
+		//sendVal /= 5;
+		//sendVal += 4;
+	}
+	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &sendVal);
+	cobg->val = sendVal;
+	touchDataPtr = touchDataBuffer;
+	cobg->update = true;
+	TRACE("number page event processed - num =");
+	sendVal.print((char *)touchDataBuffer + 10);
+	touchDataBuffer[16] = 0;
+	TRACELN((char *)touchDataBuffer + 10);
+	return sendVal;
+}
+
+void MainPage::bargraphChangeEventHandler(ContOpBaGrSet *cobg)
+{
+	cobg->val = bgValToVolt(*getTouchData());
+	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &cobg->val);
+	TRACE("mainpage bargraph change processed - num=");
+	TRACELN((int)cobg->val);
+	touchDataPtr = touchDataBuffer;
+}
+
+void MainPage::memTglEventHandler(ContOpBaGrSet *cobg)
+{
+	_float tmp = cobg->mem;
+	cobg->mem = cobg->val;
+	cobg->val = tmp;
+	cobg->update = true;
 }

@@ -3,7 +3,6 @@
 
 #include "ControlledOutput.h"
 
-
 using namespace rkp;
 using namespace rkp::r10k;
 
@@ -81,7 +80,7 @@ _float CControlledOutput::getSetU()
 
 _float CControlledOutput::getSetI()
 {
-	return set_i_double_rounded(mPinSetUPre.getVal(),mPinSetU.getVal());
+	return set_i_double_rounded(mPinSetUPre.getVal(), mPinSetU.getVal());
 }
 
 _float CControlledOutput::getIsVal()
@@ -111,6 +110,7 @@ uint32_t CControlledOutput::getUPreAdcRaw()
 
 void CControlledOutput::setSetVal(_float val)
 {
+	val = constrain(val,_float(0),_float(11));
 	if (mSetMode == Voltage)
 	{
 		val *= 325;
@@ -120,7 +120,7 @@ void CControlledOutput::setSetVal(_float val)
 		val *= 210;
 		val += 500;
 	}
-	analogWrite(mPinSetOut, val.getData() / 100);
+	analogWrite(mPinSetOut, val);
 }
 
 void CControlledOutput::update()

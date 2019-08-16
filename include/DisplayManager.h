@@ -40,7 +40,7 @@ class DisplayManager
 	Page* activePage;
 
 	TouchEvent touchEvent;
-	double touchVal;
+	_float touchVal;
 
 	//functions
 	public:
@@ -65,7 +65,7 @@ class DisplayManager
 	
 	// request function for touch events
 	TouchEvent getTouchEvent();
-	double getBarValue();
+	_float getBarValue();
 
 	// function to get control status for set-values
 	ControlMode getControlMode(); 

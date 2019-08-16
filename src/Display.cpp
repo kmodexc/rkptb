@@ -409,6 +409,14 @@ void Display::createNumpad(size_t x1, size_t y1, uint8_t editbox)
 	flush();
 	send(tmp_buf, position_keyboard(tmp_buf, WR_BUF_LEN, x1,y1,x1+300,y1+300,10));
 	flush();
+	send(tmp_buf, set_keyboard_special_key_colors(tmp_buf, WR_BUF_LEN, 8,1,2,8,1,7));
+	flush();
+	send(tmp_buf, set_keyboard_special_key_name(tmp_buf, WR_BUF_LEN, 8," C"));
+	flush();
+	send(tmp_buf, set_keyboard_special_key_name(tmp_buf, WR_BUF_LEN, 13,"OK"));
+	flush();
+	send(tmp_buf, set_keyboard_borders(tmp_buf, WR_BUF_LEN, 1,1));
+	flush();
 	send(tmp_buf, activate_keyboard(tmp_buf, WR_BUF_LEN, 1,editbox));
 	flush();
 }

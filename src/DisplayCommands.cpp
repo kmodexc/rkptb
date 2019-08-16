@@ -651,3 +651,48 @@ size_t rkp::commands::bin::activate_keyboard(uint8_t *dest, size_t dest_size, ui
     *(writ++) = editbox;
     return (writ - dest);
 }
+
+size_t rkp::commands::bin::set_keyboard_special_key_name(uint8_t *dest, size_t len, uint8_t code, const char *name){
+	if (dest == nullptr || len < 5)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'K';
+    *(writ++) = 'L';
+    *(writ++) = code;
+    for (const char *it = name; it != nullptr && *it != 0 && (uint8_t *)writ < (dest + len - 1); it++)
+    {
+        *(writ++) = *it;
+    }
+    *(writ++) = 0;
+    return (writ - dest);
+}
+
+size_t rkp::commands::bin::set_keyboard_special_key_colors(uint8_t *dest, size_t len, uint8_t n1, uint8_t n2,uint8_t n3,uint8_t s1,uint8_t s2,uint8_t s3){
+	if (dest == nullptr || len < 9)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'F';
+    *(writ++) = 'S';
+    *(writ++) = n1;
+	*(writ++) = n2;
+	*(writ++) = n3;
+	*(writ++) = s1;
+	*(writ++) = s2;
+	*(writ++) = s3;  
+    return (writ - dest);
+}
+
+size_t rkp::commands::bin::set_keyboard_borders(uint8_t *dest, size_t len, uint8_t n, uint8_t s)
+{
+	if (dest == nullptr || len < 5)
+        return 0;
+    uint8_t *writ = dest;
+    *(writ++) = BIN_ESC;
+    *(writ++) = 'K';
+    *(writ++) = 'E';
+    *(writ++) = n;
+	*(writ++) = s;
+    return (writ - dest);
+}

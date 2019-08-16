@@ -126,8 +126,11 @@ void Application::loop(unsigned long loopCount)
 		break;
 
 	case bar_graph_q:
+		TRACELN("app bar graph change received");
 		last_q = disp_man.getBarValue();
 		q_set.setSetVal(last_q);
+		TRACE("app bar graph change processed - num=");
+		TRACELN((int)last_q);
 		break;
 	case bar_graph_p:
 		last_p = disp_man.getBarValue();

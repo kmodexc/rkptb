@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Arduino.h"
 #include "_float.h"
 
 namespace rkp
