@@ -21,7 +21,7 @@ CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, in
 	this->mIsMode = im;
 }
 CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch)
-	: CControlledOutput(pin_set_out, pin_set_in, pin_set_u_pre, pin_set_u, pin_set_mode_switch, pin_is_u, pin_is_res, pin_is_mode_switch, -1, Voltage, Current)
+	: CControlledOutput(pin_set_out, pin_set_in, pin_set_u_pre, pin_set_u, pin_set_mode_switch, pin_is_u, pin_is_res, pin_is_mode_switch, -1, ControlledPinMode::Voltage, ControlledPinMode::Current)
 {
 }
 
@@ -63,7 +63,7 @@ _float CControlledOutput::getSetValIn()
 
 _float CControlledOutput::getSetVal()
 {
-	if (mSetMode == Voltage)
+	if (mSetMode == ControlledPinMode::Voltage)
 	{
 		return getSetU();
 	}
@@ -85,7 +85,7 @@ _float CControlledOutput::getSetI()
 
 _float CControlledOutput::getIsVal()
 {
-	return (mIsMode == Voltage ? getIsU() : getIsI());
+	return (mIsMode == ControlledPinMode::Voltage ? getIsU() : getIsI());
 }
 
 _float CControlledOutput::getIsU()
@@ -111,7 +111,7 @@ uint32_t CControlledOutput::getUPreAdcRaw()
 void CControlledOutput::setSetVal(_float val)
 {
 	val = constrain(val,_float(0),_float(11));
-	if (mSetMode == Voltage)
+	if (mSetMode == ControlledPinMode::Voltage)
 	{
 		val *= 325;
 	}
@@ -132,9 +132,9 @@ void CControlledOutput::update()
 	}
 	// update mode switch
 	if (mSetModeSwitch.wasPressed())
-		setSetMode(mSetMode == Voltage ? Current : Voltage);
+		setSetMode(mSetMode == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage);
 	if (mIsModeSwitch.wasPressed())
-		setIsMode(mIsMode == Voltage ? Current : Voltage);
+		setIsMode(mIsMode == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage);
 }
 
 uint8_t CControlledOutput::show(char *set_val, char *set_mode, char *is_val, char *is_mode)
@@ -145,7 +145,7 @@ uint8_t CControlledOutput::show(char *set_val, char *set_mode, char *is_val, cha
 		getSetVal().print(set_val);
 		if (set_val)
 		{
-			if (mSetMode == Voltage)
+			if (mSetMode == ControlledPinMode::Voltage)
 			{
 				set_mode[0] = 'V';
 				set_mode[1] = ' ';
@@ -161,7 +161,7 @@ uint8_t CControlledOutput::show(char *set_val, char *set_mode, char *is_val, cha
 		getIsVal().print(is_val);
 		if (is_mode)
 		{
-			if (getIsMode() == Voltage)
+			if (getIsMode() == ControlledPinMode::Voltage)
 			{
 				is_mode[0] = 'V';
 				is_mode[1] = ' ';
@@ -179,7 +179,7 @@ uint8_t CControlledOutput::show(char *set_val, char *set_mode, char *is_val, cha
 		getSetVal().print(set_val);
 		if (set_mode)
 		{
-			if (mSetMode == Voltage)
+			if (mSetMode == ControlledPinMode::Voltage)
 			{
 				set_mode[0] = 'V';
 			}
@@ -189,7 +189,7 @@ uint8_t CControlledOutput::show(char *set_val, char *set_mode, char *is_val, cha
 		getSetValIn().print(is_val);
 		if (set_mode)
 		{
-			if (mSetMode == Voltage)
+			if (mSetMode == ControlledPinMode::Voltage)
 			{
 				is_mode[0] = 'V';
 			}
@@ -222,7 +222,7 @@ void CControlledOutput::setSetMode(ControlledPinMode mode)
 void CControlledOutput::setIsMode(ControlledPinMode mode)
 {
 	this->mIsMode = mode;
-	digitalWrite(mPinIsRes, (mode == Current ? LOW : HIGH));
+	digitalWrite(mPinIsRes, (mode == ControlledPinMode::Current ? LOW : HIGH));
 }
 
 void CControlledOutput::setDisplayMode(DisplayMode m)

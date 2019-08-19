@@ -2,12 +2,15 @@
 
 // default constructor
 MainPage::MainPage()
+	:mQ(100,250,1,"Q"),
+	mP(100,320,2,"P"),
+	mPS(100,390,3,"PS")
 {
 	dig_bef_com = 1;
 
-	mQ.update = false;
-	mP.update = false;
-	mPS.update = false;
+	mQ.mode = ControlledPinMode::Voltage;
+	mP.mode = ControlledPinMode::Voltage;
+	mPS.mode = ControlledPinMode::Voltage;
 
 	mQ.dispTex.drawCharwise = true;
 	mQ.dispTex.x = 100;
@@ -64,12 +67,9 @@ void MainPage::repaint(Graphics *pg)
 	pg->createButton(620, 150, 40, 20, 4, "");
 
 	// bar graphs
-	pg->createBargraph(100, 250, 1, "Q");
-	pg->setBargraphVal(1, voltToBgVal(mQ.val));
-	pg->createBargraph(100, 320, 2, "P");
-	pg->setBargraphVal(2, voltToBgVal(mP.val));
-	pg->createBargraph(100, 390, 3, "PS");
-	pg->setBargraphVal(3, voltToBgVal(mPS.val));
+	mQ.bg.repaint(pg);
+	mP.bg.repaint(pg);
+	mPS.bg.repaint(pg);
 
 	// reset str
 	rkp::clearStr(mQ.dispTex.old_str, DisplayText::STRLEN);
@@ -122,7 +122,7 @@ void MainPage::set_ps_set(_float val, Unit un)
 TouchEvent MainPage::getTouchEvent()
 {
 	TouchEvent ev;
-	if (mpmode == MPM_Normal)
+	if (mpmode == MainPageMode::Normal)
 	{
 		ev = Page::getTouchEvent();
 		touchDataPtr = Page::getTouchData();
@@ -156,31 +156,37 @@ TouchEvent MainPage::getTouchEvent()
 		memTglEventHandler(&mPS);
 		break;
 	case go_numpad_q:
-		mpmode = MPM_Numpad_Q;
+		mpmode = MainPageMode::Numpad_Q;
 		break;
 	case go_numpad_p:
-		mpmode = MPM_Numpad_P;
+		mpmode = MainPageMode::Numpad_P;
 		break;
 	case go_numpad_ps:
-		mpmode = MPM_Numpad_PS;
+		mpmode = MainPageMode::Numpad_PS;
 		break;
 	case number_page_enter:
-		if (mpmode == MPM_Numpad_Q)
+		if (mpmode == MainPageMode::Numpad_Q)
 		{
 			ev = bar_graph_q;
 			numpadEnterHandler(&mQ);
 		}
-		if (mpmode == MPM_Numpad_P)
+		if (mpmode == MainPageMode::Numpad_P)
 		{
 			ev = bar_graph_p;
 			numpadEnterHandler(&mP);
 		}
-		if (mpmode == MPM_Numpad_PS)
+		if (mpmode == MainPageMode::Numpad_PS)
 		{
 			ev = bar_graph_ps;
 			numpadEnterHandler(&mPS);
 		}
-		mpmode = MPM_Normal;
+		mpmode = MainPageMode::Normal;
+		break;
+	case q_set_mode_change:
+		measureModeChangeHandler(&mP);
+		break;
+	case p_set_mode_change:
+		measureModeChangeHandler(&mP);
 		break;
 	default:
 		TRACE((int)ev);
@@ -219,21 +225,21 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 	bool drawn_this_iter = false;
 
 	if (!numberPage.isVisible() &&
-		(mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
+		(mpmode == MainPageMode::Numpad_Q || mpmode == MainPageMode::Numpad_P || mpmode == MainPageMode::Numpad_PS))
 	{
 		unshow(pg);
 		numberPage.repaint(pg);
 		drawn_this_iter = true;
 	}
 
-	if (numberPage.isVisible() && mpmode == MPM_Normal)
+	if (numberPage.isVisible() && mpmode == MainPageMode::Normal)
 	{
 		numberPage.unshow(pg);
 		repaint(pg);
 		drawn_this_iter = true;
 	}
 
-	if (mpmode == MPM_Normal)
+	if (mpmode == MainPageMode::Normal)
 	{
 		if (!drawn_this_iter && ((loopCount / 5) % 4) == 0)
 		{
@@ -250,25 +256,8 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 			drawn_this_iter = pg->text(&mPS.dispTex);
 		}
 
-		if (!drawn_this_iter && mQ.update)
-		{
-			pg->setBargraphVal(1, voltToBgVal(mQ.val));
-			drawn_this_iter = true;
-			mQ.update = false;
-		}
-
-		if (!drawn_this_iter && mP.update)
-		{
-			pg->setBargraphVal(2, voltToBgVal(mP.val));
-			drawn_this_iter = true;
-			mP.update = false;
-		}
-
-		if (!drawn_this_iter && mPS.update)
-		{
-			pg->setBargraphVal(3, voltToBgVal(mPS.val));
-			drawn_this_iter = true;
-			mPS.update = false;
+		if(!drawn_this_iter && ((loopCount % 5) == 1)){
+			drawn_this_iter = mP.bg.loop(loopCount,pg);
 		}
 
 		if (!drawn_this_iter && (((loopCount / 5) + 3) % 4) == 0 && ((loopCount % 5) == 0))
@@ -279,7 +268,7 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 	}
 
 	if (!drawn_this_iter &&
-		(mpmode == MPM_Numpad_Q || mpmode == MPM_Numpad_P || mpmode == MPM_Numpad_PS))
+		(mpmode == MainPageMode::Numpad_Q || mpmode == MainPageMode::Numpad_P || mpmode == MainPageMode::Numpad_PS))
 	{
 		numberPage.loop(loopCount, pg);
 		drawn_this_iter = true;
@@ -308,16 +297,16 @@ _float MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
 	_float sendVal;
 	if (cobg->dispTex.new_str[16] == 'V')
 		sendVal = numberPage.getValue();
-	else if (cobg->dispTex.new_str[17] == 'A'){
+	else if (cobg->dispTex.new_str[17] == 'A')
+	{
 		sendVal = numberPage.getValue();
 		//sendVal *= 8;
 		//sendVal /= 5;
 		//sendVal += 4;
 	}
 	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &sendVal);
-	cobg->val = sendVal;
+	cobg->bg.setValue(sendVal);
 	touchDataPtr = touchDataBuffer;
-	cobg->update = true;
 	TRACE("number page event processed - num =");
 	sendVal.print((char *)touchDataBuffer + 10);
 	touchDataBuffer[16] = 0;
@@ -327,17 +316,31 @@ _float MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
 
 void MainPage::bargraphChangeEventHandler(ContOpBaGrSet *cobg)
 {
-	cobg->val = bgValToVolt(*getTouchData());
-	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &cobg->val);
+	_float val = bgValToVolt(*getTouchData());
+	cobg->bg.setValue(val);
+	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &val);
 	TRACE("mainpage bargraph change processed - num=");
-	TRACELN((int)cobg->val);
+	TRACELN((int)cobg->bg.getValue());
 	touchDataPtr = touchDataBuffer;
 }
 
 void MainPage::memTglEventHandler(ContOpBaGrSet *cobg)
 {
 	_float tmp = cobg->mem;
-	cobg->mem = cobg->val;
-	cobg->val = tmp;
-	cobg->update = true;
+	cobg->mem = cobg->bg.getValue();
+	cobg->bg.setValue(tmp);
+}
+
+void MainPage::measureModeChangeHandler(ContOpBaGrSet *cobg)
+{
+	cobg->mode = (cobg->mode == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage);
+	switch (cobg->mode)
+	{
+	case ControlledPinMode::Current:
+		cobg->bg.setRange(_float::direct(390), _float::direct(2100));
+		break;
+	default:
+		cobg->bg.setRange(_float::direct(0), _float::direct(1100));
+		break;
+	}
 }

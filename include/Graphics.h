@@ -49,6 +49,8 @@ public:
 
 	virtual void createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code, const char *name) = 0;
 
+	virtual void updateBargraphSkale(size_t x1, size_t y1, uint8_t code,const _float &min,const _float &max) = 0;
+
 	virtual void setBargraphVal(uint8_t code, uint8_t val);
 
 	virtual void createEditbox(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t code) = 0;

@@ -10,7 +10,7 @@
 Application::Application()
 	: q_set(7, 9, 1, 0, 37, 7, 47, 49),
 	  p_set(6, 8, 6, 5, 35, 4, 45, 51),
-	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, Voltage, Voltage),
+	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, ControlledPinMode::Voltage, ControlledPinMode::Voltage),
 	  mem_q(0),
 	  mem_p(0),
 	  last_q(0),
@@ -67,16 +67,16 @@ void Application::loop(unsigned long loopCount)
 	switch (disp_man.getTouchEvent())
 	{
 	case q_set_mode_change:
-		q_set.setSetMode((q_set.getSetMode() == Voltage ? Current : Voltage));
+		q_set.setSetMode((q_set.getSetMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
 	case p_set_mode_change:
-		p_set.setSetMode((p_set.getSetMode() == Voltage ? Current : Voltage));
+		p_set.setSetMode((p_set.getSetMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
 	case q_is_mode_change:
-		q_set.setIsMode((q_set.getIsMode() == Voltage ? Current : Voltage));
+		q_set.setIsMode((q_set.getIsMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
 	case p_is_mode_change:
-		p_set.setIsMode((p_set.getIsMode() == Voltage ? Current : Voltage));
+		p_set.setIsMode((p_set.getIsMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
 	case mem_q_tgl:
 		q_set.setSetVal(mem_q);

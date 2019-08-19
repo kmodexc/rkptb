@@ -4,20 +4,24 @@
 #include "Page.h"
 #include "helpers.h"
 #include "pindefs.h"
+#include "ControlledPinMode.h"
+#include "Bargraph.h"
 
-enum MainPageMode
+enum class MainPageMode
 {
-	MPM_Normal,
-	MPM_Numpad_Q,
-	MPM_Numpad_P,
-	MPM_Numpad_PS
+	Normal,
+	Numpad_Q,
+	Numpad_P,
+	Numpad_PS
 };
 
 struct ContOpBaGrSet{
 	DisplayText dispTex;
-	_float val;
+	RKP::Bargraph bg;
 	_float mem;
-	bool update;
+	ControlledPinMode mode;
+	ContOpBaGrSet(size_t x,size_t y,uint8_t code, const char* label)
+		:bg(x,y,code,label){}
 };
 
 class MainPage : public Page
@@ -76,5 +80,6 @@ private:
 	_float numpadEnterHandler(ContOpBaGrSet*);
 	void bargraphChangeEventHandler(ContOpBaGrSet*);
 	void memTglEventHandler(ContOpBaGrSet*);
+	void measureModeChangeHandler(ContOpBaGrSet*);
 
 }; //DisplayManager

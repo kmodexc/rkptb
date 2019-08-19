@@ -7,12 +7,7 @@
 #include <Wire.h>
 #include "Measurement.h"
 #include "MeasurePin.h"
-
-enum ControlledPinMode
-{
-	Voltage,
-	Current
-};
+#include "ControlledPinMode.h"
 
 enum DisplayMode
 {

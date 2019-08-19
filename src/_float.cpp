@@ -26,7 +26,7 @@ _float::_float(uint32_t i)
 {
 	this->operator=(i);
 }
-_float &_float::operator+=(_float &f)
+_float &_float::operator+=(const _float &f)
 {
 	data += f.data;
 	return *this;
@@ -36,7 +36,7 @@ _float &_float::operator+=(int f)
 	data += f * __FLOAT_PT_INT;
 	return *this;
 }
-_float &_float::operator-=(_float &f)
+_float &_float::operator-=(const _float &f)
 {
 	data -= f.data;
 	return *this;
@@ -51,6 +51,12 @@ _float &_float::operator*=(int f)
 	data *= f;
 	return *this;
 }
+_float &_float::operator*=(const _float & f)
+{
+	data *= f.data;
+	data /= __FLOAT_PT_INT;
+	return *this;
+}
 _float &_float::operator/=(float f)
 {
 	data /= f;
@@ -59,6 +65,11 @@ _float &_float::operator/=(float f)
 _float &_float::operator/=(int f)
 {
 	data /= f;
+	return *this;
+}
+_float &_float::operator/=(const _float & f)
+{
+	data /= f.data;
 	return *this;
 }
 #ifdef __FLOAT_DEFINE_CMP_OPS

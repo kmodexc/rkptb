@@ -389,6 +389,14 @@ void Display::createBargraph(size_t x1, size_t y1, size_t sx, size_t sy, uint8_t
 	flush();
 }
 
+void Display::updateBargraphSkale(size_t x1, size_t y1,uint8_t code,const _float &min,const _float &max){
+	char format_str[] = "0=0.0;254=11.0";
+	min.print(format_str+2,1);
+	max.print(format_str+10,1);
+	send(tmp_buf, set_bargraph_skale(tmp_buf, WR_BUF_LEN, code, x1 - 10, y1 + 10, "0=0.0;254=11.0"));
+	flush();
+}
+
 void Display::setBargraphVal(uint8_t code, uint8_t val)
 {
 	send(tmp_buf, set_bar_val(tmp_buf, WR_BUF_LEN, code, val));

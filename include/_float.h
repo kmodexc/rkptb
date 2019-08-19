@@ -34,13 +34,15 @@ public:
 	_float(double d);
 	_float(uint32_t i);
 
-	_float &operator+=(_float &f);
+	_float &operator+=(const _float &f);
 	_float &operator+=(int f);
-	_float &operator-=(_float &f);
+	_float &operator-=(const _float &f);
 	_float &operator*=(float);
+	_float &operator*=(const _float &f);
 	_float &operator*=(int);
 	_float &operator/=(float);
 	_float &operator/=(int);
+	_float &operator/=(const _float &f);
 
 #ifdef __FLOAT_DEFINE_CMP_OPS
 	bool operator>(const _float &f) const;
