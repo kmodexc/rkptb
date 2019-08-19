@@ -256,8 +256,16 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 			drawn_this_iter = pg->text(&mPS.dispTex);
 		}
 
-		if(!drawn_this_iter && ((loopCount % 5) == 1)){
+		if(!drawn_this_iter && ((loopCount % 10) == 1)){
+			drawn_this_iter = mQ.bg.loop(loopCount,pg);
+		}
+
+		if(!drawn_this_iter && ((loopCount % 10) == 2)){
 			drawn_this_iter = mP.bg.loop(loopCount,pg);
+		}
+
+		if(!drawn_this_iter && ((loopCount % 10) == 3)){
+			drawn_this_iter = mPS.bg.loop(loopCount,pg);
 		}
 
 		if (!drawn_this_iter && (((loopCount / 5) + 3) % 4) == 0 && ((loopCount % 5) == 0))
