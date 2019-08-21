@@ -23,7 +23,7 @@ void Page::initialize(Graphics *pg)
 	}
 
 	// init touch event
-	touchEvent = nothing;
+	touchEvent = TouchEvent::nothing;
 
 	mVisible = false;
 }
@@ -60,7 +60,7 @@ void Page::set_ps_set(_float val, Unit un)
 TouchEvent Page::getTouchEvent()
 {
 	TouchEvent ret_ev = touchEvent;
-	touchEvent = nothing;
+	touchEvent = TouchEvent::nothing;
 	return ret_ev;
 }
 
@@ -88,7 +88,7 @@ bool Page::isVisible()
 void Page::readSendBuffer(Graphics *pgr)
 {
 	// wait until prev message was pulled
-	if (touchEvent == nothing && pgr->requestBuffer(rec_buffer, 9))
+	if (touchEvent == TouchEvent::nothing && pgr->requestBuffer(rec_buffer, 9))
 	{
 
 		// touch button response
@@ -97,84 +97,84 @@ void Page::readSendBuffer(Graphics *pgr)
 			switch (rec_buffer[3])
 			{
 			case 1:
-				touchEvent = q_set_mode_change;
+				touchEvent = TouchEvent::q_set_mode_change;
 				break;
 			case 2:
-				touchEvent = p_set_mode_change;
+				touchEvent = TouchEvent::p_set_mode_change;
 				break;
 			case 3:
-				touchEvent = q_is_mode_change;
+				touchEvent = TouchEvent::q_is_mode_change;
 				break;
 			case 4:
-				touchEvent = p_is_mode_change;
+				touchEvent = TouchEvent::p_is_mode_change;
 				break;
 			case 5:
-				touchEvent = go_menu_page;
+				touchEvent = TouchEvent::go_menu_page;
 				break;
 			case 6:
-				touchEvent = mem_q_tgl;
+				touchEvent = TouchEvent::mem_q_tgl;
 				break;
 			case 7:
-				touchEvent = mem_p_tgl;
+				touchEvent = TouchEvent::mem_p_tgl;
 				break;
 			case 8:
-				touchEvent = mem_ps_tgl;
+				touchEvent = TouchEvent::mem_ps_tgl;
 				break;
 			case 9:
-				touchEvent = go_numpad_q;
+				touchEvent = TouchEvent::go_numpad_q;
 				break;
 			case 10:
-				touchEvent = go_numpad_p;
+				touchEvent = TouchEvent::go_numpad_p;
 				break;
 			case 11:
-				touchEvent = go_numpad_ps;
+				touchEvent = TouchEvent::go_numpad_ps;
 				break;
 
 			case 51:
-				touchEvent = ps_val_1;
+				touchEvent = TouchEvent::ps_val_1;
 				break;
 			case 52:
-				touchEvent = ps_val_2;
+				touchEvent = TouchEvent::ps_val_2;
 				break;
 			case 53:
-				touchEvent = ps_val_3;
+				touchEvent = TouchEvent::ps_val_3;
 				break;
 			case 54:
-				touchEvent = ps_val_4;
+				touchEvent = TouchEvent::ps_val_4;
 				break;
 			case 55:
-				touchEvent = ps_val_5;
+				touchEvent = TouchEvent::ps_val_5;
 				break;
 			case 56:
-				touchEvent = ps_val_6;
+				touchEvent = TouchEvent::ps_val_6;
 				break;
 			case 57:
-				touchEvent = ps_val_7;
+				touchEvent = TouchEvent::ps_val_7;
 				break;
 			case 58:
-				touchEvent = ps_val_8;
+				touchEvent = TouchEvent::ps_val_8;
 				break;
 			case 59:
-				touchEvent = ps_val_9;
+				touchEvent = TouchEvent::ps_val_9;
 				break;
 
 			case 30:
-				touchEvent = menu_page_back;
+				touchEvent = TouchEvent::menu_page_back;
 				break;
 			case 31:
-				touchEvent = precision_toggle;
+				touchEvent = TouchEvent::precision_toggle;
 				break;
 			case 32:
-				touchEvent = go_current_page;
+				touchEvent = TouchEvent::go_current_page;
 				break;
 			case 33:
-				touchEvent = go_about_page;
+				touchEvent = TouchEvent::go_about_page;
 				break;
 			case 34:
-				touchEvent = go_analog_page;
+				touchEvent = TouchEvent::go_analog_page;
 				break;
 			case 35:
-				touchEvent = go_number_page;
+				touchEvent = TouchEvent::go_number_page;
 				break;
 
 			default:
@@ -190,13 +190,13 @@ void Page::readSendBuffer(Graphics *pgr)
 			switch (rec_buffer[3])
 			{
 			case 2:
-				touchEvent = bar_graph_q;
+				touchEvent = TouchEvent::bar_graph_q;
 				break;
 			case 3:
-				touchEvent = bar_graph_p;
+				touchEvent = TouchEvent::bar_graph_p;
 				break;
 			case 4:
-				touchEvent = bar_graph_ps;
+				touchEvent = TouchEvent::bar_graph_ps;
 				break;
 			default:
 				break;
@@ -213,7 +213,7 @@ void Page::readSendBuffer(Graphics *pgr)
 			{
 				*(tdit++) = *(rbit++);
 			}
-			touchEvent = editbox_data_avail;
+			touchEvent = TouchEvent::editbox_data_avail;
 		}
 	}
 }

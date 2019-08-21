@@ -318,7 +318,7 @@ _float MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
 	TRACE("number page event processed - num =");
 	sendVal.print((char *)touchDataBuffer + 10);
 	touchDataBuffer[16] = 0;
-	TRACELN((char *)touchDataBuffer + 10);
+	TRACELN((char *)touchDataBuffer + 10); 
 	return sendVal;
 }
 

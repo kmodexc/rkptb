@@ -10,13 +10,13 @@
 // must be greater 8 bcs a double (8-bytes) is stored in it
 #define TOUCH_EVENT_DATA_SIZE 20
 
-enum Unit
+enum class Unit
 {
 	Volt,
 	MilliAmps
 };
 
-enum TouchEvent
+enum class TouchEvent
 {
 	nothing,
 	q_set_mode_change,
@@ -57,7 +57,7 @@ enum TouchEvent
 	number_page_enter
 };
 
-enum ControlMode
+enum class ControlMode
 {
 	TouchScreen,
 	AnalogInputs

@@ -56,6 +56,10 @@ void Bargraph::setRange(const _float &min,const _float &max){
 	update_skale = true;
 }
 
+TouchEvent Bargraph::proceedEvent(TouchEvent te,uint8_t* data){
+	return TouchEvent::nothing;
+}
+
 uint8_t Bargraph::valToBg(_float f) const
 {
 	f -= min;

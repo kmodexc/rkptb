@@ -2,6 +2,7 @@
 
 #include "Graphics.h"
 #include "_float.h"
+#include "Page.h"
 
 namespace RKP
 {
@@ -28,6 +29,8 @@ public:
 	_float getValue() const;
 
 	void setRange(const _float &min,const _float &max);
+
+	TouchEvent proceedEvent(TouchEvent,uint8_t*);
 
 private:
 	uint8_t valToBg(_float) const;
