@@ -89,7 +89,7 @@ void DisplayManager::set_u_pre_adc_raw(uint32_t val)
 TouchEvent DisplayManager::getTouchEvent()
 {
 	TouchEvent ev = touchEvent;
-	touchEvent = nothing;
+	touchEvent = TouchEvent::nothing;
 	return ev;
 }
 
@@ -102,9 +102,9 @@ ControlMode DisplayManager::getControlMode()
 {
 	if (activePage == &analogPage)
 	{
-		return AnalogInputs;
+		return ControlMode::AnalogInputs;
 	}
-	return TouchScreen;
+	return ControlMode::TouchScreen;
 }
 
 void DisplayManager::loop(uint64_t loopCount)
@@ -119,31 +119,31 @@ void DisplayManager::loop(uint64_t loopCount)
 		TouchEvent ev = activePage->getTouchEvent();
 		switch (ev)
 		{
-		case menu_page_back:
-		case go_menu_page:
-		case go_current_page:
-		case go_about_page:
-		case go_analog_page:
-		case go_number_page:
+		case TouchEvent::menu_page_back:
+		case TouchEvent::go_menu_page:
+		case TouchEvent::go_current_page:
+		case TouchEvent::go_about_page:
+		case TouchEvent::go_analog_page:
+		case TouchEvent::go_number_page:
 			activePage->unshow(&disp);
 			switch (ev)
 			{
-			case menu_page_back:
+			case TouchEvent::menu_page_back:
 				activePage = &mainPage;
 				break;
-			case go_menu_page:
+			case TouchEvent::go_menu_page:
 				activePage = &menuPage;
 				break;
-			case go_current_page:
+			case TouchEvent::go_current_page:
 				activePage = &currentPage;
 				break;
-			case go_about_page:
+			case TouchEvent::go_about_page:
 				activePage = &aboutPage;
 				break;
-			case go_analog_page:
+			case TouchEvent::go_analog_page:
 				activePage = &analogPage;
 				break;
-			case go_number_page:
+			case TouchEvent::go_number_page:
 				activePage = &numberPage;
 				break;
 			default:
@@ -151,7 +151,7 @@ void DisplayManager::loop(uint64_t loopCount)
 			}
 			activePage->repaint(&disp);
 			break;
-		case precision_toggle:
+		case TouchEvent::precision_toggle:
 			if (mainPage.getDigBefCom() >= 2)
 			{
 				mainPage.setDigBefCom(1);
@@ -163,10 +163,10 @@ void DisplayManager::loop(uint64_t loopCount)
 				analogPage.setDigBefCom(2);
 			}
 			break;
-		case bar_graph_q:
+		case TouchEvent::bar_graph_q:
 			TRACELN("bar graph change (dispman)");
 		default:
-			if (touchEvent == nothing)
+			if (touchEvent == TouchEvent::nothing)
 			{
 				touchEvent = ev;
 				_float::deserialize(activePage->getTouchData(), TOUCH_EVENT_DATA_SIZE, &touchVal);

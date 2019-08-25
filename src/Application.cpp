@@ -39,7 +39,7 @@ void Application::initialize()
 
 void Application::loop(unsigned long loopCount)
 {
-	if(disp_man.getControlMode() == AnalogInputs){
+	if(disp_man.getControlMode() == ControlMode::AnalogInputs){
 		q_set.update();
 		p_set.update();
 		parSet.update();
@@ -66,77 +66,77 @@ void Application::loop(unsigned long loopCount)
 
 	switch (disp_man.getTouchEvent())
 	{
-	case q_set_mode_change:
+	case TouchEvent::q_set_mode_change:
 		q_set.setSetMode((q_set.getSetMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
-	case p_set_mode_change:
+	case TouchEvent::p_set_mode_change:
 		p_set.setSetMode((p_set.getSetMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
-	case q_is_mode_change:
+	case TouchEvent::q_is_mode_change:
 		q_set.setIsMode((q_set.getIsMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
-	case p_is_mode_change:
+	case TouchEvent::p_is_mode_change:
 		p_set.setIsMode((p_set.getIsMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
 		break;
-	case mem_q_tgl:
+	case TouchEvent::mem_q_tgl:
 		q_set.setSetVal(mem_q);
 		tmp = mem_q;
 		mem_q = last_q;
 		last_q = tmp;
 		break;
-	case mem_p_tgl:
+	case TouchEvent::mem_p_tgl:
 		p_set.setSetVal(mem_p);
 		tmp = mem_p;
 		mem_p = last_p;
 		last_p = tmp;
 		break;
-	case mem_ps_tgl:
+	case TouchEvent::mem_ps_tgl:
 		parSet.setSetVal(mem_ps);
 		tmp = mem_ps;
 		mem_ps = last_ps;
 		last_ps = tmp;
 		break;
 
-	case ps_val_1:
+	case TouchEvent::ps_val_1:
 		parSet.setSetVal(_float::direct(100));
 		break;
-	case ps_val_2:
+	case TouchEvent::ps_val_2:
 		parSet.setSetVal(_float::direct(200));
 		break;
-	case ps_val_3:
+	case TouchEvent::ps_val_3:
 		parSet.setSetVal(_float::direct(300));
 		break;
-	case ps_val_4:
+	case TouchEvent::ps_val_4:
 		parSet.setSetVal(_float::direct(400));
 		break;
-	case ps_val_5:
+	case TouchEvent::ps_val_5:
 		parSet.setSetVal(_float::direct(500));
 		break;
-	case ps_val_6:
+	case TouchEvent::ps_val_6:
 		parSet.setSetVal(_float::direct(600));
 		break;
-	case ps_val_7:
+	case TouchEvent::ps_val_7:
 		parSet.setSetVal(_float::direct(700));
 		break;
-	case ps_val_8:
+	case TouchEvent::ps_val_8:
 		parSet.setSetVal(_float::direct(800));
 		break;
-	case ps_val_9:
+	case TouchEvent::ps_val_9:
 		parSet.setSetVal(_float::direct(900));
 		break;
 
-	case bar_graph_q:
+	case TouchEvent::bar_graph_q:
 		TRACELN("app bar graph change received");
 		last_q = disp_man.getBarValue();
 		q_set.setSetVal(last_q);
 		TRACE("app bar graph change processed - num=");
 		TRACELN((int)last_q);
 		break;
-	case bar_graph_p:
+	case TouchEvent::bar_graph_p:
 		last_p = disp_man.getBarValue();
 		p_set.setSetVal(last_p);
 		break;
-	case bar_graph_ps:
+	case TouchEvent::bar_graph_ps:
 		last_ps = disp_man.getBarValue();
 		parSet.setSetVal(last_ps);
 		break;

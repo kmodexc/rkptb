@@ -21,9 +21,9 @@ TouchEvent NumberPage::getTouchEvent()
     uint8_t *ptr_point = Page::getTouchData();
     switch (ev)
     {
-    case nothing:
+    case TouchEvent::nothing:
         break;
-    case editbox_data_avail:
+    case TouchEvent::editbox_data_avail:
         mVal = 0.0;
         for (uint8_t *it = Page::getTouchData(); it != nullptr && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE && *it != '.' && *it != 0; it++)
         {
@@ -40,7 +40,7 @@ TouchEvent NumberPage::getTouchEvent()
             mVal += ((*it - 48) * exp);
             exp /= 10;
         }
-        ev = number_page_enter;
+        ev = TouchEvent::number_page_enter;
         break;
     default:
         TRACELN("unknown event detected (numpage)");

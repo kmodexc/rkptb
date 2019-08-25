@@ -135,57 +135,57 @@ TouchEvent MainPage::getTouchEvent()
 
 	switch (ev)
 	{
-	case nothing:
+	case TouchEvent::nothing:
 		break;
-	case bar_graph_q:
+	case TouchEvent::bar_graph_q:
 		bargraphChangeEventHandler(&mQ);
 		break;
-	case bar_graph_p:
+	case TouchEvent::bar_graph_p:
 		bargraphChangeEventHandler(&mP);
 		break;
-	case bar_graph_ps:
+	case TouchEvent::bar_graph_ps:
 		bargraphChangeEventHandler(&mPS);
 		break;
-	case mem_q_tgl:
+	case TouchEvent::mem_q_tgl:
 		memTglEventHandler(&mQ);
 		break;
-	case mem_p_tgl:
+	case TouchEvent::mem_p_tgl:
 		memTglEventHandler(&mP);
 		break;
-	case mem_ps_tgl:
+	case TouchEvent::mem_ps_tgl:
 		memTglEventHandler(&mPS);
 		break;
-	case go_numpad_q:
+	case TouchEvent::go_numpad_q:
 		mpmode = MainPageMode::Numpad_Q;
 		break;
-	case go_numpad_p:
+	case TouchEvent::go_numpad_p:
 		mpmode = MainPageMode::Numpad_P;
 		break;
-	case go_numpad_ps:
+	case TouchEvent::go_numpad_ps:
 		mpmode = MainPageMode::Numpad_PS;
 		break;
-	case number_page_enter:
+	case TouchEvent::number_page_enter:
 		if (mpmode == MainPageMode::Numpad_Q)
 		{
-			ev = bar_graph_q;
+			ev = TouchEvent::bar_graph_q;
 			numpadEnterHandler(&mQ);
 		}
 		if (mpmode == MainPageMode::Numpad_P)
 		{
-			ev = bar_graph_p;
+			ev = TouchEvent::bar_graph_p;
 			numpadEnterHandler(&mP);
 		}
 		if (mpmode == MainPageMode::Numpad_PS)
 		{
-			ev = bar_graph_ps;
+			ev = TouchEvent::bar_graph_ps;
 			numpadEnterHandler(&mPS);
 		}
 		mpmode = MainPageMode::Normal;
 		break;
-	case q_set_mode_change:
+	case TouchEvent::q_set_mode_change:
 		measureModeChangeHandler(&mP);
 		break;
-	case p_set_mode_change:
+	case TouchEvent::p_set_mode_change:
 		measureModeChangeHandler(&mP);
 		break;
 	default:
@@ -324,8 +324,8 @@ _float MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
 
 void MainPage::bargraphChangeEventHandler(ContOpBaGrSet *cobg)
 {
-	_float val = bgValToVolt(*getTouchData());
-	cobg->bg.setValue(val);
+	cobg->bg.bargraphChangeEvent(TouchEvent::nothing,getTouchData());
+	_float val = cobg->bg.getValue();
 	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &val);
 	TRACE("mainpage bargraph change processed - num=");
 	TRACELN((int)cobg->bg.getValue());

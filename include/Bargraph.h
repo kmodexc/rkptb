@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Graphics.h"
-#include "_float.h"
 #include "Page.h"
+#include "_float.h"
 
 namespace RKP
 {
@@ -28,12 +28,12 @@ public:
 	void setValue(const _float &val);
 	_float getValue() const;
 
-	void setRange(const _float &min,const _float &max);
-
-	TouchEvent proceedEvent(TouchEvent,uint8_t*);
+	void setRange(const _float &min, const _float &max);
+	
+	TouchEvent bargraphChangeEvent(TouchEvent, uint8_t *);
 
 private:
 	uint8_t valToBg(_float) const;
 	_float bgToVal(uint8_t) const;
 };
-} // namespace Display
+} // namespace RKP
