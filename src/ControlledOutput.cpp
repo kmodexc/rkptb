@@ -32,7 +32,7 @@ void CControlledOutput::begin()
 	mIsModeSwitch.begin();
 	mSetSwitchVal.begin();
 	setIsMode(this->mIsMode);
-	setSetVal(_float::direct(0));
+	setSetVal(PhysicalValue());
 }
 
 void CControlledOutput::measure()
@@ -53,15 +53,15 @@ ControlledPinMode CControlledOutput::getIsMode() const
 	return this->mIsMode;
 }
 
-_float CControlledOutput::getSetValIn()
+PhysicalValue CControlledOutput::getSetValIn()
 {
-	_float f(mPinSetIn.getVal());
-	f *= 12;
-	f /= 4096;
+	PhysicalValue f(mPinSetIn.getVal(),rkp::Unit::Volt);
+	f.value *= 12;
+	f.value /= 4096;
 	return f;
 }
 
-_float CControlledOutput::getSetVal()
+PhysicalValue CControlledOutput::getSetVal()
 {
 	if (mSetMode == ControlledPinMode::Voltage)
 	{
@@ -73,27 +73,27 @@ _float CControlledOutput::getSetVal()
 	}
 }
 
-_float CControlledOutput::getSetU()
+PhysicalValue CControlledOutput::getSetU()
 {
 	return set_u_double_rounded(mPinSetU.getVal());
 }
 
-_float CControlledOutput::getSetI()
+PhysicalValue CControlledOutput::getSetI()
 {
 	return set_i_double_rounded(mPinSetUPre.getVal(), mPinSetU.getVal());
 }
 
-_float CControlledOutput::getIsVal()
+PhysicalValue CControlledOutput::getIsVal()
 {
 	return (mIsMode == ControlledPinMode::Voltage ? getIsU() : getIsI());
 }
 
-_float CControlledOutput::getIsU()
+PhysicalValue CControlledOutput::getIsU()
 {
 	return is_u_double_rounded(mPinIsU.getVal());
 }
 
-_float CControlledOutput::getIsI()
+PhysicalValue CControlledOutput::getIsI()
 {
 	return is_i_double_rounded(mPinIsU.getVal());
 }
@@ -108,19 +108,18 @@ uint32_t CControlledOutput::getUPreAdcRaw()
 	return mPinSetUPre.getVal();
 }
 
-void CControlledOutput::setSetVal(_float val)
+void CControlledOutput::setSetVal(PhysicalValue val)
 {
-	val = constrain(val,_float(0),_float(11));
-	if (mSetMode == ControlledPinMode::Voltage)
+	if (val.getUnit() == rkp::Unit::Volt)
 	{
-		val *= 325;
+		val.value *= 325;
 	}
 	else
 	{
-		val *= 210;
-		val += 500;
+		val.value *= 210;
+		val.value += 500;
 	}
-	analogWrite(mPinSetOut, val);
+	analogWrite(mPinSetOut, constrain((int)val.value,0,4095));
 }
 
 void CControlledOutput::update()
@@ -137,84 +136,6 @@ void CControlledOutput::update()
 		setIsMode(mIsMode == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage);
 }
 
-uint8_t CControlledOutput::show(char *set_val, char *set_mode, char *is_val, char *is_mode)
-{
-	if (mDispMode == Normal)
-	{
-		// Print Set Value
-		getSetVal().print(set_val);
-		if (set_val)
-		{
-			if (mSetMode == ControlledPinMode::Voltage)
-			{
-				set_mode[0] = 'V';
-				set_mode[1] = ' ';
-			}
-			else
-			{
-				set_mode[0] = 'm';
-				set_mode[1] = 'A';
-			}
-		}
-
-		// Print Is Actual Value in RKP
-		getIsVal().print(is_val);
-		if (is_mode)
-		{
-			if (getIsMode() == ControlledPinMode::Voltage)
-			{
-				is_mode[0] = 'V';
-				is_mode[1] = ' ';
-			}
-			else
-			{
-				is_mode[0] = 'm';
-				is_mode[1] = 'A';
-			}
-		}
-	}
-	else if (mDispMode == OldNewVal)
-	{
-		// Print Set Value
-		getSetVal().print(set_val);
-		if (set_mode)
-		{
-			if (mSetMode == ControlledPinMode::Voltage)
-			{
-				set_mode[0] = 'V';
-			}
-		}
-
-		// Print SetIn Val
-		getSetValIn().print(is_val);
-		if (set_mode)
-		{
-			if (mSetMode == ControlledPinMode::Voltage)
-			{
-				is_mode[0] = 'V';
-			}
-		}
-	}
-	else if (mDispMode == Raw)
-	{
-		//printIntInt(&(str[2]), 4, analogRead(mPinSetUPre));
-		//printIntInt(&(str[7]), 4, analogRead(mPinSetU));
-		//printIntInt(&(str[12]), 4, analogRead(mPinIsU));
-	}
-	else if (mDispMode == Direct)
-	{
-		//printIntFloat(&(str[2]), 5, (analogRead(mPinSetIn) * 300) / 4096);
-		//printIntFloat(&(str[8]), 5, (analogRead(mPinSetU) * 300) / 4096);
-		//printIntFloat(&(str[14]), 5, (analogRead(mPinIsU) * 300) / 4096);
-	}
-	return 0xF;
-}
-
-uint8_t CControlledOutput::show(char *str)
-{
-	return show(str + 10, str + 17, str + 30, str + 37);
-}
-
 void CControlledOutput::setSetMode(ControlledPinMode mode)
 {
 	this->mSetMode = mode;
@@ -223,15 +144,6 @@ void CControlledOutput::setIsMode(ControlledPinMode mode)
 {
 	this->mIsMode = mode;
 	digitalWrite(mPinIsRes, (mode == ControlledPinMode::Current ? LOW : HIGH));
-}
-
-void CControlledOutput::setDisplayMode(DisplayMode m)
-{
-	this->mDispMode = m;
-}
-DisplayMode CControlledOutput::getDisplayMode()
-{
-	return this->mDispMode;
 }
 
 #endif

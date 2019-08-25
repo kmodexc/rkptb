@@ -3,6 +3,8 @@
 
 #include "Application.h"
 
+using namespace rkp;
+
 //CControlledOutput Constructor sets pins for the Output
 //(pin_set_out, pin_set_in,  pin_set_u_pre,  pin_set_u,  pin_set_mode_switch,  pin_is_u, pin_is_res, pin_is_mode_switch)
 //                      so, si,sup,su,sms,iu, ir,ims
@@ -10,15 +12,8 @@
 Application::Application()
 	: q_set(7, 9, 1, 0, 37, 7, 47, 49),
 	  p_set(6, 8, 6, 5, 35, 4, 45, 51),
-	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, ControlledPinMode::Voltage, ControlledPinMode::Voltage),
-	  mem_q(0),
-	  mem_p(0),
-	  last_q(0),
-	  last_p(0)
+	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, ControlledPinMode::Voltage, ControlledPinMode::Voltage)
 {
-	//q_set.setDisplayMode(Raw);
-	//p_set.setDisplayMode(Raw);
-	parSet.setDisplayMode(OldNewVal);
 }
 
 void Application::initialize()
@@ -52,17 +47,17 @@ void Application::loop(unsigned long loopCount)
 	p_set.measure();
 	parSet.measure();
 
-	disp_man.set_q_set(q_set.getSetVal(), (Unit)q_set.getSetMode());
-	disp_man.set_q_is(q_set.getIsVal(), (Unit)q_set.getIsMode());
-	disp_man.set_p_set(p_set.getSetVal(), (Unit)p_set.getSetMode());
-	disp_man.set_p_is(p_set.getIsVal(), (Unit)p_set.getIsMode());
-	disp_man.set_ps_pre_set(parSet.getSetValIn(), (Unit)parSet.getSetMode());
-	disp_man.set_ps_set(parSet.getSetVal(), (Unit)parSet.getSetMode());
+	disp_man.set_q_set(q_set.getSetVal());
+	disp_man.set_q_is(q_set.getIsVal());
+	disp_man.set_p_set(p_set.getSetVal());
+	disp_man.set_p_is(p_set.getIsVal());
+	disp_man.set_ps_pre_set(parSet.getSetValIn());
+	disp_man.set_ps_set(parSet.getSetVal());
 
 	disp_man.set_u_pre_adc_raw(p_set.getUPreAdcRaw());
 	disp_man.set_u_adc_raw(p_set.getUAdcRaw());
 
-	_float tmp;
+	rkp::PhysicalValue tmp;
 
 	switch (disp_man.getTouchEvent())
 	{
@@ -98,31 +93,31 @@ void Application::loop(unsigned long loopCount)
 		break;
 
 	case TouchEvent::ps_val_1:
-		parSet.setSetVal(_float::direct(100));
+		parSet.setSetVal(PhysicalValue::directVolt(100));
 		break;
 	case TouchEvent::ps_val_2:
-		parSet.setSetVal(_float::direct(200));
+		parSet.setSetVal(PhysicalValue::directVolt(200));
 		break;
 	case TouchEvent::ps_val_3:
-		parSet.setSetVal(_float::direct(300));
+		parSet.setSetVal(PhysicalValue::directVolt(300));
 		break;
 	case TouchEvent::ps_val_4:
-		parSet.setSetVal(_float::direct(400));
+		parSet.setSetVal(PhysicalValue::directVolt(400));
 		break;
 	case TouchEvent::ps_val_5:
-		parSet.setSetVal(_float::direct(500));
+		parSet.setSetVal(PhysicalValue::directVolt(500));
 		break;
 	case TouchEvent::ps_val_6:
-		parSet.setSetVal(_float::direct(600));
+		parSet.setSetVal(PhysicalValue::directVolt(600));
 		break;
 	case TouchEvent::ps_val_7:
-		parSet.setSetVal(_float::direct(700));
+		parSet.setSetVal(PhysicalValue::directVolt(700));
 		break;
 	case TouchEvent::ps_val_8:
-		parSet.setSetVal(_float::direct(800));
+		parSet.setSetVal(PhysicalValue::directVolt(800));
 		break;
 	case TouchEvent::ps_val_9:
-		parSet.setSetVal(_float::direct(900));
+		parSet.setSetVal(PhysicalValue::directVolt(900));
 		break;
 
 	case TouchEvent::bar_graph_q:
@@ -130,7 +125,7 @@ void Application::loop(unsigned long loopCount)
 		last_q = disp_man.getBarValue();
 		q_set.setSetVal(last_q);
 		TRACE("app bar graph change processed - num=");
-		TRACELN((int)last_q);
+		TRACELN((int)last_q.value);
 		break;
 	case TouchEvent::bar_graph_p:
 		last_p = disp_man.getBarValue();

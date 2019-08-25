@@ -40,7 +40,7 @@ class DisplayManager
 	Page* activePage;
 
 	TouchEvent touchEvent;
-	_float touchVal;
+	rkp::PhysicalValue setValue;
 
 	//functions
 	public:
@@ -53,19 +53,19 @@ class DisplayManager
 	void initialize();
 	
 	// Setter for live values
-	void set_q_set(_float val,Unit un);
-	void set_q_is(_float val,Unit un);
-	void set_p_set(_float val,Unit un);
-	void set_p_is(_float val,Unit un);
-	void set_ps_pre_set(_float val,Unit un);
-	void set_ps_set(_float val,Unit un);
+	void set_q_set(const rkp::PhysicalValue&);
+	void set_q_is(const rkp::PhysicalValue&);
+	void set_p_set(const rkp::PhysicalValue&);
+	void set_p_is(const rkp::PhysicalValue&);
+	void set_ps_pre_set(const rkp::PhysicalValue&);
+	void set_ps_set(const rkp::PhysicalValue&);
 	// for current page
 	void set_u_adc_raw(uint32_t);
 	void set_u_pre_adc_raw(uint32_t);
 	
 	// request function for touch events
 	TouchEvent getTouchEvent();
-	_float getBarValue();
+	rkp::PhysicalValue getBarValue();
 
 	// function to get control status for set-values
 	ControlMode getControlMode(); 

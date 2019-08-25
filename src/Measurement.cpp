@@ -1,31 +1,33 @@
 #include "Measurement.h"
 
-_float rkp::u_adc_direct(uint32_t adc)
+using namespace rkp;
+
+PhysicalValue rkp::u_adc_direct(uint32_t adc)
 {
-	return _float::direct((adc * 75) / 1024);
+	return PhysicalValue::directVolt((adc * 75) / 1024);
 }
 
-_float rkp::set_u_direct(uint32_t u)
+PhysicalValue rkp::set_u_direct(uint32_t u)
 {
-	_float f(u);
-	f *= 12;
-	f /= 4096;
+	PhysicalValue f(u, Unit::Volt);
+	f.value *= 12;
+	f.value /= 4096;
 	return f;
 }
 
-_float rkp::set_u_double_rounded(uint32_t u)
+PhysicalValue rkp::set_u_double_rounded(uint32_t u)
 {
 	double dbl_u = u;
 	dbl_u *= 0.29296875;
-	return _float::direct((long)dbl_u);
+	return PhysicalValue::directVolt((long)dbl_u);
 }
 
-_float rkp::r10k::set_i_direct(uint32_t adc_up, uint32_t adc_u)
+ PhysicalValue rkp::r10k::set_i_direct(uint32_t adc_up, uint32_t adc_u)
 {
-	return _float::direct((15L*(2000L*((long)adc_up)-2011L*((long)adc_u)))/22528L);
+	return PhysicalValue::directAmps((15L * (2000L * ((long)adc_up) - 2011L * ((long)adc_u))) / 22528L);
 }
 
-_float rkp::r10k::set_i_double_exact(uint32_t upre_adc, uint32_t u_adc)
+ PhysicalValue rkp::r10k::set_i_double_exact(uint32_t upre_adc, uint32_t u_adc)
 {
 	double dbl_upre = 0.0;
 	double dbl_u = 0.0;
@@ -50,48 +52,48 @@ _float rkp::r10k::set_i_double_exact(uint32_t upre_adc, uint32_t u_adc)
 	double iv = is;
 	iv -= im;
 
-	return _float::direct((long)(iv * 100.0));
+	return PhysicalValue::directAmps((long)(iv * 100.0));
 }
 
-_float rkp::r10k::set_i_double_rounded(uint32_t up, uint32_t u)
+ PhysicalValue rkp::r10k::set_i_double_rounded(uint32_t up, uint32_t u)
 {
-	return _float::direct((long)((-1.339) * (u - 0.99453 * up)));
+	return PhysicalValue::directAmps((long)((-1.339) * (u - 0.99453 * up)));
 }
 
-_float rkp::is_u_direct(uint32_t is)
+ PhysicalValue rkp::is_u_direct(uint32_t is)
 {
-	_float f(is);
-	f *= 12;
-	f /= 4096;
+	 PhysicalValue f(is,Unit::Volt);
+	f.value *= 12;
+	f.value /= 4096;
 	return f;
 }
 
-_float rkp::is_u_double_rounded(uint32_t is)
+ PhysicalValue rkp::is_u_double_rounded(uint32_t is)
 {
 	double dbl_u = is;
 	dbl_u *= 0.29296875;
-	return _float::direct((long)dbl_u);
+	return PhysicalValue::directVolt((long)dbl_u);
 }
 
-_float rkp::is_i_direct(uint32_t is)
+ PhysicalValue rkp::is_i_direct(uint32_t is)
 {
-	_float f(is);
+	 PhysicalValue f(is,Unit::MilliAmps);
 	// implizit anpassung 1024 -> 10.24 durch directe anpassung
 	// /=444.4444 da Wiederstand im Strommessbetrieb = 444.444 Ohm
 	// *=1000 anpassung nach mA
 
-	f *= 12;
-	f *= 100000;
-	f /= 4096;
-	f /= 44444;
+	f.value *= 12;
+	f.value*= 100000;
+	f.value/= 4096;
+	f.value/= 44444;
 	return f;
 }
 
-_float rkp::is_i_double_rounded(uint32_t is)
+ PhysicalValue rkp::is_i_double_rounded(uint32_t is)
 {
 	double dbl_is = is;
 	dbl_is *= 0.6591797;
-	return _float::direct((long)dbl_is);
+	return PhysicalValue::directAmps((long)dbl_is);
 }
 
 uint32_t rkp::stab_ana_read(uint8_t pin)

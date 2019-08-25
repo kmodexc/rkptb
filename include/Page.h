@@ -4,17 +4,12 @@
 #include "_float.h"
 #include "Graphics.h"
 #include "pindefs.h"
+#include "PhysicalValue.h"
 
 #define DISPM_REC_BUFFER_SIZE 10
 
 // must be greater 8 bcs a double (8-bytes) is stored in it
 #define TOUCH_EVENT_DATA_SIZE 20
-
-enum class Unit
-{
-	Volt,
-	MilliAmps
-};
 
 enum class TouchEvent
 {
@@ -78,12 +73,12 @@ public:
 	virtual void repaint(Graphics *);
 
 	// Setter for live values
-	virtual void set_q_set(_float val, Unit un);
-	virtual void set_q_is(_float val, Unit un);
-	virtual void set_p_set(_float val, Unit un);
-	virtual void set_p_is(_float val, Unit un);
-	virtual void set_ps_pre_set(_float val, Unit un);
-	virtual void set_ps_set(_float val, Unit un);
+	virtual void set_q_set(const rkp::PhysicalValue&);
+	virtual void set_q_is(const rkp::PhysicalValue&);
+	virtual void set_p_set(const rkp::PhysicalValue&);
+	virtual void set_p_is(const rkp::PhysicalValue&);
+	virtual void set_ps_pre_set(const rkp::PhysicalValue&);
+	virtual void set_ps_set(const rkp::PhysicalValue&);
 
 	// request function for touch events
 	virtual TouchEvent getTouchEvent();

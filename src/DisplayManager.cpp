@@ -7,6 +7,8 @@
 
 #include "DisplayManager.h"
 
+using namespace rkp;
+
 // default constructor
 DisplayManager::DisplayManager()
 {
@@ -38,34 +40,34 @@ void DisplayManager::initialize()
 	activePage->repaint(&disp);
 }
 
-void DisplayManager::set_q_set(_float val, Unit un)
+void DisplayManager::set_q_set(const PhysicalValue& val)
 {
-	activePage->set_q_set(val, un);
+	activePage->set_q_set(val);
 }
 
-void DisplayManager::set_q_is(_float val, Unit un)
+void DisplayManager::set_q_is(const PhysicalValue& val)
 {
-	activePage->set_q_is(val, un);
+	activePage->set_q_is(val);
 }
 
-void DisplayManager::set_p_set(_float val, Unit un)
+void DisplayManager::set_p_set(const PhysicalValue& val)
 {
-	activePage->set_p_set(val, un);
+	activePage->set_p_set(val);
 }
 
-void DisplayManager::set_p_is(_float val, Unit un)
+void DisplayManager::set_p_is(const PhysicalValue& val)
 {
-	activePage->set_p_is(val, un);
+	activePage->set_p_is(val);
 }
 
-void DisplayManager::set_ps_pre_set(_float val, Unit un)
+void DisplayManager::set_ps_pre_set(const PhysicalValue& val)
 {
-	activePage->set_ps_pre_set(val, un);
+	activePage->set_ps_pre_set(val);
 }
 
-void DisplayManager::set_ps_set(_float val, Unit un)
+void DisplayManager::set_ps_set(const PhysicalValue& val)
 {
-	activePage->set_ps_set(val, un);
+	activePage->set_ps_set(val);
 }
 
 void DisplayManager::set_u_adc_raw(uint32_t val)
@@ -93,9 +95,9 @@ TouchEvent DisplayManager::getTouchEvent()
 	return ev;
 }
 
-_float DisplayManager::getBarValue()
+PhysicalValue DisplayManager::getBarValue()
 {
-	return touchVal;
+	return setValue;
 }
 
 ControlMode DisplayManager::getControlMode()
@@ -169,7 +171,7 @@ void DisplayManager::loop(uint64_t loopCount)
 			if (touchEvent == TouchEvent::nothing)
 			{
 				touchEvent = ev;
-				_float::deserialize(activePage->getTouchData(), TOUCH_EVENT_DATA_SIZE, &touchVal);
+				PhysicalValue::deserialize(activePage->getTouchData(), TOUCH_EVENT_DATA_SIZE, &setValue);
 			}
 			else
 			{

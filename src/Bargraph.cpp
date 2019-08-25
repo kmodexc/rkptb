@@ -24,6 +24,10 @@ bool Bargraph::loop(uint64_t loopCount, Graphics *pg)
 {
 	if(update_skale){
 		pg->updateBargraphSkale(x,y,code,min,max);
+		TRACE("update skale ");
+		TRACE((int)min);
+		TRACE(" ");
+		TRACELN((int)max);
 		update_skale = false;
 		return true;
 	}else if(update_val){
@@ -64,11 +68,21 @@ TouchEvent Bargraph::bargraphChangeEvent(TouchEvent te,uint8_t* data){
 
 uint8_t Bargraph::valToBg(_float f) const
 {
+	TRACE("valtoBG ");
+	TRACE((int)f);
 	f -= min;
+	TRACE(" ");
+	TRACE((int)f);
 	f *= 254;
+	TRACE(" ");
+	TRACE((int)f);
 	_float diff = max;
 	diff -= min;
+	TRACE(" ");
+	TRACE((int)diff);
 	f /= diff;
+	TRACE(" ");
+	TRACELN((int)f);
 	return f;
 }
 

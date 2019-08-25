@@ -47,8 +47,8 @@ void CurrentPage::set_u_adc_raw(uint32_t val)
 {
 	u_adc = val;
 	printInt(dt_1.new_str, 4, val);
-	u_adc_direct(val).print(dt_1.new_str+10,2);
-	set_u_double_rounded(val).print(dt_1.new_str+20,2);
+	u_adc_direct(val).value.print(dt_1.new_str+10,2);
+	set_u_double_rounded(val).value.print(dt_1.new_str+20,2);
 	dt_1.update = true;
 	updateCurrent();
 }
@@ -57,8 +57,8 @@ void CurrentPage::set_upre_adc_raw(uint32_t val)
 {
 	upre_adc = val;
 	printInt(dt_2.new_str, 4, val);
-	u_adc_direct(val).print(dt_2.new_str+10,2);
-	set_u_double_rounded(val).print(dt_2.new_str+20,2);
+	u_adc_direct(val).value.print(dt_2.new_str+10,2);
+	set_u_double_rounded(val).value.print(dt_2.new_str+20,2);
 	dt_2.update = true;
 	updateCurrent();
 }
@@ -91,8 +91,8 @@ void CurrentPage::loop(uint64_t loopCount, Graphics *pg)
 
 void CurrentPage::updateCurrent()
 {
-	set_i_direct(upre_adc,u_adc).print(dt_3.new_str, 2);
-	set_i_double_exact(upre_adc,u_adc).print(dt_3.new_str + 10, 2);
-	set_i_double_rounded(upre_adc,u_adc).print(dt_3.new_str + 20, 2);
+	set_i_direct(upre_adc,u_adc).value.print(dt_3.new_str, 2);
+	set_i_double_exact(upre_adc,u_adc).value.print(dt_3.new_str + 10, 2);
+	set_i_double_rounded(upre_adc,u_adc).value.print(dt_3.new_str + 20, 2);
 	dt_3.update = true;
 }

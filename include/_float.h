@@ -3,7 +3,7 @@
 
 #ifdef _TRACE_FLOAT_OPERATIONS_
 #include "pindefs.h"
-#define __TRACE(x) TRACE(X)
+#define __TRACE(x) TRACE(x)
 #define __TRACELN(x) TRACELN(x)
 #else
 #define __TRACE(x)
@@ -19,12 +19,14 @@
 #define __FLOAT_PT_FLOAT 100.0f
 #define __FLOAT_PT_DOUBLE 100.0
 
+#define __FLOAT_CONTAINER_TYPE_ int32_t
+
 class _float
 {
-	int64_t data;
+	__FLOAT_CONTAINER_TYPE_ data;
 
 protected:
-	uint64_t getData() const;
+	__FLOAT_CONTAINER_TYPE_ getData() const;
 
 public:
 	_float();
@@ -105,8 +107,8 @@ public:
 	void print(char *str) const;
 	void print(char *str, uint8_t digit_before_comma) const;
 
-	static _float direct(int64_t val);
-	static size_t serialize(uint8_t *buffer, size_t len, const _float *val);
+	static _float direct(__FLOAT_CONTAINER_TYPE_ val);
+	size_t serialize(uint8_t *buffer, size_t len) const;
 	static size_t deserialize(const uint8_t *buffer, size_t len, _float *val);
 };
 

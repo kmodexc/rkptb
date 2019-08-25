@@ -18,7 +18,7 @@ enum class MainPageMode
 struct ContOpBaGrSet{
 	DisplayText dispTex;
 	RKP::Bargraph bg;
-	_float mem;
+	rkp::PhysicalValue mem;
 	ControlledPinMode mode;
 	ContOpBaGrSet(size_t x,size_t y,uint8_t code, const char* label)
 		:bg(x,y,code,label){}
@@ -56,12 +56,12 @@ public:
 	void repaint(Graphics *);
 
 	// Setter for live values
-	void set_q_set(_float val, Unit un);
-	void set_q_is(_float val, Unit un);
-	void set_p_set(_float val, Unit un);
-	void set_p_is(_float val, Unit un);
-	void set_ps_pre_set(_float val, Unit un);
-	void set_ps_set(_float val, Unit un);
+	void set_q_set(const rkp::PhysicalValue&);
+	void set_q_is(const rkp::PhysicalValue&);
+	void set_p_set(const rkp::PhysicalValue&);
+	void set_p_is(const rkp::PhysicalValue&);
+	void set_ps_pre_set(const rkp::PhysicalValue&);
+	void set_ps_set(const rkp::PhysicalValue&);
 
 	virtual TouchEvent getTouchEvent() override;
 	virtual uint8_t *getTouchData() override;
@@ -74,10 +74,8 @@ public:
 
 protected:
 private:
-	static uint8_t voltToBgVal(const _float &f);
-	static _float bgValToVolt(uint8_t v);
 
-	_float numpadEnterHandler(ContOpBaGrSet*);
+	rkp::PhysicalValue numpadEnterHandler(ContOpBaGrSet*);
 	void bargraphChangeEventHandler(ContOpBaGrSet*);
 	void memTglEventHandler(ContOpBaGrSet*);
 	void measureModeChangeHandler(ContOpBaGrSet*);

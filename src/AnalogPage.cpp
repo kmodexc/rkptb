@@ -45,45 +45,45 @@ void AnalogPage::repaint(Graphics *pg)
 	rkp::clearStr(dt_ps.old_str, DisplayText::STRLEN);
 }
 
-void AnalogPage::set_q_set(_float val, Unit un)
+void AnalogPage::set_q_set(const rkp::PhysicalValue& val)
 {
-	val.print(dt_q.new_str + 10, dig_bef_com);
-	rkp::unit_print(dt_q.new_str + 16, un);
+	val.value.print(dt_q.new_str + 10, dig_bef_com);
+	rkp::unit_print(dt_q.new_str + 16, val.getUnit());
 	dt_q.update = true;
 }
 
-void AnalogPage::set_q_is(_float val, Unit un)
+void AnalogPage::set_q_is(const rkp::PhysicalValue& val)
 {
-	val.print(dt_q.new_str + 20, dig_bef_com);
-	rkp::unit_print(dt_q.new_str + 26, un);
+	val.value.print(dt_q.new_str + 20, dig_bef_com);
+	rkp::unit_print(dt_q.new_str + 26, val.getUnit());
 	dt_q.update = true;
 }
 
-void AnalogPage::set_p_set(_float val, Unit un)
+void AnalogPage::set_p_set(const rkp::PhysicalValue& val)
 {
-	val.print(dt_p.new_str + 10, dig_bef_com);
-	rkp::unit_print(dt_p.new_str + 16, un);
+	val.value.print(dt_p.new_str + 10, dig_bef_com);
+	rkp::unit_print(dt_p.new_str + 16, val.getUnit());
 	dt_p.update = true;
 }
 
-void AnalogPage::set_p_is(_float val, Unit un)
+void AnalogPage::set_p_is(const rkp::PhysicalValue& val)
 {
-	val.print(dt_p.new_str + 20, dig_bef_com);
-	rkp::unit_print(dt_p.new_str + 26, un);
+	val.value.print(dt_p.new_str + 20, dig_bef_com);
+	rkp::unit_print(dt_p.new_str + 26, val.getUnit());
 	dt_p.update = true;
 }
 
-void AnalogPage::set_ps_pre_set(_float val, Unit un)
+void AnalogPage::set_ps_pre_set(const rkp::PhysicalValue& val)
 {
-	val.print(dt_ps.new_str + 20, dig_bef_com);
-	rkp::unit_print(dt_ps.new_str + 26, un);
+	val.value.print(dt_ps.new_str + 20, dig_bef_com);
+	rkp::unit_print(dt_ps.new_str + 26, val.getUnit());
 	dt_ps.update = true;
 }
 
-void AnalogPage::set_ps_set(_float val, Unit un)
+void AnalogPage::set_ps_set(const rkp::PhysicalValue& val)
 {
-	val.print(dt_ps.new_str + 10, dig_bef_com);
-	rkp::unit_print(dt_ps.new_str + 16, un);
+	val.value.print(dt_ps.new_str + 10, dig_bef_com);
+	rkp::unit_print(dt_ps.new_str + 16, val.getUnit());
 	dt_ps.update = true;
 }
 

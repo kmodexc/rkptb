@@ -1,5 +1,7 @@
 #include "MainPage.h"
 
+using namespace rkp;
+
 // default constructor
 MainPage::MainPage()
 	:mQ(100,250,1,"Q"),
@@ -77,45 +79,45 @@ void MainPage::repaint(Graphics *pg)
 	rkp::clearStr(mPS.dispTex.old_str, DisplayText::STRLEN);
 }
 
-void MainPage::set_q_set(_float val, Unit un)
+void MainPage::set_q_set(const PhysicalValue& val)
 {
-	val.print(mQ.dispTex.new_str + 10, dig_bef_com);
-	rkp::unit_print(mQ.dispTex.new_str + 16, un);
+	val.value.print(mQ.dispTex.new_str + 10, dig_bef_com);
+	rkp::unit_print(mQ.dispTex.new_str + 16, val.getUnit());
 	mQ.dispTex.update = true;
 }
 
-void MainPage::set_q_is(_float val, Unit un)
+void MainPage::set_q_is(const PhysicalValue& val)
 {
-	val.print(mQ.dispTex.new_str + 20, dig_bef_com);
-	rkp::unit_print(mQ.dispTex.new_str + 26, un);
+	val.value.print(mQ.dispTex.new_str + 20, dig_bef_com);
+	rkp::unit_print(mQ.dispTex.new_str + 26, val.getUnit());
 	mQ.dispTex.update = true;
 }
 
-void MainPage::set_p_set(_float val, Unit un)
+void MainPage::set_p_set(const PhysicalValue& val)
 {
-	val.print(mP.dispTex.new_str + 10, dig_bef_com);
-	rkp::unit_print(mP.dispTex.new_str + 16, un);
+	val.value.print(mP.dispTex.new_str + 10, dig_bef_com);
+	rkp::unit_print(mP.dispTex.new_str + 16, val.getUnit());
 	mP.dispTex.update = true;
 }
 
-void MainPage::set_p_is(_float val, Unit un)
+void MainPage::set_p_is(const PhysicalValue& val)
 {
-	val.print(mP.dispTex.new_str + 20, dig_bef_com);
-	rkp::unit_print(mP.dispTex.new_str + 26, un);
+	val.value.print(mP.dispTex.new_str + 20, dig_bef_com);
+	rkp::unit_print(mP.dispTex.new_str + 26, val.getUnit());
 	mP.dispTex.update = true;
 }
 
-void MainPage::set_ps_pre_set(_float val, Unit un)
+void MainPage::set_ps_pre_set(const PhysicalValue& val)
 {
-	// val.print(mPS.dispTex.new_str + 20, dig_bef_com);
-	// rkp::unit_print(mPS.dispTex.new_str + 26, un);
+	// val.value.print(mPS.dispTex.new_str + 20, dig_bef_com);
+	// rkp::unit_print(mPS.dispTex.new_str + 26, val.getUnit());
 	// mPS.dispTex.update = true;
 }
 
-void MainPage::set_ps_set(_float val, Unit un)
+void MainPage::set_ps_set(const PhysicalValue& val)
 {
-	val.print(mPS.dispTex.new_str + 10, dig_bef_com);
-	rkp::unit_print(mPS.dispTex.new_str + 16, un);
+	val.value.print(mPS.dispTex.new_str + 10, dig_bef_com);
+	rkp::unit_print(mPS.dispTex.new_str + 16, val.getUnit());
 	mPS.dispTex.update = true;
 }
 
@@ -183,7 +185,7 @@ TouchEvent MainPage::getTouchEvent()
 		mpmode = MainPageMode::Normal;
 		break;
 	case TouchEvent::q_set_mode_change:
-		measureModeChangeHandler(&mP);
+		measureModeChangeHandler(&mQ);
 		break;
 	case TouchEvent::p_set_mode_change:
 		measureModeChangeHandler(&mP);
@@ -283,40 +285,14 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 	}
 }
 
-uint8_t MainPage::voltToBgVal(const _float &f)
+PhysicalValue MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
 {
-	_float cpy = f;
-	cpy *= 254;
-	cpy /= 11;
-	cpy += 1; // to round up
-	return cpy;
-}
-
-_float MainPage::bgValToVolt(uint8_t v)
-{
-	_float cpy(v);
-	cpy *= 11;
-	cpy /= 254;
-	return cpy;
-}
-
-_float MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
-{
-	_float sendVal;
-	if (cobg->dispTex.new_str[16] == 'V')
-		sendVal = numberPage.getValue();
-	else if (cobg->dispTex.new_str[17] == 'A')
-	{
-		sendVal = numberPage.getValue();
-		//sendVal *= 8;
-		//sendVal /= 5;
-		//sendVal += 4;
-	}
-	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &sendVal);
-	cobg->bg.setValue(sendVal);
+	PhysicalValue sendVal(numberPage.getValue(),cobg->mode == ControlledPinMode::Voltage ? Unit::Volt : Unit::MilliAmps);
+	sendVal.serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE);
+	cobg->bg.setValue(sendVal.value);
 	touchDataPtr = touchDataBuffer;
 	TRACE("number page event processed - num =");
-	sendVal.print((char *)touchDataBuffer + 10);
+	sendVal.value.print((char *)touchDataBuffer + 10);
 	touchDataBuffer[16] = 0;
 	TRACELN((char *)touchDataBuffer + 10); 
 	return sendVal;
@@ -325,8 +301,8 @@ _float MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
 void MainPage::bargraphChangeEventHandler(ContOpBaGrSet *cobg)
 {
 	cobg->bg.bargraphChangeEvent(TouchEvent::nothing,getTouchData());
-	_float val = cobg->bg.getValue();
-	_float::serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE, &val);
+	PhysicalValue val(cobg->bg.getValue(),cobg->mode == ControlledPinMode::Voltage ? Unit::Volt : Unit::MilliAmps);
+	val.serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE);
 	TRACE("mainpage bargraph change processed - num=");
 	TRACELN((int)cobg->bg.getValue());
 	touchDataPtr = touchDataBuffer;
@@ -334,9 +310,9 @@ void MainPage::bargraphChangeEventHandler(ContOpBaGrSet *cobg)
 
 void MainPage::memTglEventHandler(ContOpBaGrSet *cobg)
 {
-	_float tmp = cobg->mem;
-	cobg->mem = cobg->bg.getValue();
-	cobg->bg.setValue(tmp);
+	PhysicalValue tmp = cobg->mem;
+	cobg->mem.value = cobg->bg.getValue();
+	cobg->bg.setValue(tmp.value);
 }
 
 void MainPage::measureModeChangeHandler(ContOpBaGrSet *cobg)

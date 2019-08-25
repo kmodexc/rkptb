@@ -1,5 +1,7 @@
 #include "Page.h"
 
+using namespace rkp;
+
 void rkp::unit_print(char *str, Unit u)
 {
 	if (u == Unit::Volt)
@@ -33,27 +35,27 @@ void Page::repaint(Graphics *pg)
 	mVisible = true;
 }
 
-void Page::set_q_set(_float val, Unit un)
+void Page::set_q_set(const PhysicalValue& val)
 {
 }
 
-void Page::set_q_is(_float val, Unit un)
+void Page::set_q_is(const PhysicalValue& val)
 {
 }
 
-void Page::set_p_set(_float val, Unit un)
+void Page::set_p_set(const PhysicalValue& val)
 {
 }
 
-void Page::set_p_is(_float val, Unit un)
+void Page::set_p_is(const PhysicalValue& val)
 {
 }
 
-void Page::set_ps_pre_set(_float val, Unit un)
+void Page::set_ps_pre_set(const PhysicalValue& val)
 {
 }
 
-void Page::set_ps_set(_float val, Unit un)
+void Page::set_ps_set(const PhysicalValue& val)
 {
 }
 

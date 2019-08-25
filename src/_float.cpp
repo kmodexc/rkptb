@@ -51,7 +51,7 @@ _float &_float::operator*=(int f)
 	data *= f;
 	return *this;
 }
-_float &_float::operator*=(const _float & f)
+_float &_float::operator*=(const _float &f)
 {
 	data *= f.data;
 	data /= __FLOAT_PT_INT;
@@ -67,8 +67,9 @@ _float &_float::operator/=(int f)
 	data /= f;
 	return *this;
 }
-_float &_float::operator/=(const _float & f)
+_float &_float::operator/=(const _float &f)
 {
+	data *= __FLOAT_PT_INT;
 	data /= f.data;
 	return *this;
 }
@@ -318,51 +319,51 @@ void _float::print(char *str, uint8_t digits_bef_comma) const
 	}
 }
 
-uint64_t _float::getData() const
+__FLOAT_CONTAINER_TYPE_ _float::getData() const
 {
 	return data;
 }
 
-_float _float::direct(int64_t val)
+_float _float::direct(__FLOAT_CONTAINER_TYPE_ val)
 {
 	_float f;
 	f.data = val;
 	return f;
 }
 
-size_t _float::serialize(uint8_t *buffer, size_t len, const _float *val)
+size_t _float::serialize(uint8_t *buffer, size_t len) const
 {
-	if (buffer == nullptr || len < 8 || val == nullptr || val->data < 0)
+	if (buffer == nullptr || len < 8 || data < 0)
 	{
 		return 0;
 	}
 	__TRACE("ser:");
 	uint8_t *it = buffer;
-	*(it++) = val->data;
+	*(it++) = data;
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	*(it++) = (val->data >> 8);
+	*(it++) = (data >> 8);
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	*(it++) = (val->data >> 16);
+	*(it++) = (data >> 16);
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	*(it++) = (val->data >> 24);
+	*(it++) = (data >> 24);
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	*(it++) = (val->data >> 32);
+	*(it++) = (data >> 32);
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	*(it++) = (val->data >> 40);
+	*(it++) = (data >> 40);
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	*(it++) = (val->data >> 48);
+	*(it++) = (data >> 48);
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	*(it++) = (val->data >> 56);
+	*(it++) = (data >> 56);
 	__TRACE((unsigned long)*it);
 	__TRACE(' ');
-	__TRACE((long)val->data);
+	__TRACE((long)data);
 	__TRACE(' ');
 	__TRACELN((long)*buffer);
 	return it - buffer;
