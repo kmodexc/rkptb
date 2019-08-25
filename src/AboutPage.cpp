@@ -11,7 +11,7 @@ void AboutPage::repaint(Graphics *pg)
     pg->text(&name);
     pg->flush();
 
-    DisplayText version(320, 250, "SW-Ver: 1.5.0-d");
+    DisplayText version(320, 250, "SW-Ver: 1.6.0");
     pg->text(&version);
     pg->flush();
 }
