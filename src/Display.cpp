@@ -393,8 +393,6 @@ void Display::updateBargraphSkale(size_t x1, size_t y1,uint8_t code,const _float
 	char format_str[] = "0=1234;254=1234 ";
 	min.print(format_str+2,1);
 	max.print(format_str+11,1);
-	TRACE("formatStr=");
-	TRACELN(format_str);
 	send(tmp_buf, set_bargraph_skale(tmp_buf, WR_BUF_LEN, code, x1 - 10, y1 + 10, format_str));
 	flush();
 }
