@@ -1,21 +1,13 @@
 #include "MenuPage.h"
 
-void MenuPage::initialize(Graphics *pg)
-{
-    Page::initialize(pg);
-}
 void MenuPage::repaint(Graphics *pg)
-{    
-    Page::repaint(pg);
-
-    pg->setButtonColor(BCNormal);
-    pg->createButton(0,0,30,"MainPage");
-    pg->createButton(100,0,31,"Tgl|Prec");
-    pg->createButton(200,0,33,"About");
-    //pg->createButton(300,0,34,"Analog");
-    //pg->createButton(400,0,32," CurPg");
-}
-void MenuPage::loop(uint64_t loopCount, Graphics *disp)
 {
-    Page::loop(loopCount, disp);
+	Page::repaint(pg);
+
+	pg->setButtonColor(BCNormal);
+	pg->createButton(0, 0, 30, "MainPage");
+	pg->createButton(100, 0, 31, "Tgl|Prec");
+	pg->createButton(200, 0, 33, "About");
+	//pg->createButton(300,0,34,"Analog");
+	//pg->createButton(400,0,32," CurPg");
 }

@@ -62,16 +62,16 @@ void Application::loop(unsigned long loopCount)
 	switch (disp_man.getTouchEvent())
 	{
 	case TouchEvent::q_set_mode_change:
-		q_set.setSetMode((q_set.getSetMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
+		q_set.setSetMode(CPM_NEXT(q_set.getSetMode()));
 		break;
 	case TouchEvent::p_set_mode_change:
-		p_set.setSetMode((p_set.getSetMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
+		p_set.setSetMode(CPM_NEXT(p_set.getSetMode()));
 		break;
 	case TouchEvent::q_is_mode_change:
-		q_set.setIsMode((q_set.getIsMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
+		q_set.setIsMode(CPM_NEXT(q_set.getIsMode()));
 		break;
 	case TouchEvent::p_is_mode_change:
-		p_set.setIsMode((p_set.getIsMode() == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage));
+		p_set.setIsMode(CPM_NEXT(p_set.getIsMode()));
 		break;
 	case TouchEvent::mem_q_tgl:
 		q_set.setSetVal(mem_q);

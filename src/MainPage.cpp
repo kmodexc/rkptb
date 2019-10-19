@@ -317,7 +317,7 @@ void MainPage::memTglEventHandler(ContOpBaGrSet *cobg)
 
 void MainPage::measureModeChangeHandler(ContOpBaGrSet *cobg)
 {
-	cobg->mode = (cobg->mode == ControlledPinMode::Voltage ? ControlledPinMode::Current : ControlledPinMode::Voltage);
+	CPM_SWITCH(cobg->mode);
 	switch (cobg->mode)
 	{
 	case ControlledPinMode::Current:
