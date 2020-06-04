@@ -135,10 +135,10 @@ void MainPage::set_error(const bool val,const bool newVal){
 }
 
 void MainPage::set_release(const bool val,const bool newVal){
-	if(val){
+	if(!val){
 		strcpy(mPS.dispTex.new_str + 20,"FAILSAFE");
 		mPS.dispTex.update = true;
-	}else if(!val && newVal){
+	}else if(val && newVal){
 		strcpy(mPS.dispTex.new_str + 20,"        ");
 		mPS.dispTex.update = true;
 	}

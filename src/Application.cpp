@@ -58,8 +58,8 @@ void Application::loop(unsigned long loopCount)
 	disp_man.set_p_is(p_set.getIsVal());
 	disp_man.set_ps_pre_set(parSet.getSetValIn());
 	disp_man.set_ps_set(parSet.getSetVal());
-	disp_man.set_error(error.getState() == HIGH,error.hasNewValue());
-	disp_man.set_release(release.getState() == HIGH,release.hasNewValue());
+	disp_man.set_error(error.getState() == LOW,error.hasNewValue());
+	disp_man.set_release(release.getState() == LOW,release.hasNewValue());
 
 	disp_man.set_u_pre_adc_raw(p_set.getUPreAdcRaw());
 	disp_man.set_u_adc_raw(p_set.getUAdcRaw());
