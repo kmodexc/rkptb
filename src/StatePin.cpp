@@ -22,7 +22,7 @@ namespace rkp
 	{
 		return state;
 	}
-	void StatePin::setState(int state)
+	void StatePin::setState(int state,bool hasNewVal)
 	{
 		if (output)
 		{
@@ -33,6 +33,12 @@ namespace rkp
 			else if (!state && this->state)
 			{
 				digitalWrite(pin, LOW);
+			}
+		}
+		if(hasNewVal){
+			if(state != this->state)
+			{
+				this->newValue = true;
 			}
 		}
 		this->state = state;

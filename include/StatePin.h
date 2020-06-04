@@ -15,7 +15,7 @@ namespace rkp
 		StatePin(int pin, int startState, int modulo, bool output);
 		void init();
 		int getState();
-		void setState(int state);
+		void setState(int state,bool hasNewVal);
 		void update();
 		bool hasNewValue();
 	};

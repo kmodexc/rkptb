@@ -143,13 +143,13 @@ void Application::loop(unsigned long loopCount)
 		parSet.setSetVal(last_ps);
 		break;
 	case TouchEvent::release_on:
-		release.setState(1);
+		release.setState(1,true);
 		break;
 	case TouchEvent::release_off:
-		release.setState(0);
+		release.setState(0,true);
 		break;
 	case TouchEvent::release_toggle:
-		release.setState((release.getState() ? LOW : HIGH));
+		release.setState((release.getState() == HIGH ? LOW : HIGH),true);
 		break;
 		
 	default:
