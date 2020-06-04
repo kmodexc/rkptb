@@ -6,6 +6,7 @@
 #include "ControlledOutput.h"
 #include "Measurement.h"
 #include "DisplayManager.h"
+#include "StatePin.h"
 
 #include "pindefs.h"
 
@@ -17,6 +18,8 @@ class Application{
 	CControlledOutput q_set;
 	CControlledOutput p_set;
 	CControlledOutput parSet;
+	rkp::StatePin error;
+	rkp::StatePin release;
 
 	DisplayManager disp_man;
 

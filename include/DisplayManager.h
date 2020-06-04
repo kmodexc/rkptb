@@ -59,6 +59,8 @@ class DisplayManager
 	void set_p_is(const rkp::PhysicalValue&);
 	void set_ps_pre_set(const rkp::PhysicalValue&);
 	void set_ps_set(const rkp::PhysicalValue&);
+	void set_error(const bool val, const bool newVal);
+	void set_release(const bool val, const bool newVal);
 	// for current page
 	void set_u_adc_raw(uint32_t);
 	void set_u_pre_adc_raw(uint32_t);

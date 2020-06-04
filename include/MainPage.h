@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Bargraph.h"
+#include "ControlledPinMode.h"
 #include "NumberPage.h"
 #include "Page.h"
 #include "helpers.h"
 #include "pindefs.h"
-#include "ControlledPinMode.h"
-#include "Bargraph.h"
 
 enum class MainPageMode
 {
@@ -15,13 +15,14 @@ enum class MainPageMode
 	Numpad_PS
 };
 
-struct ContOpBaGrSet{
+struct ContOpBaGrSet
+{
 	DisplayText dispTex;
 	RKP::Bargraph bg;
 	rkp::PhysicalValue mem;
 	ControlledPinMode mode;
-	ContOpBaGrSet(size_t x,size_t y,uint8_t code, const char* label)
-		:bg(x,y,code,label){}
+	ContOpBaGrSet(size_t x, size_t y, uint8_t code, const char *label)
+		: bg(x, y, code, label) {}
 };
 
 class MainPage : public Page
@@ -56,12 +57,14 @@ public:
 	void repaint(Graphics *);
 
 	// Setter for live values
-	void set_q_set(const rkp::PhysicalValue&);
-	void set_q_is(const rkp::PhysicalValue&);
-	void set_p_set(const rkp::PhysicalValue&);
-	void set_p_is(const rkp::PhysicalValue&);
-	void set_ps_pre_set(const rkp::PhysicalValue&);
-	void set_ps_set(const rkp::PhysicalValue&);
+	void set_q_set(const rkp::PhysicalValue &);
+	void set_q_is(const rkp::PhysicalValue &);
+	void set_p_set(const rkp::PhysicalValue &);
+	void set_p_is(const rkp::PhysicalValue &);
+	void set_ps_pre_set(const rkp::PhysicalValue &);
+	void set_ps_set(const rkp::PhysicalValue &);
+	void set_error(const bool val, const bool newVal);
+	void set_release(const bool val, const bool newVal);
 
 	virtual TouchEvent getTouchEvent() override;
 	virtual uint8_t *getTouchData() override;
@@ -74,10 +77,9 @@ public:
 
 protected:
 private:
-
-	rkp::PhysicalValue numpadEnterHandler(ContOpBaGrSet*);
-	void bargraphChangeEventHandler(ContOpBaGrSet*);
-	void memTglEventHandler(ContOpBaGrSet*);
-	void measureModeChangeHandler(ContOpBaGrSet*);
+	rkp::PhysicalValue numpadEnterHandler(ContOpBaGrSet *);
+	void bargraphChangeEventHandler(ContOpBaGrSet *);
+	void memTglEventHandler(ContOpBaGrSet *);
+	void measureModeChangeHandler(ContOpBaGrSet *);
 
 }; //DisplayManager

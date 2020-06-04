@@ -35,27 +35,35 @@ void Page::repaint(Graphics *pg)
 	mVisible = true;
 }
 
-void Page::set_q_set(const PhysicalValue& val)
+void Page::set_q_set(const PhysicalValue &val)
 {
 }
 
-void Page::set_q_is(const PhysicalValue& val)
+void Page::set_q_is(const PhysicalValue &val)
 {
 }
 
-void Page::set_p_set(const PhysicalValue& val)
+void Page::set_p_set(const PhysicalValue &val)
 {
 }
 
-void Page::set_p_is(const PhysicalValue& val)
+void Page::set_p_is(const PhysicalValue &val)
 {
 }
 
-void Page::set_ps_pre_set(const PhysicalValue& val)
+void Page::set_ps_pre_set(const PhysicalValue &val)
 {
 }
 
-void Page::set_ps_set(const PhysicalValue& val)
+void Page::set_ps_set(const PhysicalValue &val)
+{
+}
+
+void Page::set_error(const bool val, const bool newVal)
+{
+}
+
+void Page::set_release(const bool val, const bool newVal)
 {
 }
 
@@ -130,6 +138,9 @@ void Page::readSendBuffer(Graphics *pgr)
 				break;
 			case 11:
 				touchEvent = TouchEvent::go_numpad_ps;
+				break;
+			case 12:
+				touchEvent = TouchEvent::release_toggle;
 				break;
 
 			case 51:

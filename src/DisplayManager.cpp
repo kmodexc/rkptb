@@ -40,34 +40,44 @@ void DisplayManager::initialize()
 	activePage->repaint(&disp);
 }
 
-void DisplayManager::set_q_set(const PhysicalValue& val)
+void DisplayManager::set_q_set(const PhysicalValue &val)
 {
 	activePage->set_q_set(val);
 }
 
-void DisplayManager::set_q_is(const PhysicalValue& val)
+void DisplayManager::set_q_is(const PhysicalValue &val)
 {
 	activePage->set_q_is(val);
 }
 
-void DisplayManager::set_p_set(const PhysicalValue& val)
+void DisplayManager::set_p_set(const PhysicalValue &val)
 {
 	activePage->set_p_set(val);
 }
 
-void DisplayManager::set_p_is(const PhysicalValue& val)
+void DisplayManager::set_p_is(const PhysicalValue &val)
 {
 	activePage->set_p_is(val);
 }
 
-void DisplayManager::set_ps_pre_set(const PhysicalValue& val)
+void DisplayManager::set_ps_pre_set(const PhysicalValue &val)
 {
 	activePage->set_ps_pre_set(val);
 }
 
-void DisplayManager::set_ps_set(const PhysicalValue& val)
+void DisplayManager::set_ps_set(const PhysicalValue &val)
 {
 	activePage->set_ps_set(val);
+}
+
+void DisplayManager::set_error(const bool val, const bool newVal)
+{
+	activePage->set_error(val,newVal);
+}
+
+void DisplayManager::set_release(const bool val, const bool newVal)
+{
+	activePage->set_release(val,newVal);
 }
 
 void DisplayManager::set_u_adc_raw(uint32_t val)

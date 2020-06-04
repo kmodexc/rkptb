@@ -12,7 +12,9 @@ using namespace rkp;
 Application::Application()
 	: q_set(7, 9, 1, 0, 37, 7, 47, 49),
 	  p_set(6, 8, 6, 5, 35, 4, 45, 51),
-	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, ControlledPinMode::Voltage, ControlledPinMode::Voltage)
+	  parSet(5, 10, 3, 2, 24, 2, 26, 28, 53, ControlledPinMode::Voltage, ControlledPinMode::Voltage),
+	  error(33,0,2,false),
+	  release(31,0,2,true)
 {
 }
 
@@ -25,6 +27,9 @@ void Application::initialize()
 	q_set.begin();
 	p_set.begin();
 	parSet.begin();
+
+	error.init();
+	release.init();
 
 	delay(1000);
 
@@ -40,12 +45,12 @@ void Application::loop(unsigned long loopCount)
 		parSet.update();
 	}
 
-	//bool error = !digitalRead(PIN_ERROR);
-	//bool mrel = !digitalRead(PIN_RELEASE);
-
 	q_set.measure();
 	p_set.measure();
 	parSet.measure();
+
+	error.update();
+	//release.update();
 
 	disp_man.set_q_set(q_set.getSetVal());
 	disp_man.set_q_is(q_set.getIsVal());
@@ -53,6 +58,8 @@ void Application::loop(unsigned long loopCount)
 	disp_man.set_p_is(p_set.getIsVal());
 	disp_man.set_ps_pre_set(parSet.getSetValIn());
 	disp_man.set_ps_set(parSet.getSetVal());
+	disp_man.set_error(error.getState() == HIGH,error.hasNewValue());
+	disp_man.set_release(release.getState() == HIGH,release.hasNewValue());
 
 	disp_man.set_u_pre_adc_raw(p_set.getUPreAdcRaw());
 	disp_man.set_u_adc_raw(p_set.getUAdcRaw());
@@ -135,7 +142,16 @@ void Application::loop(unsigned long loopCount)
 		last_ps = disp_man.getBarValue();
 		parSet.setSetVal(last_ps);
 		break;
-
+	case TouchEvent::release_on:
+		release.setState(1);
+		break;
+	case TouchEvent::release_off:
+		release.setState(0);
+		break;
+	case TouchEvent::release_toggle:
+		release.setState((release.getState() ? LOW : HIGH));
+		break;
+		
 	default:
 		break;
 	}

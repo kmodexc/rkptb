@@ -53,6 +53,9 @@ void MainPage::repaint(Graphics *pg)
 
 	pg->setButtonColor(BCNormal);
 	pg->createButton(0, 0, 5, "Menu");
+
+	pg->createButton(100, 0, 12, "FailS");
+
 	pg->createButton(200, 0, 6, "MEM Q");
 	pg->createButton(300, 0, 7, "MEM P");
 	pg->createButton(400, 0, 8, "MEM PS");
@@ -119,6 +122,26 @@ void MainPage::set_ps_set(const PhysicalValue& val)
 	val.value.print(mPS.dispTex.new_str + 10, dig_bef_com);
 	rkp::unit_print(mPS.dispTex.new_str + 16, val.getUnit());
 	mPS.dispTex.update = true;
+}
+
+void MainPage::set_error(const bool val,const bool newVal){
+	if(val){
+		strcpy(mPS.dispTex.new_str + 20,"ERROR");
+		mPS.dispTex.update = true;
+	}else if(!val && newVal){
+		strcpy(mPS.dispTex.new_str + 20,"     ");
+		mPS.dispTex.update = true;
+	}
+}
+
+void MainPage::set_release(const bool val,const bool newVal){
+	if(val){
+		strcpy(mPS.dispTex.new_str + 20,"FAILSAFE");
+		mPS.dispTex.update = true;
+	}else if(!val && newVal){
+		strcpy(mPS.dispTex.new_str + 20,"        ");
+		mPS.dispTex.update = true;
+	}
 }
 
 TouchEvent MainPage::getTouchEvent()

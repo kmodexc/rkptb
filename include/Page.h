@@ -49,7 +49,11 @@ enum class TouchEvent
 	go_number_page,
 
 	editbox_data_avail,
-	number_page_enter
+	number_page_enter,
+
+	release_on,
+	release_off,
+	release_toggle
 };
 
 enum class ControlMode
@@ -79,6 +83,8 @@ public:
 	virtual void set_p_is(const rkp::PhysicalValue&);
 	virtual void set_ps_pre_set(const rkp::PhysicalValue&);
 	virtual void set_ps_set(const rkp::PhysicalValue&);
+	virtual void set_error(const bool val, const bool newVal);
+	virtual void set_release(const bool val, const bool newVal);
 
 	// request function for touch events
 	virtual TouchEvent getTouchEvent();
