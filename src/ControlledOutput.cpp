@@ -2,9 +2,14 @@
 #define _CONTROLLED_OUTPUT_CPP_
 
 #include "ControlledOutput.h"
+#include "pindefs.h"
 
 using namespace rkp;
 using namespace rkp::r10k;
+
+#define CURRENT_MODE_RES_DEFAULT 50
+#define CURRENT_MODE_SET_DEFAULT 390
+#define VOLTAGE_MODE_RES_DEFAULT 325
 
 CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch, int32_t pin_set_sw_val, ControlledPinMode sm, ControlledPinMode im)
 	: mPinSetIn(pin_set_in),
@@ -19,6 +24,12 @@ CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, in
 	this->mPinIsRes = pin_is_res;
 	this->mSetMode = sm;
 	this->mIsMode = im;
+	this->mCurrentModeResistorFactor = CURRENT_MODE_RES_DEFAULT;	// value should be between 50 and 200
+	this->mSetValI = PhysicalValue::directAmps(CURRENT_MODE_SET_DEFAULT);
+	this->mGetSetCurrentCallCount = 0;
+	this->mVoltageModeResistorFactor = VOLTAGE_MODE_RES_DEFAULT;
+	this->mSetValU = PhysicalValue::directVolt(0);
+	this->mGetSetVoltageCallCount = 0;
 }
 CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch)
 	: CControlledOutput(pin_set_out, pin_set_in, pin_set_u_pre, pin_set_u, pin_set_mode_switch, pin_is_u, pin_is_res, pin_is_mode_switch, -1, ControlledPinMode::Voltage, ControlledPinMode::Current)
@@ -75,12 +86,35 @@ PhysicalValue CControlledOutput::getSetVal()
 
 PhysicalValue CControlledOutput::getSetU()
 {
-	return set_u_double_rounded(mPinSetU.getVal());
+	auto setu = set_u_double_rounded(mPinSetU.getVal());
+	const _float change_val = _float::direct(1);
+	if(mSetMode == ControlledPinMode::Voltage){
+		if(setu.value < mSetValU.value && ((mGetSetVoltageCallCount % 2) == 0)){
+			mVoltageModeResistorFactor += change_val;
+			setSetVal(mSetValU);
+		}else if(setu.value > mSetValU.value && ((mGetSetVoltageCallCount % 2) == 0)){
+			mVoltageModeResistorFactor -= change_val;
+			setSetVal(mSetValU);
+		}
+	}
+	mGetSetVoltageCallCount++;
+	return setu;
 }
 
 PhysicalValue CControlledOutput::getSetI()
 {
-	return set_i_double_rounded(mPinSetUPre.getVal(), mPinSetU.getVal());
+	auto isi = set_i_double_rounded(mPinSetUPre.getVal(), mPinSetU.getVal());
+	if(mSetMode == ControlledPinMode::Current && (mSetValI.value < 4 || mSetValI.value > 20)){
+		if(isi.value < mSetValI.value && (mSetValI.value < 4 || !(mGetSetCurrentCallCount % 100))){
+			mCurrentModeResistorFactor++;
+			setSetVal(mSetValI);
+		}else if(isi.value > mSetValI.value && !(mGetSetCurrentCallCount % 100)){
+			mCurrentModeResistorFactor--;
+			setSetVal(mSetValI);
+		}
+	}
+	mGetSetCurrentCallCount++;
+	return isi;
 }
 
 PhysicalValue CControlledOutput::getIsVal()
@@ -112,12 +146,20 @@ void CControlledOutput::setSetVal(PhysicalValue val)
 {
 	if (val.getUnit() == rkp::Unit::Volt)
 	{
-		val.value *= 325;
+		if(val.value != mSetValU.value){
+			char buffer[50];
+			memset(buffer, 0,sizeof(buffer));
+			sprintf(buffer,"Neuer Sollwert:     ");
+			val.value.print(buffer+18,2);
+			TRACELN(buffer);
+		}
+		mSetValU = val;
+		val.value *= mVoltageModeResistorFactor;
 	}
 	else
 	{
-		val.value *= 210;
-		val.value += 500;
+		mSetValI = val;
+		val.value *= mCurrentModeResistorFactor;
 	}
 	analogWrite(mPinSetOut, constrain((int)val.value,0,4095));
 }
@@ -138,6 +180,10 @@ void CControlledOutput::update()
 
 void CControlledOutput::setSetMode(ControlledPinMode mode)
 {
+	if(this->mSetMode == ControlledPinMode::Voltage && mode == ControlledPinMode::Current){
+		mSetValI = PhysicalValue::directAmps(CURRENT_MODE_SET_DEFAULT);
+		mCurrentModeResistorFactor = CURRENT_MODE_RES_DEFAULT;
+	}
 	this->mSetMode = mode;
 }
 void CControlledOutput::setIsMode(ControlledPinMode mode)
