@@ -9,7 +9,8 @@ void NumberPage::initialize(Graphics *pg)
 void NumberPage::repaint(Graphics *pg)
 {
     Page::repaint(pg);
-    //pg->createButton(0, 0, 5, "Menu");
+	pg->setButtonColor(BCNormal);
+    pg->createButton(0, 0, 36, "Back");
     pg->createEditbox(250, 50, 300, 50, 1);
     pg->createNumpad(250, 150, 1);
 }

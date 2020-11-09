@@ -360,6 +360,10 @@ void Display::setButtonColor(ButtonColor c)
 {
 	switch (c)
 	{
+	case BCGreen:
+		send(tmp_buf, set_button_colors(tmp_buf, WR_BUF_LEN, 8, 1, 4, 8, 1, 7));
+		flush();
+		break;
 	case BCInvisible:
 		send(tmp_buf, set_button_colors(tmp_buf, WR_BUF_LEN, 0, 0, 0, 0, 0, 0));
 		flush();

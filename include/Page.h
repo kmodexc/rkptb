@@ -50,6 +50,7 @@ enum class TouchEvent
 
 	editbox_data_avail,
 	number_page_enter,
+	number_page_back,
 
 	release_on,
 	release_off,

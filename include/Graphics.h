@@ -10,6 +10,7 @@
 
 enum ButtonColor
 {
+	BCGreen,
 	BCNormal,
 	BCInvisible
 };

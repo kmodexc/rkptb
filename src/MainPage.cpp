@@ -4,9 +4,9 @@ using namespace rkp;
 
 // default constructor
 MainPage::MainPage()
-	:mQ(100,250,1,"Q"),
-	mP(100,320,2,"P"),
-	mPS(100,390,3,"PS")
+	: mQ(100, 250, 1, "Q"),
+	  mP(100, 320, 2, "P"),
+	  mPS(100, 390, 3, "PS")
 {
 	dig_bef_com = 1;
 
@@ -54,7 +54,7 @@ void MainPage::repaint(Graphics *pg)
 	pg->setButtonColor(BCNormal);
 	pg->createButton(0, 0, 5, "Menu");
 
-	pg->createButton(100, 0, 12, "FailS");
+	pg->createButton(100, 0, 12, "Enable");
 
 	pg->createButton(200, 0, 6, "MEM Q");
 	pg->createButton(300, 0, 7, "MEM P");
@@ -82,64 +82,72 @@ void MainPage::repaint(Graphics *pg)
 	rkp::clearStr(mPS.dispTex.old_str, DisplayText::STRLEN);
 }
 
-void MainPage::set_q_set(const PhysicalValue& val)
+void MainPage::set_q_set(const PhysicalValue &val)
 {
 	val.value.print(mQ.dispTex.new_str + 10, dig_bef_com);
 	rkp::unit_print(mQ.dispTex.new_str + 16, val.getUnit());
 	mQ.dispTex.update = true;
 }
 
-void MainPage::set_q_is(const PhysicalValue& val)
+void MainPage::set_q_is(const PhysicalValue &val)
 {
 	val.value.print(mQ.dispTex.new_str + 20, dig_bef_com);
 	rkp::unit_print(mQ.dispTex.new_str + 26, val.getUnit());
 	mQ.dispTex.update = true;
 }
 
-void MainPage::set_p_set(const PhysicalValue& val)
+void MainPage::set_p_set(const PhysicalValue &val)
 {
 	val.value.print(mP.dispTex.new_str + 10, dig_bef_com);
 	rkp::unit_print(mP.dispTex.new_str + 16, val.getUnit());
 	mP.dispTex.update = true;
 }
 
-void MainPage::set_p_is(const PhysicalValue& val)
+void MainPage::set_p_is(const PhysicalValue &val)
 {
 	val.value.print(mP.dispTex.new_str + 20, dig_bef_com);
 	rkp::unit_print(mP.dispTex.new_str + 26, val.getUnit());
 	mP.dispTex.update = true;
 }
 
-void MainPage::set_ps_pre_set(const PhysicalValue& val)
+void MainPage::set_ps_pre_set(const PhysicalValue &val)
 {
 	// val.value.print(mPS.dispTex.new_str + 20, dig_bef_com);
 	// rkp::unit_print(mPS.dispTex.new_str + 26, val.getUnit());
 	// mPS.dispTex.update = true;
 }
 
-void MainPage::set_ps_set(const PhysicalValue& val)
+void MainPage::set_ps_set(const PhysicalValue &val)
 {
 	val.value.print(mPS.dispTex.new_str + 10, dig_bef_com);
 	rkp::unit_print(mPS.dispTex.new_str + 16, val.getUnit());
 	mPS.dispTex.update = true;
 }
 
-void MainPage::set_error(const bool val,const bool newVal){
-	if(val){
-		strcpy(mPS.dispTex.new_str + 20,"ERROR");
+void MainPage::set_error(const bool val, const bool newVal)
+{
+	if (val)
+	{
+		strcpy(mPS.dispTex.new_str + 20, "ERROR");
 		mPS.dispTex.update = true;
-	}else if(!val && newVal){
-		strcpy(mPS.dispTex.new_str + 20,"     ");
+	}
+	else if (!val && newVal)
+	{
+		strcpy(mPS.dispTex.new_str + 20, "     ");
 		mPS.dispTex.update = true;
 	}
 }
 
-void MainPage::set_release(const bool val,const bool newVal){
-	if(!val){
-		strcpy(mPS.dispTex.new_str + 20,"FAILSAFE");
+void MainPage::set_release(const bool val, const bool newVal)
+{
+	if (!val)
+	{
+		strcpy(mPS.dispTex.new_str + 20, "FAILSAFE");
 		mPS.dispTex.update = true;
-	}else if(val && newVal){
-		strcpy(mPS.dispTex.new_str + 20,"        ");
+	}
+	else if (val && newVal)
+	{
+		strcpy(mPS.dispTex.new_str + 20, "        ");
 		mPS.dispTex.update = true;
 	}
 }
@@ -205,6 +213,9 @@ TouchEvent MainPage::getTouchEvent()
 			ev = TouchEvent::bar_graph_ps;
 			numpadEnterHandler(&mPS);
 		}
+		mpmode = MainPageMode::Normal;
+		break;
+	case TouchEvent::number_page_back:
 		mpmode = MainPageMode::Normal;
 		break;
 	case TouchEvent::q_set_mode_change:
@@ -281,16 +292,19 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 			drawn_this_iter = pg->text(&mPS.dispTex);
 		}
 
-		if(!drawn_this_iter && ((loopCount % 10) == 1)){
-			drawn_this_iter = mQ.bg.loop(loopCount,pg);
+		if (!drawn_this_iter && ((loopCount % 10) == 1))
+		{
+			drawn_this_iter = mQ.bg.loop(loopCount, pg);
 		}
 
-		if(!drawn_this_iter && ((loopCount % 10) == 2)){
-			drawn_this_iter = mP.bg.loop(loopCount,pg);
+		if (!drawn_this_iter && ((loopCount % 10) == 2))
+		{
+			drawn_this_iter = mP.bg.loop(loopCount, pg);
 		}
 
-		if(!drawn_this_iter && ((loopCount % 10) == 3)){
-			drawn_this_iter = mPS.bg.loop(loopCount,pg);
+		if (!drawn_this_iter && ((loopCount % 10) == 3))
+		{
+			drawn_this_iter = mPS.bg.loop(loopCount, pg);
 		}
 
 		if (!drawn_this_iter && (((loopCount / 5) + 3) % 4) == 0 && ((loopCount % 5) == 0))
@@ -310,21 +324,21 @@ void MainPage::loop(uint64_t loopCount, Graphics *pg)
 
 PhysicalValue MainPage::numpadEnterHandler(ContOpBaGrSet *cobg)
 {
-	PhysicalValue sendVal(numberPage.getValue(),cobg->mode == ControlledPinMode::Voltage ? Unit::Volt : Unit::MilliAmps);
+	PhysicalValue sendVal(numberPage.getValue(), cobg->mode == ControlledPinMode::Voltage ? Unit::Volt : Unit::MilliAmps);
 	sendVal.serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE);
 	cobg->bg.setValue(sendVal.value);
 	touchDataPtr = touchDataBuffer;
 	TRACE("number page event processed - num =");
 	sendVal.value.print((char *)touchDataBuffer + 10);
 	touchDataBuffer[16] = 0;
-	TRACELN((char *)touchDataBuffer + 10); 
+	TRACELN((char *)touchDataBuffer + 10);
 	return sendVal;
 }
 
 void MainPage::bargraphChangeEventHandler(ContOpBaGrSet *cobg)
 {
-	cobg->bg.bargraphChangeEvent(TouchEvent::nothing,getTouchData());
-	PhysicalValue val(cobg->bg.getValue(),cobg->mode == ControlledPinMode::Voltage ? Unit::Volt : Unit::MilliAmps);
+	cobg->bg.bargraphChangeEvent(TouchEvent::nothing, getTouchData());
+	PhysicalValue val(cobg->bg.getValue(), cobg->mode == ControlledPinMode::Voltage ? Unit::Volt : Unit::MilliAmps);
 	val.serialize(touchDataBuffer, TOUCH_EVENT_DATA_SIZE);
 	TRACE("mainpage bargraph change processed - num=");
 	TRACELN((int)cobg->bg.getValue());
