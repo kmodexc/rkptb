@@ -24,12 +24,8 @@ class CControlledOutput
 	ControlledPinMode mSetMode;
 	ControlledPinMode mIsMode;
 
-	int mCurrentModeResistorFactor;
 	rkp::PhysicalValue mSetValI;
-	int mGetSetCurrentCallCount;
-	_float mVoltageModeResistorFactor;
 	rkp::PhysicalValue mSetValU;
-	int mGetSetVoltageCallCount;
 
 public:
 	CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch);
