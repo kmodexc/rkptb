@@ -147,6 +147,8 @@ void CControlledOutput::setSetVal(PhysicalValue val)
 	if (val.getUnit() == rkp::Unit::Volt)
 	{
 		if(val.value != mSetValU.value){
+			mHistSumU = val.value;
+			mHistSumU *= 373;
 			char buffer[50];
 			memset(buffer, 0,sizeof(buffer));
 			sprintf(buffer,"Neuer Sollwert:     ");
