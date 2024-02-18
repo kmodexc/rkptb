@@ -36,7 +36,7 @@ TouchEvent NumberPage::getTouchEvent()
             exp *= 10;
         }
         exp = 0.1f;
-        for (uint8_t *it = ptr_point + 1; it != nullptr && it >= Page::getTouchData() && *it != 0 && *it <= '9' && *it >= '0'; it--)
+        for (uint8_t *it = ptr_point + 1; it != nullptr && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE && *it != 0 && *it <= '9' && *it >= '0'; it++)
         {
             mVal += ((*it - 48) * exp);
             exp /= 10;

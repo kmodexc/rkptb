@@ -101,6 +101,8 @@ void Page::readSendBuffer(Graphics *pgr)
 	if (touchEvent == TouchEvent::nothing && pgr->requestBuffer(rec_buffer, 9))
 	{
 
+		memset(eventData,0,TOUCH_EVENT_DATA_SIZE);
+
 		// touch button response
 		if (rec_buffer[0] == BIN_ESC && rec_buffer[1] == 'A' && rec_buffer[2] == 1)
 		{
