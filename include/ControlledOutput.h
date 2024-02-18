@@ -27,6 +27,9 @@ class CControlledOutput
 	rkp::PhysicalValue mSetValI;
 	rkp::PhysicalValue mSetValU;
 
+	_float mHistSumU;
+	_float mHistSumI;
+
 public:
 	CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch);
 	CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch, int32_t pin_set_sw_val, ControlledPinMode sm, ControlledPinMode im);

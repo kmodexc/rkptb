@@ -8,7 +8,9 @@ using namespace rkp;
 using namespace rkp::r10k;
 
 #define CONT_I_P 10
-#define CONT_U_P 10
+#define CONT_U_P 100
+#define CONT_I_I 1.0f
+#define CONT_U_I 1.0f
 
 CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch, int32_t pin_set_sw_val, ControlledPinMode sm, ControlledPinMode im)
 	: mPinSetIn(pin_set_in),
@@ -88,7 +90,10 @@ PhysicalValue CControlledOutput::getSetU()
 		_float error = mSetValU.value;
 		error -= setu.value;
 		error *= CONT_U_P;
-		outval = error;
+		_float error_iterate = error;
+		error_iterate *= CONT_U_I;
+		mHistSumU += error_iterate;
+		outval = static_cast<int>(error) + static_cast<int>(mHistSumU);
 		analogWrite(mPinSetOut, constrain(outval,0,4095));
 	}
 	return setu;
@@ -102,7 +107,10 @@ PhysicalValue CControlledOutput::getSetI()
 		_float error = mSetValI.value;
 		error -= isi.value;
 		error *= CONT_I_P;
-		outval = error;
+		_float error_iterate = error;
+		error_iterate *= CONT_I_I;
+		mHistSumI += error_iterate;
+		outval = static_cast<int>(error) + static_cast<int>(mHistSumI);
 		analogWrite(mPinSetOut, constrain(outval,0,4095));
 	}	
 	return isi;
