@@ -19,14 +19,14 @@ TouchEvent NumberPage::getTouchEvent()
 {
     TouchEvent ev = Page::getTouchEvent();
     double exp = 1.0;
-    uint8_t *ptr_point = Page::getTouchData();
+    uint8_t *ptr_point = static_cast<uint8_t*>(Page::getTouchData());
     switch (ev)
     {
     case TouchEvent::nothing:
         break;
     case TouchEvent::editbox_data_avail:
         mVal = 0.0;
-        for (uint8_t *it = Page::getTouchData(); it != nullptr && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE && *it != '.' && *it != 0; it++)
+        for (uint8_t *it = static_cast<uint8_t*>(Page::getTouchData()); it != nullptr && it < Page::getTouchData() + TOUCH_EVENT_DATA_SIZE && *it != '.' && *it != 0; it++)
         {
             ptr_point++;
         }
@@ -52,7 +52,7 @@ TouchEvent NumberPage::getTouchEvent()
 
 uint8_t *NumberPage::getTouchData()
 {
-    uint8_t *td = Page::getTouchData();
+    uint8_t *td = static_cast<uint8_t*>(Page::getTouchData());
 
     return td;
 }

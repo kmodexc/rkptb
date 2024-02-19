@@ -151,6 +151,11 @@ void Application::loop(unsigned long loopCount)
 	case TouchEvent::release_toggle:
 		release.setState((release.getState() == HIGH ? LOW : HIGH),true);
 		break;
+	case TouchEvent::pid_enable_toggle:
+		p_set.pid_enable = !p_set.pid_enable;
+		q_set.pid_enable = !q_set.pid_enable;
+		parSet.pid_enable = !parSet.pid_enable;
+		break;
 		
 	default:
 		break;

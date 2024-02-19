@@ -181,7 +181,7 @@ void DisplayManager::loop(uint64_t loopCount)
 			if (touchEvent == TouchEvent::nothing)
 			{
 				touchEvent = ev;
-				PhysicalValue::deserialize(activePage->getTouchData(), TOUCH_EVENT_DATA_SIZE, &setValue);
+				PhysicalValue::deserialize(static_cast<uint8_t*>(activePage->getTouchData()), TOUCH_EVENT_DATA_SIZE, &setValue);
 			}
 			else
 			{

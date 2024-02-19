@@ -158,7 +158,7 @@ TouchEvent MainPage::getTouchEvent()
 	if (mpmode == MainPageMode::Normal)
 	{
 		ev = Page::getTouchEvent();
-		touchDataPtr = Page::getTouchData();
+		touchDataPtr = static_cast<uint8_t*>(Page::getTouchData());
 	}
 	else
 	{
