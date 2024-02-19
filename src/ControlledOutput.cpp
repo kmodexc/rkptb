@@ -27,6 +27,7 @@ CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, in
 	this->mIsMode = im;
 	this->mSetValI = PhysicalValue::directAmps(0);
 	this->mSetValU = PhysicalValue::directVolt(0);
+	this->pid_enable = true;
 }
 CControlledOutput::CControlledOutput(int32_t pin_set_out, int32_t pin_set_in, int32_t pin_set_u_pre, int32_t pin_set_u, int32_t pin_set_mode_switch, int32_t pin_is_u, int32_t pin_is_res, int32_t pin_is_mode_switch)
 	: CControlledOutput(pin_set_out, pin_set_in, pin_set_u_pre, pin_set_u, pin_set_mode_switch, pin_is_u, pin_is_res, pin_is_mode_switch, -1, ControlledPinMode::Voltage, ControlledPinMode::Current)
@@ -63,7 +64,7 @@ ControlledPinMode CControlledOutput::getIsMode() const
 
 PhysicalValue CControlledOutput::getSetValIn()
 {
-	PhysicalValue f(mPinSetIn.getVal(),rkp::Unit::Volt);
+	PhysicalValue f(mPinSetIn.getVal(), rkp::Unit::Volt);
 	f.value *= 12;
 	f.value /= 4096;
 	return f;
@@ -85,16 +86,24 @@ PhysicalValue CControlledOutput::getSetU()
 {
 	auto setu = set_u_double_rounded(mPinSetU.getVal());
 	const _float change_val = _float::direct(1);
-	if(mSetMode == ControlledPinMode::Voltage){
+	if (mSetMode == ControlledPinMode::Voltage)
+	{
 		int outval;
-		_float error = mSetValU.value;
-		error -= setu.value;
-		error *= CONT_U_P;
-		_float error_iterate = error;
-		error_iterate *= CONT_U_I;
-		mHistSumU += error_iterate;
-		outval = static_cast<int>(error) + static_cast<int>(mHistSumU);
-		analogWrite(mPinSetOut, constrain(outval,0,4095));
+		if (pid_enable)
+		{
+			_float error = mSetValU.value;
+			error -= setu.value;
+			error *= CONT_U_P;
+			_float error_iterate = error;
+			error_iterate *= CONT_U_I;
+			mHistSumU += error_iterate;
+			outval = static_cast<int>(error) + static_cast<int>(mHistSumU);
+		}
+		else
+		{
+			outval = static_cast<int>(mHistSumU);
+		}
+		analogWrite(mPinSetOut, constrain(outval, 0, 4095));
 	}
 	return setu;
 }
@@ -102,17 +111,25 @@ PhysicalValue CControlledOutput::getSetU()
 PhysicalValue CControlledOutput::getSetI()
 {
 	auto isi = set_i_double_rounded(mPinSetUPre.getVal(), mPinSetU.getVal());
-	if(mSetMode == ControlledPinMode::Current){
+	if (mSetMode == ControlledPinMode::Current)
+	{
 		int outval;
-		_float error = mSetValI.value;
-		error -= isi.value;
-		error *= CONT_I_P;
-		_float error_iterate = error;
-		error_iterate *= CONT_I_I;
-		mHistSumI += error_iterate;
-		outval = static_cast<int>(error) + static_cast<int>(mHistSumI);
-		analogWrite(mPinSetOut, constrain(outval,0,4095));
-	}	
+		if (pid_enable)
+		{
+			_float error = mSetValI.value;
+			error -= isi.value;
+			error *= CONT_I_P;
+			_float error_iterate = error;
+			error_iterate *= CONT_I_I;
+			mHistSumI += error_iterate;
+			outval = static_cast<int>(error) + static_cast<int>(mHistSumI);
+		}
+		else
+		{
+			outval = static_cast<int>(mHistSumI);
+		}
+		analogWrite(mPinSetOut, constrain(outval, 0, 4095));
+	}
 	return isi;
 }
 
@@ -146,13 +163,14 @@ void CControlledOutput::setSetVal(PhysicalValue val)
 	int outval;
 	if (val.getUnit() == rkp::Unit::Volt)
 	{
-		if(val.value != mSetValU.value){
+		if (val.value != mSetValU.value)
+		{
 			mHistSumU = val.value;
-			mHistSumU *= 373;
+			mHistSumU *= 340;
 			char buffer[50];
-			memset(buffer, 0,sizeof(buffer));
-			sprintf(buffer,"Neuer Sollwert:     ");
-			val.value.print(buffer+18,2);
+			memset(buffer, 0, sizeof(buffer));
+			sprintf(buffer, "Neuer Sollwert:     ");
+			val.value.print(buffer + 18, 2);
 			TRACELN(buffer);
 		}
 		mSetValU = val;
@@ -165,7 +183,7 @@ void CControlledOutput::setSetVal(PhysicalValue val)
 
 void CControlledOutput::update()
 {
-	//Setze den Sollwert für Ausgang
+	// Setze den Sollwert für Ausgang
 	if (!mSetSwitchVal.aktive() || mSetSwitchVal.wasPressed())
 	{
 		setSetVal(getSetValIn());
@@ -179,8 +197,9 @@ void CControlledOutput::update()
 
 void CControlledOutput::setSetMode(ControlledPinMode mode)
 {
-	if(this->mSetMode == ControlledPinMode::Voltage && mode == ControlledPinMode::Current){
-		//mSetValI = PhysicalValue::directAmps(0);
+	if (this->mSetMode == ControlledPinMode::Voltage && mode == ControlledPinMode::Current)
+	{
+		// mSetValI = PhysicalValue::directAmps(0);
 	}
 	this->mSetMode = mode;
 }

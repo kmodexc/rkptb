@@ -31,7 +31,9 @@ class Application{
 	rkp::PhysicalValue last_p;
 	rkp::PhysicalValue last_ps;
 
-	public:
+	Context context;
+
+public:
 	Application();
 	void initialize();
 	void loop(unsigned long cnt);
